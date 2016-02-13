@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "WHAT’S UNDER THE HOOD OF THE OKHTTP’S CACHE?"
+date:    2016-02-13 00:55:46 +0900
+categories: network
+---
+
 **WHAT’S UNDER THE HOOD OF THE OKHTTP’S CACHE?**
 
 원본 : http://www.schibsted.pl/2016/02/hood-okhttps-cache/
