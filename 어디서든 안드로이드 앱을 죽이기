@@ -1,0 +1,49 @@
+---
+published: false
+---
+
+원본 : [http://www.schibsted.pl/2015/05/killing-an-android-app-from-anywhere/](http://www.schibsted.pl/2015/05/killing-an-android-app-from-anywhere/)
+
+**안드로이드 어플리케이션을 죽이는 간단한 방법은 무엇인지 궁금해한 적이 있는가? 그렇다 - 방법은 없다, 구글은 그것의 이유를 가지고 있다. 늘 그렇듯이, Hack은 존재한다.**
+
+지금 모든 품위있는 안드로이드 개발자들은 아마 내가 정신이 나갔다고 생각할 것이다. 그것은 맞다 : 안드로이드 앱에 종료 버튼이 있을 이유가 없다. 이 행동은 구글이 원한 그대로이다. 그리고 그것이 최후로 존재하는 Activity가 아닌 곳에서 앱을 죽이는 것이 쉽지 않은 이유이다.
+
+늘 그렇듯이, 차선책이 존재한다. 그것을 당신의 앱에 종료 버튼을 구현하기 위해 사용하지는 않았으면 한다. 이것은 특별한 경우를 위한 것이다. 나는 사용자가 만료된 구독을 지불하지 않기로 결정하였을 경우에 앱을 종료하기 위해 이 방법을 사용한다.
+
+## 앱 죽이는 방법
+
+이는 당신이 안드로이드 Activity들의 흐름을 이해한다면 매우 간단한다.
+
+앱을 죽이기 위해서는 기본적으로 앱이 열리기 전에 모든 Activity들을 finish()할 필요가 있다. 만약 당신이 우리 앱이 기동될 때 열리는 첫번째 Activity를 종료하면 앱은 닫힌다. 이를 위해서 어떠한 Activity에서든 우리의 첫번째 Activity를 FLAG_ACTIVITY_CLEAR_TOP flag와 첫번째 Activity에게 기동시 자기 자신을 finish()하도록 알려주는 extra와 함께 열 필요가 있다.
+
+죽이는 방법은 다음과 같으면 된다 :
+
+{% highlight java %}
+    protected void onFinishClick() {
+        Intent intent = new Intent(this, ActivityA.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(ActivityA.SHOULD_FINISH, true);
+        startActivity(intent);
+    }
+{% endhighlight %}
+
+다음은 첫번째 Activity가 필요할 때 자기 자신을 죽이는 방법이다.
+
+{% highlight java %}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_a);
+        ButterKnife.inject(this);
+ 
+        if (getIntent().getBooleanExtra(SHOULD_FINISH, false)) {
+            finish();
+        }
+    }
+{% endhighlight %}
+
+다 됐다, 앱은 종료되고 우리는 홈스크린으로 갈 것이다.
+
+[여기](https://github.com/Schibsted-Tech-Polska/AndroidKillAppExample) 이 방법을 보여주는 예제 앱의 github 리파지토리이 있다.
+
+Cheers!
