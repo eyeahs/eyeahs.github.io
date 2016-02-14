@@ -111,8 +111,8 @@ public class DummyCollaboratorCallerTest {
 }
 {% endhighlight %}
 
-여기서 우리는 [Mock](http://docs.mockito.googlecode.com/hg/org/mockito/MockitoAnnotations.html)과 [ArgumentCaptor](http://docs.mockito.googlecode.com/hg/org/mockito/ArgumentCaptor.html)을 초기화하기 위해 **MockitoAnotations**을 사용하였지만 여기에 대해 아직 걱정할 필요는 없다, cause this is what we will be seeing next.
-여기서 고려해야 할 유일한 것은 mock과 테스트 중인 클래스 둘 다 각 테스트가 실행되기 전에 setup() 메소드(@Before 어노테이션을 사용한)에서 초기화된다는 것이다.
+여기서 우리는 [Mock](http://docs.mockito.googlecode.com/hg/org/mockito/MockitoAnnotations.html)과 [ArgumentCaptor](http://docs.mockito.googlecode.com/hg/org/mockito/ArgumentCaptor.html)을 초기화하기 위해 **MockitoAnotations**을 사용하다. 이것들에 대해 아직 걱정할 필요는 없다. 다음에 우리가 볼 것이기 때문이다.
+여기서 안중에 두어야 하는 유일한 것은 mock과 테스트 중인 클래스 둘 다 각각의 테스트가 실행되기 전에 setup() 메소드(@Before 어노테이션을 사용한)에서 초기화된다는 것이다.
 단위 테스트에서 CUT (테스트 중인 클래스, class under test)의 협력자들은 모두 test double이여야 함을 기억하라.
 이제 우리의 두가지 테스트 해결책들을 보자.
 
