@@ -1,23 +1,21 @@
 ---
 layout: post
-title: "WHAT’S UNDER THE HOOD OF THE OKHTTP’S CACHE?"
+title: "OKHTTP 캐시의 내부는 어떻게 되어 있는가?"
 date: "2016-02-13 00:55:46 +0900"
 categories: network
 published: true
 ---
 
 
-**WHAT’S UNDER THE HOOD OF THE OKHTTP’S CACHE?**
-
 원본 : [http://www.schibsted.pl/2016/02/hood-okhttps-cache/](http://www.schibsted.pl/2016/02/hood-okhttps-cache/)
 
-내 생각엔 당신이 구현한 대부분의 앱들은 네트워크 작업을 사용할 것이다. 대부분의 경우 우리는 OkHttp 라이브러리를 사용하며, 보통 Retrofit을 통할것이다. OkHttp의 가장 멋진 기능들 중 하나는 그것의 캐시 구조이다.이 포스트에서 나는 캐시에 관련된 모든 단계들을 살펴보고 그것이 어떻게 작동하는지를 설명할 것이다.
+내 생각엔 당신이 구현한 대부분의 앱들은 네트워크 작업을 사용할 것이다. 대부분의 경우 우리는 [OkHttp](http://square.github.io/okhttp/) 라이브러리를 사용하며, 보통 [Retrofit을](http://square.github.io/retrofit/) 통할것이다. OkHttp의 가장 멋진 기능들 중 하나는 그것의 캐시 구조이다.이 포스트에서 나는 캐시에 관련된 모든 단계들을 살펴보고 그것이 어떻게 작동하는지를 설명할 것이다.
 
-Every time I use OkHttp I need some time to think how it works, which HTTP headers do I have to use, what am I responsible for as a client app, what should I expect from the server side, and so on. So for me this post will be a reference document for the future. I am not planning this, but for sure I will forget all of that next time I need to use caching :)
+내가 OkHttp를 사용할 때 마다 나는 어떤 HTTP 헤더를 사용해야 할 지, 클라이언트 앱으로서 내가 책임져야 하는 것과, 서버측에 기대할 것은 무엇인지 등을 생각할 시간이 필요하다. 그래서 나에게 이 포스트는 미래의 참조 문서가 될 것이다. 내가 계획한 것은 아니지만, 내가 다음 번에 캐쉬를 사용할 땐 확실히 모든 것을 잊어 버렸을 것이다.
 
-This article is aimed at more advanced developers already familiar with OkHttp. I expect you to know at least how to setup this library and how to enable caching. If you don’t, go to OkHttp’s wiki page first. Of course it’s possible that I get something wrong, I simply describe how I see it. So if someone finds a mistake, please let me know.
+이 글은 이미 OkHttp에 익숙한 고급 개발자들을 더 목표로 하고 있다. 나는 최소한 이 라이브러리와 캐시를 활성화하는 방법은 알고 있다는 것을 기대한다. 만약 당신이 그렇지 않다면 OkHttp의 위키 페이지를 먼저 가보도록 하라. 물론 내가 잘못을 할 가능성이 있지만, 난 그저 내가 어떻게 보았는지를 설명하는 것이다. 그러므로 만약 누군가가 실수를 발견했다면, 나에게 알려주길 바란다.
 
-THE SOURCE
+## THE SOURCE
 
 The classes I was investigating are the following: CacheStrategy, HttpEngine. I will focus on first class where all the logic is. I mentioned HttpEngine because that is where CacheStrategy is used, so you have some context.
 
