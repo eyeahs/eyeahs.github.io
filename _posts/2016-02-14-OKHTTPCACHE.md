@@ -1,16 +1,18 @@
 ---
 layout: post
-title:  "WHAT’S UNDER THE HOOD OF THE OKHTTP’S CACHE?"
-date:    2016-02-13 00:55:46 +0900
+title: "WHAT’S UNDER THE HOOD OF THE OKHTTP’S CACHE?"
+date: "2016-02-13 00:55:46 +0900"
 categories: network
+published: true
 ---
+
 
 **WHAT’S UNDER THE HOOD OF THE OKHTTP’S CACHE?**
 
-원본 : http://www.schibsted.pl/2016/02/hood-okhttps-cache/
+원본 : [http://www.schibsted.pl/2016/02/hood-okhttps-cache/](http://www.schibsted.pl/2016/02/hood-okhttps-cache/)
 
+내 생각엔 당신이 구현한 대부분의 앱들은 네트워크 작업을 사용할 것이다. 대부분의 경우 우리는 OkHttp 라이브러리를 사용하며, 보통 
 I guess many of you implement apps using network operations. In most cases we use OkHttp library, usually through Retrofit. One of the nicest features of OkHttp is its caching mechanism. In this post I will go through all relevant steps in caching and explain how it works
-
 
 Every time I use OkHttp I need some time to think how it works, which HTTP headers do I have to use, what am I responsible for as a client app, what should I expect from the server side, and so on. So for me this post will be a reference document for the future. I am not planning this, but for sure I will forget all of that next time I need to use caching :)
 
@@ -101,4 +103,3 @@ You can also force a network operation. Personally I have never had a chance to 
 CONCLUSION
 
 In my opinion OkHttp is fairly simple to use and does the most work for us. However, it’s good to understand the flow, to know which headers can be set and what they do. I hope that this article will help you.
-
