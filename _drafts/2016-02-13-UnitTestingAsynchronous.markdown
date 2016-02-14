@@ -89,7 +89,7 @@ public class DummyCollaborator {
 {% endhighlight %}
 
 ## 테스트 클래스 만들기
-우리는 비동기 메소드를 테스트하는 두가지 방법을 가지고 있다. 하지만 첫번째로 우리는 테스트 클래스 DummyCollaboratorCallerTest를 만들 것이다 (for convention we just add Test at the end of the class so this becomes part of its name).
+우리는 비동기 메소드를 테스트하는 두가지 방법을 가지고 있다. 하지만 첫번째로 우리는 테스트 클래스 DummyCollaboratorCallerTest를 만들 것이다 (편의상 우리는 클래스 끝에 오직 Test만을 붙일 것이며 그 결과 그것의 이름의 일부가 된다).
 
 {% highlight java %}
 public class DummyCollaboratorCallerTest {
