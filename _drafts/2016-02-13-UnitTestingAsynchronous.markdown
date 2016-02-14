@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 비동기 메소드 유닛테스트
+title: Mockito로 비동기 메소드를 단위 테스트하기
 date: "2016-02-13 01:30:00 +0900"
 categories: Unit Test
 tags: "unittest,mockito"
