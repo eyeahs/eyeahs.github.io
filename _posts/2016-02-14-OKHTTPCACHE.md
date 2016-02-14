@@ -15,55 +15,54 @@ published: true
 
 이 글은 이미 OkHttp에 익숙한 고급 개발자들을 더 목표로 하고 있다. 나는 최소한 이 라이브러리와 캐시를 활성화하는 방법은 알고 있다는 것을 기대한다. 만약 당신이 그렇지 않다면 OkHttp의 위키 페이지를 먼저 가보도록 하라. 물론 내가 잘못을 할 가능성이 있지만, 난 그저 내가 어떻게 보았는지를 설명하는 것이다. 그러므로 만약 누군가가 실수를 발견했다면, 나에게 알려주길 바란다.
 
-## THE SOURCE
+## 소스
 
-다음은 내가 조사할 클래스들이다 : [CacheStrategy](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/http/CacheStrategy.java), [HttpEngine](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/http/HttpEngine.java). 나는 모든 로직이 있는 첫번째 클래스에 집중할 것이다. HttpEngine을 언급한 것은 CacheStrategy가 사용되는 곳이기 때문이며, so you have some context.
+다음은 내가 조사하였던 클래스들이다 : [CacheStrategy](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/http/CacheStrategy.java), [HttpEngine](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/http/HttpEngine.java). 나는 모든 로직이 있는 첫번째 클래스에 집중할 것이다. HttpEngine을 언급한 것은 CacheStrategy가 사용되는 곳이기 때문이며, 이로서 당신은 전후 관계를 알게 되었다.
 
 - **CacheStrategy.Factory** 생성자 - 캐시 응답 후보의 헤더들을 읽고 클래스 멤버들로 변환한다.
 - **CacheStrategy.getCandidate()** – 캐시 응답 후보를 살펴보고 필요하다면 원본 응답 헤더를 수정한다.
 
 위 도막들은 결정적(crucial)이며 우리가 흥미를 가지고 있는 모든 중요한 정보들을 근본적으로 포함한다. 다른 메소드들 역시 중요하지만 저 두 클래스에서 그것들을 탐색할 수 있다.
 
-## WHAT IS A CACHE CANDIDATE?
+## 캐시 후보란 무엇인가?
 
-나는 
-I don’t need to explain that the first time we do our HTTP request there is nothing cached and we have to call our API to actually have something to play with.
+캐시된 것이 없고 실제로 무엇인가 해야할 것이 많은 API 호출을 해야하는 첫번째 HTTP 요청에 대해서는 설명할 필요가 없다.
 
-Once the response is stored we can try to use it for the subsequent calls. Of course not every response will be stored on the basis of the response code. Acceptable ones are: 200, 203, 204, 300, 301, 404, 405, 410, 414, 501, 308. There are also 302 and 307 but for them one of the following conditions must be met:
+일단 응답이 저장되면 우리는 그것을 차후의 호출을 위해 사용하기 위해 시도할 수 있다. 물론 모든 응답이 저장되지는 않는다. 이는 응답 코드에 의거한다. 받아들여지는 것들은 다음과 같다: 200, 203, 204, 300, 301, 404, 405, 410, 414, 501, 308. 302와 307도 있지만 그것들은 다음 조건들 중 하나를 만족해야 한다:
 
-contains Expires header OR
-CacheControl contains max-age OR
-CacheControl contains public OR
-CacheControl contains private
-Please note that caching of the partial content is not supported.
+- **Expires** 헤더가 포함되어 있거나 (contains Expires header)
+- **CacheControl**이 max-age를 포함하고 있거나
+- **CacheControl**이 public을 포함하고 있거나
+- **CacheControl**이 private을 포함한다.
 
-When we repeat a request, OkHttp will check if there is a cached response. I will refer to that object later as cache candidate.
+부분적인 내용만 캐시하는 것은 지원하지 않는 다는 것에 주목해야 한다.
 
-WHAT ABOUT CACHESTRATEGY?
+우리가 요청을 반복하였을 때, OkHttp는 캐시된 응답이 있는지를 확인할 것이다. 나는 그 객체를 캐시 후보로서 이후에 참조할 것이다. (I will refer to that object later as cache candidate.)
 
-CacheStrategy takes a new request, a cache candidate and then evaluates these two checking HTTP headers and comparing to each other.
+## CacheStrategy는 무엇인가?
 
-Initially, some members are stored from cache candidate’s headers:
+CacheStrategy는 새로운 요청와 캐시 후보를 받은 뒤 HTTP 헤더를 확인하고 서로를 비교하여 그들 둘을 평가한다.
 
-Date
-Expires
-Last-Modified
-ETag
-Age
-Next some conditions are checked. Here is the list:
+처음에, 캐시 후보의 헤더에서 일부 구성원들이 저장된다:
 
-Check if cache candidate was  found.
-In case HTTPS request check if required then the handshake is not missing in cache candidate.
-Check if cache candidate is cacheable; it’s exactly the same check as done by OkHttp when storing the response.
-Check in request Cache-Control header if no-cache was set, if it’s true the cache candidate is not used and further checks are skipped.
-Look for If-Modified-Since or If-None-Match in request headers, if one of those is found the cached candidate is not used and further checks are skipped.
-Perform several time calculations like cache response age, cache freshness lifetime, maximum stale. I don’t want to write all details about it as this would complicate the post too much. You just need to know that headers listed above (Date, Expires…) and max-age, min-fresh, max-stale from request’s Cache-Control were used to calculate them in milliseconds.
-The easiest way to show the next check is writing some pseudo code:if ("cache candidate's no-cache" && "cache candidate's age" + "request's min-fresh" < "cache candidate's fresh lifetime" + "request's max-stale")
+- Date
+- Expires
+- Last-Modified
+- ETag
+- Age
 
-If the condition above is met then our cached response is used and further checks are skipped.
+다음 몇몇 상태들이 확인된다. 여기에 그 목록이 있다:
+
+1. 캐시 후보가 발견되었는지 확인한다. (Check if cache candidate was found.)
+2. HTTPS 요청인 경우, In case HTTPS request check if required then the handshake is not missing in cache candidate.
+3. 캐시 후보가 캐시 가능한지 확인한다; 사실은 OkHttp가 응답을 저장할 때 수행되는 것과 완전히 동일한 점검이다.
+4. Check in request Cache-Control header if no-cache was set, if it’s true the cache candidate is not used and further checks are skipped.
+5. Look for If-Modified-Since or If-None-Match in request headers, if one of those is found the cached candidate is not used and further checks are skipped.
+6. Perform several time calculations like cache response age, cache freshness lifetime, maximum stale. I don’t want to write all details about it as this would complicate the post too much. You just need to know that headers listed above (Date, Expires…) and max-age, min-fresh, max-stale from request’s Cache-Control were used to calculate them in milliseconds.
+The easiest way to show the next check is writing some pseudo code: if ("cache candidate's **no-cache**" && "cache candidate's **age**" + "request's **min-fresh**" **<** "cache candidate's **fresh lifetime**" + "request's **max-stale**")
+7. If the condition above is met then our cached response is used and further checks are skipped.
 If we get to that point the network operation will be performed. The next checks decide if it is a conditional request or not. Conditional means that we ask our server for response and it may or not return new content or say “use your cached response, it’s all fine :)”.
 
-WE LOOK FOR ANDROID DEVELOPERS!
 CONDITIONAL REQUEST
 
 This is a new section but in the code we continue with the same method in exactly the same spot as we finished in the previous section.
