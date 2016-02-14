@@ -17,14 +17,16 @@ published: true
 
 ## THE SOURCE
 
-The classes I was investigating are the following: CacheStrategy, HttpEngine. I will focus on first class where all the logic is. I mentioned HttpEngine because that is where CacheStrategy is used, so you have some context.
+다음은 내가 조사할 클래스들이다 : [CacheStrategy](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/http/CacheStrategy.java), [HttpEngine](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/http/HttpEngine.java). 나는 모든 로직이 있는 첫번째 클래스에 집중할 것이다. HttpEngine을 언급한 것은 CacheStrategy가 사용되는 곳이기 때문이며, so you have some context.
 
-CacheStrategy.Factory constructor – read cache response candidate’s headers and transform into class members
-CacheStrategy.getCandidate() – check cache response candidate and modify original request headers if needed
-The above bits are crucial and basically contain all significant information we are interested in. Other methods are important too but you can navigate to them from these two.
+- **CacheStrategy.Factory** 생성자 - 캐시 응답 후보의 헤더들을 읽고 클래스 멤버들로 변환한다.
+- **CacheStrategy.getCandidate()** – 캐시 응답 후보를 살펴보고 필요하다면 원본 응답 헤더를 수정한다.
 
-WHAT IS A CACHE CANDIDATE?
+위 도막들은 결정적(crucial)이며 우리가 흥미를 가지고 있는 모든 중요한 정보들을 근본적으로 포함한다. 다른 메소드들 역시 중요하지만 저 두 클래스에서 그것들을 탐색할 수 있다.
 
+## WHAT IS A CACHE CANDIDATE?
+
+나는 
 I don’t need to explain that the first time we do our HTTP request there is nothing cached and we have to call our API to actually have something to play with.
 
 Once the response is stored we can try to use it for the subsequent calls. Of course not every response will be stored on the basis of the response code. Acceptable ones are: 200, 203, 204, 300, 301, 404, 405, 410, 414, 501, 308. There are also 302 and 307 but for them one of the following conditions must be met:
