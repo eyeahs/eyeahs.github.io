@@ -7,6 +7,7 @@ tags: "unittest,mockito"
 published: true
 ---
 
+
 원본 : [http://fernandocejas.com/2014/04/08/unit-testing-asynchronous-methods-with-mockito/](http://fernandocejas.com/2014/04/08/unit-testing-asynchronous-methods-with-mockito/)
 
 After promising (and not keeping my promise) that I would be writing and maintaining my blog, here I go again (3289423987 attempt). But lest’s forget about that…
@@ -18,7 +19,7 @@ So in this occasion I wanted to write about Mockito…yes, this mocking framewor
 
 ## 흔한 사례의 시나리오
 종종 우리는 콜백을 사용하는 메소드들을 테스트해야 하며, 이는 당연히 그것들이 비동기임을 의미한다. 이 메소드들은 테스트하기 쉽지 않으며 응답을 기다리기 위해 **Thread.sleep(milliseconds)** 메소드를 사용하는 것은 좋은 일이 아니며 당신의 테스트들을 [비결정적](http://martinfowler.com/articles/nonDeterminism.html)인 것으로 바꿀 수 있다(솔직히 말하면 나는 이것을 자주 보았다).
-그러면 우리가 어떻게 해야 하는가? [Mockito](https://code.google.com/archive/p/mockito/)가 해결책이다.
+그러면 우리가 어떻게 해야 하는가? [Mockito](https://code.google.com/archive/p/mockito/) to the rescue!
 
 ## 예제 보기
 우리는 **DummyCallback**을 구현하며 **doSomethingAsynchronously()** 메소드를 가지고 있는 **DummyCaller**라고 불리는 클래스를 가지고 있다고 가정하자. 그 메소드는 자신의 기능을 역시 **doSomethingAsynchronously(DummyCallback callback)** 메소드(하지만 이 메소드는 콜백을 파라미터로 (이 경우 우리의 **DummyCallback**) 받는다)를 가지고 있는 **DummyCollaborator**에게 위임한다. 그리고 이 메소드는 자신의 작업을 수행하기 위해 새로운 스레드를 만들고 종료될 때 우리에게 결과를 전달한다. 더 나은 방법으로 이 시나리오를 이해하기 위해 코드가 여기 있다:
@@ -89,7 +90,7 @@ public class DummyCollaborator {
 {% endhighlight %}
 
 ## 테스트 클래스 만들기
-우리는 비동기 메소드를 테스트하는 두가지 방법을 가지고 있다. 하지만 첫번째로 우리는 테스트 클래스 DummyCollaboratorCallerTest를 만들 것이다 (편의상 우리는 클래스 끝에 오직 Test만을 붙일 것이며 그 결과 그것의 이름의 일부가 된다).
+우리는 비동기 메소드를 테스트하는 두가지 방법을 가지고 있다. 일단 테스트 클래스 DummyCollaboratorCallerTest를 먼저 만들 것이다 (편의상 우리는 클래스 끝에 오직 Test만을 붙일 것이며 그 결과 그것의 이름의 일부가 된다).
 
 {% highlight java %}
 public class DummyCollaboratorCallerTest {
@@ -111,21 +112,21 @@ public class DummyCollaboratorCallerTest {
 }
 {% endhighlight %}
 
-여기서 우리는 [Mock](http://docs.mockito.googlecode.com/hg/org/mockito/MockitoAnnotations.html)과 [ArgumentCaptor](http://docs.mockito.googlecode.com/hg/org/mockito/ArgumentCaptor.html)을 초기화하기 위해 **MockitoAnotations**을 사용하다. 이것들에 대해 아직 걱정할 필요는 없다. 다음에 우리가 볼 것이기 때문이다.
-여기서 안중에 두어야 하는 유일한 것은 mock과 테스트 중인 클래스 둘 다 각각의 테스트가 실행되기 전에 setup() 메소드(@Before 어노테이션을 사용한)에서 초기화된다는 것이다.
+여기서 우리는 [Mock](http://docs.mockito.googlecode.com/hg/org/mockito/MockitoAnnotations.html)과 [ArgumentCaptor](http://docs.mockito.googlecode.com/hg/org/mockito/ArgumentCaptor.html)을 초기화하기 위해 **MockitoAnotations**을 사용하다. 벌써 이것들에 대해 염려할 필요는 없다. 다음에 우리가 살펴 볼 것이기 때문이다.
+여기서 신경써야 할 유일한 것은 mock과 테스트 중인 클래스 둘 다 각각의 테스트가 실행되기 전에 setup() 메소드(@Before 어노테이션을 사용한)에서 초기화된다는 것이다.
 단위 테스트에서 CUT (테스트 중인 클래스, class under test)의 협력자들은 모두 test double이여야 함을 기억하라.
 이제 우리의 두가지 테스트 해결책들을 보자.
 
 ## 콜백에 answer 준비하기
-This is our test case using a [doAnswer()](http://mockito.googlecode.com/svn/branches/1.6/javadoc/org/mockito/Mockito.html) for stubbing a method with a generic Answer. This means that since we need a callback to return immediately (synchronously), we generate an answer so when the method under test is called, the callback will be executed right away with the data we tell it to return.
-Finally we call our real method and verify state and interaction.
+여기의 테스트 케이스는 메소드를 제네릭 Answer로 스텁(stub)하고 하기 위해 [doAnswer()](http://mockito.googlecode.com/svn/branches/1.6/javadoc/org/mockito/Mockito.html)을 사용한다. 이는 즉시(동기로) 복귀하는 콜백이 필요하기 때문에 answer를 만들고, 테스트되는 메소드가 호출될 때 우리가 반환하도록 한 데이터와 함께 콜백이 즉시 실행됨을 의미한다.
+마지막으로 우리는 우리의 실제 메소드를 호출한 뒤 상태와 상호작용을 검증(verify)한다.
 
 {% highlight java %}
 	@Test
 	public void testDoSomethingAsynchronouslyUsingDoAnswer() {
 		final List<String> results = Arrays.asList("One", "Two", "Three");
 		
-        // Let's do a synchronous answer for the callback
+        // 콜백을 위해 동기 응답을 한다.
 		doAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -135,10 +136,10 @@ Finally we call our real method and verify state and interaction.
 		}).when(mockDummyCollaborator).doSomethingAsynchronously(
 				any(DummyCallback.class));
  
-		// Let's call the method under test
+		// 테스트 대상인 메소드를 호출한다.
 		dummyCaller.doSomethingAsynchronously();
  
-		// Verify state and interaction
+		// 상태와 상호 작용을 검증한다.
 		verify(mockDummyCollaborator, times(1)).doSomethingAsynchronously(
 				any(DummyCallback.class));
 		assertThat(dummyCaller.getResult(), is(equalTo(results)));
@@ -147,35 +148,36 @@ Finally we call our real method and verify state and interaction.
 
 ## ArgumentCaptor 사용하기
 두번째 방안은 [ArgumentCaptor](http://docs.mockito.googlecode.com/hg/org/mockito/ArgumentCaptor.html)을 사용하는 것이다. 여기서 우리는 콜백을 비동기로 다룰 것이다 : 우리는 ArgumentCaptor를 사용해 **DummyCallback** 객체를 잡아서 **DummyCollaborator**로 넘겨줄 것이다.
-마지막으로 우리는 모든 assertions를 
-테스트 메소드 레벨에서 그리고 상태와 상호 작용을 검증할 때 onSuccess()를 호출한다.
-Here we treat our callback asynchronously: we capture the DummyCallback object passed to our DummyCollaborator using an ArgumentCaptor.
-Finally we can make all our assertions at the test method level and call onSuccess() when we want to verify state and interaction.
+결국 우리는 모든 assertions를 테스트 메소드 레벨에서 만들 수 있으며 상태와 상호 작용을 검증할 때 onSuccess()를 호출할 수 있다.
 
+{% highlight java %}
 	@Test
 	public void testDoSomethingAsynchronouslyUsingArgumentCaptor() {
-		// Let's call the method under test
+		// 테스트 대상인 메소드를 호출한다.
 		dummyCaller.doSomethingAsynchronously();
  
 		final List<String> results = Arrays.asList("One", "Two", "Three");
  
-		// Let's call the callback. ArgumentCaptor.capture() works like a matcher.
+		// 콜백을 호출한다. ArgumentCaptor.capture()은 matcher처럼 동작한다.
 		verify(mockDummyCollaborator, times(1)).doSomethingAsynchronously(
 				dummyCallbackArgumentCaptor.capture());
  
-		// Some assertion about the state before the callback is called
+		// 콜백이 호출되기 전의 상태를 assertion한다.
 		assertThat(dummyCaller.getResult().isEmpty(), is(true));
  
-		// Once you're satisfied, trigger the reply on callbackCaptor.getValue().
+		// 일단 만족한다면, callbackCaptor.getValue()의 응답을 동작시킨다.
 		dummyCallbackArgumentCaptor.getValue().onSuccess(results);
  
-		// Some assertion about the state after the callback is called
+		// 콜백이 호출된 후의 상태를 assertion한다.
 		assertThat(dummyCaller.getResult(), is(equalTo(results)));
 	}
 {% endhighlight %}
 
 ## 결론
-The main difference between both solutions is that when using DoAnswer() we are creating an anonymous inner class, and casting (in an unsafe way) the elements from invocation.getArguments()[n] to the data type we want, but in case we modify our parameters the test will ‘fail fast’ letting know that something has happened. On the other side, when using ArgumentCaptor we probably have more control cause we can call the callbacks in the order we want in case we need it.
+두 해결책들간의 주된 차이점은 DoAnswer()를 사용하였을 땐 익명 클래스를 만들어야 하고 invocation.getArguments()[n]에서 요소들을 (안전하지 않은 방식으로) 우리가 원하는 데이터 타입으로 캐스팅해야 하지만, 
+테스트가 무슨일이 일어났는지 알 수 있게하는 '빠르게 실패'
+The main difference between both solutions is that when using DoAnswer() we are creating an anonymous inner class, and casting (in an unsafe way) the elements from invocation.getArguments()[n] to the data type we want, but in case we modify our parameters the test will ‘fail fast’ letting know that something has happened. 반면, ArguemntCaptor를 사용하면
+On the other side, when using ArgumentCaptor we probably have more control cause we can call the callbacks in the order we want in case we need it.
 As interest in unit testing, this is a common case that sometimes we do not know how deal with, so in my experience using both solutions has helped me to have a robust approach when having to test asynchronous methods.
 I hope you find this article useful, and as always, remember that any feedback is very welcome, as well as other ways of doing this. Of course if you have any doubt do not hesitate to contact me.
 
