@@ -1,4 +1,10 @@
-Retrofit과 Mockito로 API 테스트하기
+---
+layout: post
+title: "Retrofit과 Mockito로 API 테스트하기"
+date: "2016-02-15 15:57:00 +0900"
+categories: android
+published: true
+---
 
 원본 : [Reliable API testing for Android with Retrofit and Mockito](http://mdswanson.com/blog/2013/12/16/reliable-android-http-testing-with-retrofit-and-mockito.html)
 
