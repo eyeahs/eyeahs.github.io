@@ -19,7 +19,7 @@ So in this occasion I wanted to write about Mockito…yes, this mocking framewor
 
 ## 흔한 사례의 시나리오
 종종 우리는 콜백을 사용하는 메소드들을 테스트해야 하며, 이는 당연히 그것들이 비동기임을 의미한다. 이 메소드들은 테스트하기 쉽지 않으며 응답을 기다리기 위해 **Thread.sleep(milliseconds)** 메소드를 사용하는 것은 좋은 일이 아니며 당신의 테스트들을 [비결정적](http://martinfowler.com/articles/nonDeterminism.html)인 것으로 바꿀 수 있다(솔직히 말하면 나는 이것을 자주 보았다).
-그러면 우리가 어떻게 해야 하는가? [Mockito](https://code.google.com/archive/p/mockito/) to the rescue!
+그러면 우리가 어떻게 해야 하는가? [Mockito](https://code.google.com/archive/p/mockito/)가 해결책이다!
 
 ## 예제 보기
 우리는 **DummyCallback**을 구현하며 **doSomethingAsynchronously()** 메소드를 가지고 있는 **DummyCaller**라고 불리는 클래스를 가지고 있다고 가정하자. 그 메소드는 자신의 기능을 역시 **doSomethingAsynchronously(DummyCallback callback)** 메소드(하지만 이 메소드는 콜백을 파라미터로 (이 경우 우리의 **DummyCallback**) 받는다)를 가지고 있는 **DummyCollaborator**에게 위임한다. 그리고 이 메소드는 자신의 작업을 수행하기 위해 새로운 스레드를 만들고 종료될 때 우리에게 결과를 전달한다. 더 나은 방법으로 이 시나리오를 이해하기 위해 코드가 여기 있다:
@@ -174,8 +174,8 @@ public class DummyCollaboratorCallerTest {
 {% endhighlight %}
 
 ## 결론
-두 해결책들간의 주된 차이점은 DoAnswer()를 사용하였을 땐 익명 클래스를 만들어야 하고 invocation.getArguments()[n]에서 요소들을 (안전하지 않은 방식으로) 우리가 원하는 데이터 타입으로 캐스팅해야 하지만, but in case we modify our parameters the test will ‘fail fast’ letting know that something has happened. On the other side, when using ArgumentCaptor we probably have more control cause we can call the callbacks in the order we want in case we need it.
-As interest in unit testing, this is a common case that sometimes we do not know how deal with, so in my experience using both solutions has helped me to have a robust approach when having to test asynchronous methods.
+두 해결책들간의 주된 차이점은 DoAnswer()를 사용하였을 땐 익명 클래스를 만들어야 하고 invocation.getArguments()[n]에서 요소들을 (안전하지 않은 방식으로) 우리가 원하는 데이터 타입으로 캐스팅해야 하지만, 무엇이 발생하였는지 알 수 있도록 테스트가 '빨리 실패'하도록 파라미터를 변경할 수 있다. 반면 ArgumentCaptor의 경우 콜백을 우리가 필요한 상황에서 우리가 원하는 순서대로 콜백을 호출 할 수 있기 때문에 더 많은 제어를 가질 수 있을 것이다. 
+유닛 테스트에 관심을 가지면, 종종 어떻게 취급해야 할 지 모르는 상황이 흔하므로 내 경험으론 비동기 메소드들을 테스트해야 할 때 두 해법을 모두 사용하는 것이 탄탄한 접근법을 가지는데 도움이 된다.
 I hope you find this article useful, and as always, remember that any feedback is very welcome, as well as other ways of doing this. Of course if you have any doubt do not hesitate to contact me.
 
 ## Code Sample
