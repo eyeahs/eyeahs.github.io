@@ -3,8 +3,6 @@ published: false
 ---
 
 ## How To Use RxJava
-{% highlight java %}
-{% endhighlight %}
 
 # Hello World!
 
