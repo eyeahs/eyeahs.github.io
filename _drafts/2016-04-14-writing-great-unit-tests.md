@@ -10,7 +10,7 @@ _-_
 
 좋은 유닛 테스트와 나쁜 유닛 테스트간의 차이점은 무엇일까? 좋은 유닛 테스트를 어떻게 작성하여야 하는지 어떻게 배웠는가? 이는 명확하지 않다. 심지어 당신이 수십년의 경험을 가진 우수한 코더이라고 해도, 당신의 현재 지식과 습관들은 당신이 좋은 유닛 테스트를 작성하도록 자동적으로 이끌지는 못한다. 이는 유닛 테스트는 또 다른 종류의 코딩이며 대부분의 사람들이 유닛 테스트들이 이루고자 하는 것에 대해서 도움이 안되는 잘못된 억측과 함께 출발하기 때문이다.
 
-내가 본 대부분의 유닛 테스트들은 매우 도움이 되지 않는 것들이였다. 나는 개발자를 비난하는 중은 아니다: Usually, he or she just got told to start unit testing, so they installed NUnit and started churning out [Test] methods. 빨강과 녹색불을 한 번 보고나면 그것을 정확히 했다고 추정한다. 잘못된 추정이다! 코드 변경에 들어갈 노력을 천문학적으로 부풀리는데 반해 프로젝트에 매우 작은 가치만을 더하는 나쁜 유닛 테스트를 작성하는 것은 압도적으로 쉽다. Does that sound agile to you?
+내가 본 대부분의 유닛 테스트들은 매우 도움이 되지 않는 것들이였다. 나는 개발자를 비난하는 중은 아니다: Usually, he or she just got told to start unit testing, so they installed NUnit and started churning out [Test] methods. 빨강과 녹색불을 한 번 보고나면 그것을 정확히 했다고 추정한다. 잘못된 추정이다! **코드 변경에 들어갈 노력을 천문학적으로 부풀리는데 반해 프로젝트에 매우 작은 가치만을 더하는 나쁜 유닛 테스트를 작성하는 것은 압도적으로 쉽다.** Does that sound agile to you?
 
 ## 유닛 테스트는 버그 찾기에 대한 것이 아니다.
 지금 나는 유닛 테스트를 강하게 지지한다. 하지만 이는 당신이 유닛 테스트는 Test Driven Development (TDD) 과정내에서 활용한다는 규칙을 이해하고 유닛 테스트는 버그를 찾기 위해 테스트하는 것과 관계가 있다는 오해를 진압할 때 만이다.
@@ -28,16 +28,15 @@ _-_
 (Note: 유닛 테스트가 효과적으로 오류를 검출하는 예외가 하나 있다. 이는 당신이 리팩토링을 할 때이다. 즉, 동작을 변경하겠다는 의도없이 유닛의 코드를 구조 조정할 때이다. 이 경우 유닛 테스트는 유닛의 동작이 변경되었을 경우 대게 당신에게 알려 줄 수 있을 것이다.)
 
 ### 그러면, 만약 유닛 테스트가 버그 찾기에 대한 것이 아니라면 이는 무엇에 대한 것인가?
-나는 당신이 이미 대답을 백번은 들었음에 돈을 걸겠다. 하지만 테스트에 대한 오해가 개발자의 마음에 완고하게 버티고 있기 때문에 나는 원칙을 반복하겠다. TDD 구루들이 계속 말하는 것처럼, "TDD는 테스트 과정이 아니라 개발 과정이다". 더 자세히 말하면 : TDD is a robust way of designing software components (“units”) interactively so that their behaviour is specified through unit tests. That’s all!
-
+나는 당신이 이미 대답을 백번은 들었음에 돈을 걸겠다. 하지만 테스트에 대한 오해가 개발자의 마음에 완고하게 버티고 있기 때문에 나는 원칙을 반복하겠다. TDD 구루들이 계속 말하는 것처럼, "TDD는 테스트 과정이 아니라 개발 과정이다". 더 자세히 말하면 :**TDD는 유닛 테스트를 통해 그들의 행동을 구체화하기 위해 소프트웨어 컴포넌트("유닛")을 쌍방향(interactively)으로 디자인하는 강건한 방식이다.** That’s all!
 
 ## Good unit tests vs bad ones
-TDD helps you to deliver software components that individually behave according to your design. A suite of good unit tests is immensely valuable: it documents your design, and makes it easier to refactor and expand your code while retaining a clear overview of each component’s behaviour. However, a suite of bad unit tests is immensely painful: it doesn’t prove anything clearly, and can severely inhibit your ability to refactor or alter your code in any way.
+TDD는 당신의 디자인에 따라 독립적으로 움직이는 소프트웨어 컴포넌트를 당신이 만드는 것을 돕는다. 좋은 유닛 테스트 모음(suite)은 엄청나게 갑지다: 이는 당신의 디자인을 기록하고, 각 컴포넌트의 행동의 명확한 개요를 유지한채로 당신의 코드를 리팩토링하고 확장하기 쉽게 해준다. 하지만, 나쁜 유닛 테스트의 모음은 엄청나게 고통스럽다: 이는 아무것도 명확히 입증하지 못하고, 당신의 코드를 어떻게든 고치거나 리팩토링할 능력을 혹독하게 억제한다. 
 
-Where do your tests sit on the following scale?
+당신의 테스트들은 다음 척도에서 어디에 놓여있는가?
+![image.png]({{site.baseurl}}/_drafts/image.png)
 
-image
-
+유닛 테스트는 TDD과정을 통해 
 Unit tests created through the TDD process naturally sit at the extreme left of this scale. They contain a lot of knowledge about the behaviour of a single unit of code. If that unit’s behaviour changes, so must its unit tests, and vice-versa. But they don’t contain any knowledge or assumptions about other parts of your codebase, so **changes to other parts of your codebase don’t make them start failing **(and if yours do, that shows they aren’t true unit tests). Therefore they’re cheap to maintain, and as a development technique, TDD scales up to any size of project.
 
 At the other end of the scale, integration tests contain no knowledge about how your codebase is broken down into units, but instead make statements about how the whole system behaves towards an external user. They’re reasonably cheap to maintain (because no matter how you restructure the internal workings of your system, it needn’t affect an external observer) and they prove a great deal about what features are actually working today.
