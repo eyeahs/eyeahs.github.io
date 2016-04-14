@@ -1,8 +1,10 @@
 ---
-published: true
 layout: post
+title : RxJava - Operators
 categories: rxjava
+tags : rxjava, operators
 date: "2016-04-14 00:00:00 +0900"
+published : true
 ---
 
 http://reactivex.io/documentation/operators.html
