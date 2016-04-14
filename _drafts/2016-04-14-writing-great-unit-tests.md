@@ -10,24 +10,26 @@ Steve Sanderson, blog.stevensanderson.com
 
 내가 본 대부분의 유닛 테스트들은 매우 도움이 되지 않는 것들이였다. 나는 개발자를 비난하는 중은 아니다: Usually, he or she just got told to start unit testing, so they installed NUnit and started churning out [Test] methods. 빨강과 녹색불을 한 번 보고나면 그것을 정확히 했다고 추정한다. 잘못된 추정이다! 코드 변경에 들어갈 노력을 천문학적으로 부풀리는데 반해 프로젝트에 매우 작은 가치만을 더하는 나쁜 유닛 테스트를 작성하는 것은 압도적으로 쉽다. Does that sound agile to you?
 
-# 유닛 테스티는 버그 찾기에 대한 것이 아니다.
+## 유닛 테스트는 버그 찾기에 대한 것이 아니다.
 지금 나는 유닛 테스트를 강하게 지지한다. 하지만 이는 당신이 유닛 테스트는 Test Driven Development (TDD) 과정내에서 활용한다는 규칙을 이해하고 유닛 테스트는 버그를 찾기 위해 테스트하는 것과 관계가 있다는 오해를 진압할 때 만이다.
 
 내 경험으로는, 유닛 테스트는 버그를 찾거나 퇴보를 감지하기에 효율적인 방법은 아니다. 유닛 테스트는 .정의 그대로, 당신의 코드 유닛 각각을 각기 검사한다. 하지만 당신의 어플리케이션이 실제로 작동 할 때 모든 유닛들은 함깨 동작한다. 그리고 전체는 독립적으로 테스트된 부분들의 전체 합보다 훨씬 복잡하고 미묘하다. 컴포넌트 X와 Y이 독립적으로 동작함을 증명하는 것은 그들이 서로 호환될 수 있거나 정확하게 설정되었음을 증명하지 않는다. Also, defects in an individual component may bear no relationship to the symptoms an end user would experience and report. 그리고 당신은 유닛 테스트를 위한 전제 조건(precondition)을 만들었으므로 그 유닛 테스트는 당신이 예측하지 못한 전제 조건에 의해 촉발된 문제를 검출하지 못할 것이다. (for example, if some unexpected IHttpModule interferes with incoming requests).
 
-So, if you’re trying to find bugs, it’s far more effective to actually run the whole application together as it will run in production, just like you naturally do when testing manually. If you automate this sort of testing in order to detect breakages when they happen in the future, it’s called integration testing and typically uses different techniques and technologies than unit testing. Don’t you want to use the most appropriate tool for each job?
-
+그래서 만약 당신이 버그를 찾는 것을 시도한다면, 당신이 손으로 테스트를 할 때 당연히 하듯이, 실제로 운영에서 동작하는 것처럼 전체 어플리케이션을 결합하여 실행해보는 것이 훨씬 더 효과적이다. 만약 당신이 미래에 일어날 파손을 검출하기 위한 이런 종류의 테스트를 자동화한다면 이는 통합 테스트라고 불릴 것이며 일반적으로 유닛 테스트와는 다른 다른 종류의 기술과 장비를 사용할 것이다.
+각 작업에 가장 적절한 툴을 사용하고 싶지 않는가?
 
 | 목적 |	유력한 기술 |
-| Finding bugs (things that don’t work as you want them to)	| Manual testing (sometimes also automated integration tests) | 
-| Detecting regressions (things that used to work but have unexpectedly stopped working) | Automated integration tests (sometimes also manual testing, though time-consuming) |
-| Designing software components robustly | Unit testing (within the TDD process) |
+| 버그 찾기 (원하는대로 동작하지 않는 것) | 손으로 테스트 (때때로 자동화된 통합 테스트 또한) | 
+| 퇴행 감지 (동작하곤 했지만 예기치 않게 동작이 중단되는 것) | 자동화된 통합 테스트 (때때로 시간이 많이 걸리긴 하지만 손으로 테스트하기) |
+| 소프트웨어 컴포넌트를 튼튼하게(robustly) 디자인하기 | 유닛 테스트 (TDD 과정속에서) |
 (Note: there’s one exception where unit tests do effectively detect bugs. It’s when you’re refactoring, i.e., restructuring a unit’s code but without meaning to change its behaviour. In this case, unit tests can often tell you if the unit’s behaviour has changed.)
+(Note: 유닛 테스트가 효과적으로 오류를 검출하는 예외가 하나 있다. 이는 당신이 리팩토링을 할 때이다. 즉, 동작을 변경하겠다는 의도없이 유닛의 코드를 구조 조정할 때이다. 이 경우 유닛 테스트는 유닛의 동작이 변경되었을 경우 대게 당신에게 알려 줄 수 있을 것이다.)
 
-Well then, if unit testing isn’t about finding bugs, what is it about?
-I bet you’ve heard the answer a hundred times already, but since the testing misconception stubbornly hangs on in developers’ minds, I’ll repeat the principle. As TDD gurus keep saying, “TDD is a design process, not a testing process”. Let me elaborate: TDD is a robust way of designing software components (“units”) interactively so that their behaviour is specified through unit tests. That’s all!
+### 그러면, 만약 유닛 테스트가 버그 찾기에 대한 것이 아니라면 이는 무엇에 대한 것인가?
+나는 당신이 이미 대답을 백번은 들었음에 돈을 걸겠다. 하지만 테스트에 대한 오해가 개발자의 마음에 완고하게 버티고 있기 때문에 나는 원칙을 반복하겠다. TDD 구루들이 계속 말하는 것처럼, "TDD는 테스트 과정이 아니라 개발 과정이다". 더 자세히 말하면 : TDD is a robust way of designing software components (“units”) interactively so that their behaviour is specified through unit tests. That’s all!
 
-Good unit tests vs bad ones
+
+## Good unit tests vs bad ones
 TDD helps you to deliver software components that individually behave according to your design. A suite of good unit tests is immensely valuable: it documents your design, and makes it easier to refactor and expand your code while retaining a clear overview of each component’s behaviour. However, a suite of bad unit tests is immensely painful: it doesn’t prove anything clearly, and can severely inhibit your ability to refactor or alter your code in any way.
 
 Where do your tests sit on the following scale?
