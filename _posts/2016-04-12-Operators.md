@@ -2,6 +2,7 @@
 published: true
 layout: post
 categories: rxjava
+date: "2016-04-14 00:00:00 +0900"
 ---
 
 http://reactivex.io/documentation/operators.html
