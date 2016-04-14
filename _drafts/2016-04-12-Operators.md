@@ -29,8 +29,8 @@ ReactiveX의 각 언어-특정 구현(Language-specific implementation)은 opera
 # Operator 카테고리 (Operators By Category)
 ## Observable 만들기 (Creating Observables)
 새로운 Observable을 만드는(originate) Operator들
-- Create - 프로그램적으로  Observable
-- [Defer](http://reactivex.io/documentation/operators/defer.html) - Observer가 subscribe하기 전에는 Observable을 만들지 않으며, 각 observer마다 새로운(fresh) Observable을 만든다.
-- item
+- [Create](http://reactivex.io/documentation/operators/create.html) - Observer 메소드들을 프로그램 코드로(programmatically) 호출함으로서 Observable을 새로 (from scratch) 생성한다.
+- [Defer](http://reactivex.io/documentation/operators/defer.html) - Observer가 subscribe하기 전에는 Observable을 만들지 않으며, 각 observer마다 새로운(fresh) Observable을 생성한다.
+- [Empty/Never/Throw](http://reactivex.io/documentation/operators/empty-never-throw.html) - 
 
 
