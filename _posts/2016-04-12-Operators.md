@@ -1,5 +1,7 @@
 ---
 published: true
+layout: post
+categories: rxjava
 ---
 
 http://reactivex.io/documentation/operators.html
