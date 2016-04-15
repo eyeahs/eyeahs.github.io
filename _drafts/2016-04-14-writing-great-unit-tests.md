@@ -21,10 +21,10 @@ _-_
 각 작업에 가장 적절한 툴을 사용하고 싶지 않는가?
 
 | 목적 |	유력한 기술 |
+| --- | --------- |
 | 버그 찾기 (원하는대로 동작하지 않는 것) | 손으로 테스트 (때때로 자동화된 통합 테스트 또한) | 
 | 퇴행 감지 (동작하곤 했지만 예기치 않게 동작이 중단되는 것) | 자동화된 통합 테스트 (때때로 시간이 많이 걸리긴 하지만 손으로 테스트하기) |
 | 소프트웨어 컴포넌트를 튼튼하게(robustly) 디자인하기 | 유닛 테스트 (TDD 과정속에서) |
-(Note: there’s one exception where unit tests do effectively detect bugs. It’s when you’re refactoring, i.e., restructuring a unit’s code but without meaning to change its behaviour. In this case, unit tests can often tell you if the unit’s behaviour has changed.)
 (Note: 유닛 테스트가 효과적으로 오류를 검출하는 예외가 하나 있다. 이는 당신이 리팩토링을 할 때이다. 즉, 동작을 변경하겠다는 의도없이 유닛의 코드를 구조 조정할 때이다. 이 경우 유닛 테스트는 유닛의 동작이 변경되었을 경우 대게 당신에게 알려 줄 수 있을 것이다.)
 
 ### 그러면, 만약 유닛 테스트가 버그 찾기에 대한 것이 아니라면 이는 무엇에 대한 것인가?
@@ -36,14 +36,17 @@ TDD는 당신의 디자인에 따라 독립적으로 움직이는 소프트웨�
 당신의 테스트들은 다음 척도에서 어디에 놓여있는가?
 ![image.png]({{site.baseurl}}/_drafts/image.png)
 
-유닛 테스트는 TDD과정을 통해 
-Unit tests created through the TDD process naturally sit at the extreme left of this scale. They contain a lot of knowledge about the behaviour of a single unit of code. If that unit’s behaviour changes, so must its unit tests, and vice-versa. But they don’t contain any knowledge or assumptions about other parts of your codebase, so **changes to other parts of your codebase don’t make them start failing **(and if yours do, that shows they aren’t true unit tests). Therefore they’re cheap to maintain, and as a development technique, TDD scales up to any size of project.
+Sweet Spot A / **진정한 유닛 테스트** / 단일 컴포넌트를 디자인 한다
+지저분한 잡종 / 불명확한 목표. 높은 유지비용, 많은 것을 입증하지 못함 (불행히도, 보통 이러하다)
+Sweet Spot B / **통합 테스트** / 퇴행을 발견하기 위해 전체 시스템을 자동화한다.
+
+TDD를 통해 만들어진 유닛 테스트는 이 척도의 좌측 극단에 위치한다. 그것들은 단일 유닛 코드의 행동에 대한 많은 지식을 담고 잇다. 만약 유닛의 행동이 변경되면 유닛 테스트도 그렇게 되어야 하며, 역도 동일하다. 하지만 그것들은 당신의 코드 베이스의 다른 부분에 대한 어떠한 지식과 추정도 가지고 있지 않기 때문에 **당신의 코드 베이스의 다른 부분들을 변경하는 것은 그것들이 실패하도록 만들지 않는다** (그리고 당신의 것들이 그렇게 되었다면 이는 그것들은 진짜 유닛 테스트가 아님을 보여준다). Therefore they’re cheap to maintain, and as a development technique, TDD scales up to any size of project.
 
 At the other end of the scale, integration tests contain no knowledge about how your codebase is broken down into units, but instead make statements about how the whole system behaves towards an external user. They’re reasonably cheap to maintain (because no matter how you restructure the internal workings of your system, it needn’t affect an external observer) and they prove a great deal about what features are actually working today.
 
 Anywhere in between, it’s unclear what assumptions you’re making and what you’re trying to prove. Refactoring might break these tests, or it might not, regardless of whether the end-user experience still works. Changing the external services you use (such as upgrading your database) might break these tests, or it might not, regardless of whether the end-user experience still works. Any small change to the internal workings of a single unit might force you to fix hundreds of seemingly unrelated hybrid tests, so they tend to consume a huge amount of maintenance time – sometimes in the region of 10 times longer than you spend maintaining the actual application code. And it’s frustrating because you know that adding more preconditions to make these hybrid tests go green doesn’t truly prove anything.
 
-Tips for writing great unit tests
+## Tips for writing great unit tests
 Enough vague discussion – time for some practical advice. Here’s some guidance for writing unit tests that sit snugly at Sweet Spot A on the preceding scale, and are virtuous in other ways too.
 
 *Make each test orthogonal (i.e., independent) to all the others 
