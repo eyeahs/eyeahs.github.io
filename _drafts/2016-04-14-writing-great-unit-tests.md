@@ -10,13 +10,12 @@ _-_
 
 좋은 유닛 테스트와 나쁜 유닛 테스트간의 차이점은 무엇일까? 좋은 유닛 테스트를 어떻게 작성하여야 하는지 어떻게 배웠는가? 이는 명확하지 않다. 심지어 당신이 수십년의 경험을 가진 우수한 코더이라고 해도, 당신의 현재 지식과 습관들은 당신이 좋은 유닛 테스트를 작성하도록 자동적으로 이끌지는 못한다. 이는 유닛 테스트는 또 다른 종류의 코딩이며 대부분의 사람들이 유닛 테스트들이 이루고자 하는 것에 대해서 도움이 안되는 잘못된 억측과 함께 출발하기 때문이다.
 
-내가 본 대부분의 유닛 테스트들은 매우 도움이 되지 않는 것들이였다. 나는 개발자를 비난하는 중은 아니다: Usually, he or she just got told to start unit testing, so they installed NUnit and started churning out [Test] methods. 빨강과 녹색불을 한 번 보고나면 그것을 정확히 했다고 추정한다. 잘못된 추정이다! **코드 변경에 들어갈 노력을 천문학적으로 부풀리는데 반해 프로젝트에 매우 작은 가치만을 더하는 나쁜 유닛 테스트를 작성하는 것은 압도적으로 쉽다.** Does that sound agile to you?
+내가 본 대부분의 유닛 테스트들은 매우 도움이 되지 않는 것들이였다. 나는 개발자를 비난하는 중은 아니다: 보통 그와 그녀들은 유닛 테스트를 시작하라는 당부를 받았고, 그래서 NUnit을 설치하고 테스트 메소드를 대량으로 생상하기 시작한다. 빨강과 녹색불을 한 번 보고나면 그것을 정확히 했다고 추정한다. 잘못된 추정이다! **코드 변경에 들어갈 노력을 천문학적으로 부풀리는데 반해 프로젝트에 매우 작은 가치만을 더하는 나쁜 유닛 테스트를 작성하는 것은 압도적으로 쉽다.** Does that sound agile to you?
 
 ## 유닛 테스트는 버그 찾기에 대한 것이 아니다.
 지금 나는 유닛 테스트를 강하게 지지한다. 하지만 이는 당신이 유닛 테스트는 Test Driven Development (TDD) 과정내에서 활용한다는 규칙을 이해하고 유닛 테스트는 버그를 찾기 위해 테스트하는 것과 관계가 있다는 오해를 진압할 때 만이다.
 
-내 경험으로는, 유닛 테스트는 버그를 찾거나 퇴보를 감지하기에 효율적인 방법은 아니다. 유닛 테스트는 .정의 그대로, 당신의 코드 유닛 각각을 각기 검사한다. 하지만 당신의 어플리케이션이 실제로 작동 할 때 모든 유닛들은 함깨 동작한다. 그리고 전체는 독립적으로 테스트된 부분들의 전체 합보다 훨씬 복잡하고 미묘하다. 컴포넌트 X와 Y이 독립적으로 동작함을 증명하는 것은 그들이 서로 호환될 수 있거나 정확하게 설정되었음을 증명하지 않는다. Also, defects in an individual component may bear no relationship to the symptoms an end user would experience and report. 그리고 당신은 유닛 테스트를 위한 전제 조건(precondition)을 만들었으므로 그 유닛 테스트는 당신이 예측하지 못한 전제 조건에 의해 촉발된 문제를 검출하지 못할 것이다. (for example, if some unexpected IHttpModule interferes with incoming requests).
-
+내 경험으로는, 유닛 테스트는 버그를 찾거나 퇴보를 감지하기에 효율적인 방법은 아니다. 유닛 테스트는 .정의 그대로, 당신의 코드 유닛 각각을 각기 검사한다. 하지만 당신의 어플리케이션이 실제로 작동 할 때 모든 유닛들은 함깨 동작한다. 그리고 전체는 독립적으로 테스트된 부분들의 전체 합보다 훨씬 복잡하고 미묘하다. 컴포넌트 X와 Y이 독립적으로 동작함을 증명하는 것은 그들이 서로 호환될 수 있거나 정확하게 설정되었음을 증명하지 않는다. Also, defects in an individual component may bear no relationship to the symptoms an end user would experience and report. 그리고 당신은 유닛 테스트를 위한 전제 조건(precondition)을 만들었으므로 그 유닛 테스트는 당신이 예측하지 못한 전제 조건에 의해 촉발된 문제를 검출하지 못할 것이다. (예를 들어 예상치 못한 IHttpModule이 새로 들어온 요청들을 방해한다면)
 그래서 만약 당신이 버그를 찾는 것을 시도한다면, 당신이 손으로 테스트를 할 때 당연히 하듯이, 실제로 운영에서 동작하는 것처럼 전체 어플리케이션을 결합하여 실행해보는 것이 훨씬 더 효과적이다. 만약 당신이 미래에 일어날 파손을 검출하기 위한 이런 종류의 테스트를 자동화한다면 이는 통합 테스트라고 불릴 것이며 일반적으로 유닛 테스트와는 다른 다른 종류의 기술과 장비를 사용할 것이다.
 각 작업에 가장 적절한 툴을 사용하고 싶지 않는가?
 
@@ -42,7 +41,7 @@ Sweet Spot B / **통합 테스트** / 퇴행을 발견하기 위해 전체 시�
 
 TDD를 통해 만들어진 유닛 테스트는 이 척도의 좌측 극단에 위치한다. 그것들은 단일 유닛 코드의 행동에 대한 많은 지식을 담고 잇다. 만약 유닛의 행동이 변경되면 유닛 테스트도 그렇게 되어야 하며, 역도 동일하다. 하지만 그것들은 당신의 코드 베이스의 다른 부분에 대한 어떠한 지식과 추정도 가지고 있지 않기 때문에 **당신의 코드 베이스의 다른 부분들을 변경하는 것은 그것들이 실패하도록 만들지 않는다** (그리고 당신의 것들이 그렇게 되었다면 이는 그것들은 진짜 유닛 테스트가 아님을 보여준다). Therefore they’re cheap to maintain, and as a development technique, TDD scales up to any size of project.
 
-At the other end of the scale, integration tests contain no knowledge about how your codebase is broken down into units, but instead make statements about how the whole system behaves towards an external user. They’re reasonably cheap to maintain (because no matter how you restructure the internal workings of your system, it needn’t affect an external observer) and they prove a great deal about what features are actually working today.
+척도를 다른 쪽 끝에서, 통합 테스트는 당신의 코드 베이스가 어떻게 유닛들로 세분화되었는지에 대한 지식을 가지고 있지 않지만, 대신 전체 시스템이 외부 사용자에게 어떻게 동작해야 하는지를 진술한다. 그것들은 유지하기 상당히 저렴하며 (당신이 당신의 시스템의 내부 동작을 어떻게 재구성하던지간에 이것은 외부 관철자에 영향을 줄 필요가 없기 때문이다.) 현재 기능들이 정확하게 동작하는지 훨씬 더 입증한다.
 
 그 사이 어딘가 있는 것은 당신이 만든 추정이 무엇인지와 당신이 입증하고자 하는 것이 무엇인지가 불명확하다. 리팩토링은 실사용자 경험이 여전히 동작하던지 그렇지 않던 관계없이 테스트들을 부수거나, 부수지 않을 것이다. (데이터베이스 업그레이드같이) 당신이 사용하는 외부 서비스를 변경하는 것은 실사용자 경험이 여전히 동작하던지 그렇지 않던지 관계없이 테스트를 부수거나, 부수지 않을 것이다. 단일 유닛의 내부 작업을 변경하면 관계가 없어 보이는 수백개의 잡종 테스트들을 고쳐야 하도록 만들고, 어마어마한 양의 유지보수 시간을 소모하게 만들 것이다 -때때로 실제 어플리케이션 코드를 유지보수하는데 사용한 부위의 10배는 될 것이다. 그리고 이것은 잡종 테스트가 녹색이 되도록 하기 위해 더 많은 전제조건을 추가하는 것은 무엇도 진짜 입증하지 않는다는 것을 알기 때문에 좌절감을 줄 것이다.
 
