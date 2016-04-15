@@ -47,15 +47,15 @@ TDD를 통해 만들어진 유닛 테스트는 이 척도의 좌측 극단에 �
 
 ## Tips for writing great unit tests
 멍청한 논의는 충분하다 - 현실적인 조언들의 시간이다. 전술했던 척도의 Sweet Spot A에 안락하게 앉는 유닛 테스트를 작성하기 위한 안내와 고결한 다른 방법들이 여기 있다.
-Enough vague discussion – time for some practical advice. Here’s some guidance for writing unit tests that sit snugly at Sweet Spot A on the preceding scale, and are virtuous in other ways too.
 
 - 각각의 테스트는 나머지 모두와 직교(즉, 독립)하게 만들어라.
-- 주어진 행동은 한 곳과 오직 한 테스트에만 명시되어야 한다. 그렇지 않으면 이후에 그 행동을 변경하였을 때 여러 테스트도 변경해야 한다. 이 규칙의 당연한 결과는 다음을 포함한다: ** 불필요한 assertion을 만들지 마라** 당신이 테스트하는 특정 행위는 무엇인가? 다른 테스트에서도 역시 assert된 것에 Assert()를 하는 것은 역효과를 낳는다: 이는 유닛 테스트 커버리지를 1비트라도 늘리지 않고 무의미한 실패들의 빈도만 늘릴 뿐이다. 이는 불필요한 Verify() 호출에도 역시 적용된다 - 만약 이것이 테스트의 핵심 동작이 아니라면 이를 감시하게 만드는 것을 멈추어라! 가끔 TDD 사람들은 이것을 **테스트 하나당 오직 하나의 논리적 주장만 가져라(have only one logical assertion per test)**라고 말한다. 유닛 테스트는 특정 행동이 어떻게 동작해야 하는지에 대한 디자인 설명서이며 코드에서 일어나는 **모든**것에 대한 감시 리스트가 아님을 기억하라.
+어느 주어진 행동은 하나(one, 역:코드 유닛을 말하는 듯)와 **오직 한 테스트**에만 명시되어야 한다. 그렇지 않으면 이후에 그 행동을 변경하였을 때 여러 테스트도 변경해야 한다. 이 규칙의 당연한 결과는 다음을 포함한다: **불필요한 assertion을 만들지 마라** 
+당신이 테스트하는 특정 행위는 무엇인가? 다른 테스트에서도 역시 assert된 것에 Assert()를 하는 것은 역효과를 낳는다: 이는 유닛 테스트 커버리지를 1비트라도 늘리지 않고 무의미한 실패들의 빈도만 늘릴 뿐이다. 이는 불필요한 Verify() 호출에도 역시 적용된다 - 만약 이것이 테스트의 핵심 동작이 아니라면 이를 감시하게 만드는 것을 멈추어라! 가끔 TDD 사람들은 이것을 **"테스트 하나당 오직 하나의 논리적 주장만 가져라(have only one logical assertion per test)"**라고 말한다. 유닛 테스트는 특정 행동이 어떻게 동작해야 하는지에 대한 디자인 설명서이며 코드에서 일어나는 **모든**것에 대한 감시 리스트가 아님을 기억하라.
 
-*Test only one code unit at a time 
-**Your architecture *must support testing units (i.e., classes or very small groups of classes) independently, not all chained together. Otherwise, you have lots of overlap between tests, so changes to one unit can cascade outwards and cause failures everywhere. 
-If you can’t do this, then your architecture is limiting your work’s quality – consider using Inversion of Control.
-**Mock out all external services and state 
+- 한 번에 하나의 코드만 테스트하라
+당신의 아키텍처는 테스팅 유닛(testing units)들을 모든 것이 함께 묶여있지 않고 독립적으로 지원해야 한다 (즉 클래스들 또는 아주 작은 클래스 그룹들). 그렇지 않으면 테스트들간에 많은 겹침을 가지게 되어 한 유닛의 변경들이 밖으로 쏟아질 수 있고 모든 것이 실패함을 야기한다.
+당신이 그렇게 할 수 없다면 당신의 아키텍쳐는 당신 작업의 품질을 제한하게 된다 - Inversion of Control를 사용하는 것을 고려하라.
+*Mock out all external services and state 
 **Otherwise, behaviour in those external services overlaps multiple tests, and state data means that different unit tests can influence each other’s outcome. 
 You’ve definitely taken a wrong turn if you have to run your tests in a specific order, or if they only work when your database or network connection is active. 
 (By the way, sometimes your architecture might mean your code touches static variables during unit tests. Avoid this if you can, but if you can’t, at least make sure each test resets the relevant statics to a known state before it runs.)
