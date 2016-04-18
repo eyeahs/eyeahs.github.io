@@ -18,11 +18,11 @@ So in this occasion I wanted to write about Mockito…yes, this mocking framewor
 또한 test double에 대해 이야기하는 [Martin Fowler의 유명한 글](http://martinfowler.com/articles/mocksArentStubs.html)을 강력하게 추천한다. 이것은 test double을 이해하기 위해 반드시 읽어야 한다.
 
 ## 흔한 사례의 시나리오
-종종 우리는 콜백을 사용하는 메소드들을 테스트해야 하며, 이는 당연히 그것들이 비동기임을 의미한다. 이 메소드들은 테스트하기 쉽지 않으며 응답을 기다리기 위해 **Thread.sleep(milliseconds)** 메소드를 사용하는 것은 좋은 일이 아니며 당신의 테스트들을 [비결정적](http://martinfowler.com/articles/nonDeterminism.html)인 것으로 바꿀 수 있다(솔직히 말하면 나는 이것을 자주 보았다).
+종종 우리는 콜백을 사용하는 메소드들을 테스트해야 하며, 이는 당연히 그것들이 비동기임을 의미한다. 이 메소드들은 테스트하기 쉽지 않다. 그리고 응답을 기다리기 위해 **Thread.sleep(milliseconds)** 메소드를 사용하는 것은 좋은 일이 아니며 당신의 테스트들을 [비결정적](http://martinfowler.com/articles/nonDeterminism.html)인 것으로 바꿀 수 있다(솔직히 말하면 나는 이것을 자주 보았다).
 그러면 우리가 어떻게 해야 하는가? [Mockito](https://code.google.com/archive/p/mockito/)가 해결책이다!
 
 ## 예제 보기
-우리는 **DummyCallback**을 구현하며 **doSomethingAsynchronously()** 메소드를 가지고 있는 **DummyCaller**라고 불리는 클래스를 가지고 있다고 가정하자. 그 메소드는 자신의 기능을 역시 **doSomethingAsynchronously(DummyCallback callback)** 메소드(하지만 이 메소드는 콜백을 파라미터로 (이 경우 우리의 **DummyCallback**) 받는다)를 가지고 있는 **DummyCollaborator**에게 위임한다. 그리고 이 메소드는 자신의 작업을 수행하기 위해 새로운 스레드를 만들고 종료될 때 우리에게 결과를 전달한다. 더 나은 방법으로 이 시나리오를 이해하기 위해 코드가 여기 있다:
+우리는 **DummyCallback**을 구현하며 **doSomethingAsynchronously()** 메소드를 가지고 있는 **DummyCaller**라고 불리는 클래스를 가지고 있다고 가정하자. 이 메소드는 자신의 기능을 역시 **doSomethingAsynchronously(DummyCallback callback)** 메소드(하지만 이 메소드는 콜백을(이 경우 **DummyCallback**) 파라미터로 받는다)를 가지고 있는 **DummyCollaborator**에게 위임한다. 그리고 이 메소드는 자신의 작업을 수행하기 위해 새로운 스레드를 만들고 종료될 때 우리에게 결과를 전달한다. 이 시나리오를 좀 더 이해하기 위한 코드가 여기 있다:
 
 {% highlight java %}
 public interface DummyCallback {
@@ -112,13 +112,13 @@ public class DummyCollaboratorCallerTest {
 }
 {% endhighlight %}
 
-여기서 우리는 [Mock](http://docs.mockito.googlecode.com/hg/org/mockito/MockitoAnnotations.html)과 [ArgumentCaptor](http://docs.mockito.googlecode.com/hg/org/mockito/ArgumentCaptor.html)을 초기화하기 위해 **MockitoAnotations**을 사용하다. 벌써 이것들에 대해 염려할 필요는 없다. 다음에 우리가 살펴 볼 것이기 때문이다.
+여기서 우리는 [Mock](http://docs.mockito.googlecode.com/hg/org/mockito/MockitoAnnotations.html)과 [ArgumentCaptor](http://docs.mockito.googlecode.com/hg/org/mockito/ArgumentCaptor.html)을 초기화하기 위해 **MockitoAnotations**을 사용하다. 벌써 이것들에 대해 염려할 필요는 없다. 다음에 살펴 볼 것이기 때문이다.
 여기서 신경써야 할 유일한 것은 mock과 테스트 중인 클래스 둘 다 각각의 테스트가 실행되기 전에 setup() 메소드(@Before 어노테이션을 사용한)에서 초기화된다는 것이다.
 단위 테스트에서 CUT (테스트 중인 클래스, class under test)의 협력자들은 모두 test double이여야 함을 기억하라.
 이제 우리의 두가지 테스트 해결책들을 보자.
 
 ## 콜백에 answer 준비하기
-여기의 테스트 케이스는 메소드를 제네릭 Answer로 스텁(stub)하고 하기 위해 [doAnswer()](http://mockito.googlecode.com/svn/branches/1.6/javadoc/org/mockito/Mockito.html)을 사용한다. 이는 즉시(동기로) 복귀하는 콜백이 필요하기 때문에 answer를 만들고, 테스트되는 메소드가 호출될 때 우리가 반환하도록 한 데이터와 함께 콜백이 즉시 실행됨을 의미한다.
+이 테스트 케이스는 메소드를 제네릭 Answer로 스텁(stub)하기 위해 [doAnswer()](http://mockito.googlecode.com/svn/branches/1.6/javadoc/org/mockito/Mockito.html)을 사용한다. 이는 즉시(동기로) 복귀하는 콜백이 필요하기 때문에 answer를 만들고, 테스트되는 메소드가 호출될 때 우리가 반환하도록 한 데이터와 함께 콜백이 즉시 실행됨을 의미한다.
 마지막으로 우리는 우리의 실제 메소드를 호출한 뒤 상태와 상호작용을 검증(verify)한다.
 
 {% highlight java %}
