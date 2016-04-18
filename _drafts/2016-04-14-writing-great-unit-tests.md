@@ -4,7 +4,7 @@ published: false
 
 
 # Writing Great Unit Tests: Best and Works Practices
-Steve Sanderson, blog.stevensanderson.com
+[원본](http://blog.stevensanderson.com/2009/08/24/writing-great-unit-tests-best-and-worst-practises/) / Steve Sanderson, blog.stevensanderson.com
 이 글은 최소한 유닛 테스트 경험이 조금이라도 있는 개발자를 목표로 한다. 만약 당신이 유닛 테스트를 작성해본적이 없다면 가이드를 읽고 먼저 해보기를 바란다.
 _-_
 
@@ -53,26 +53,32 @@ TDD를 통해 만들어진 유닛 테스트는 이 척도의 좌측 극단에 �
 당신이 테스트하는 특정 행위는 무엇인가? 다른 테스트에서도 역시 assert된 것에 Assert()를 하는 것은 역효과를 낳는다: 이는 유닛 테스트 커버리지를 1비트라도 늘리지 않고 무의미한 실패들의 빈도만 늘릴 뿐이다. 이는 불필요한 Verify() 호출에도 역시 적용된다 - 만약 이것이 테스트의 핵심 동작이 아니라면 이를 감시하게 만드는 것을 멈추어라! 가끔 TDD 사람들은 이것을 **"테스트 하나당 오직 하나의 논리적 주장만 가져라(have only one logical assertion per test)"**라고 말한다. 유닛 테스트는 특정 행동이 어떻게 동작해야 하는지에 대한 디자인 설명서이며 코드에서 일어나는 **모든**것에 대한 감시 리스트가 아님을 기억하라.
 
 - 한 번에 하나의 코드만 테스트하라
-당신의 아키텍처는 테스팅 유닛(testing units)들을 모든 것이 함께 묶여있지 않고 독립적으로 지원해야 한다 (즉 클래스들 또는 아주 작은 클래스 그룹들). 그렇지 않으면 테스트들간에 많은 겹침을 가지게 되어 한 유닛의 변경들이 밖으로 쏟아질 수 있고 모든 것이 실패함을 야기한다.
-당신이 그렇게 할 수 없다면 당신의 아키텍쳐는 당신 작업의 품질을 제한하게 된다 - Inversion of Control를 사용하는 것을 고려하라.
-*Mock out all external services and state 
-**Otherwise, behaviour in those external services overlaps multiple tests, and state data means that different unit tests can influence each other’s outcome. 
-You’ve definitely taken a wrong turn if you have to run your tests in a specific order, or if they only work when your database or network connection is active. 
-(By the way, sometimes your architecture might mean your code touches static variables during unit tests. Avoid this if you can, but if you can’t, at least make sure each test resets the relevant statics to a known state before it runs.)
-*Avoid unnecessary preconditions 
-**Avoid having common setup code that runs at the beginning of lots of unrelated tests. Otherwise, it’s unclear what assumptions each test relies on, and indicates that you’re not testing just a single unit. 
+당신의 아키텍처는 독립적이고 모두 함께 묶여있지 않는 테스팅 유닛(testing units)를 지원해야 한다 (즉 클래스들 또는 아주 작은 클래스 그룹들). 그렇지 않으면 테스트들간에 많은 겹침을 가지게 되어 한 유닛의 변경이 밖으로 쏟아져 나와 모든 것이 실패하게 만든다.
+만약 그렇게 할 수 없다면 당신의 아키텍쳐가 당신 작업의 품질을 제한하게 된다 - Inversion of Control를 사용하는 것을 고려하라.
+
+- 모든 외부 서비스와 상태를 mock으로 하라.
+그렇지 않으면 이 외부 서비스들의 행동들은 여러 테스트들에서 겹쳐지고, 상태 데이터는 각각 다른 유닛 테스트들은 서로의 결과에 영향을 줄 수 있다.
+만약 당신의 테스트가 특정 순서로 수행되어야 한다면 분명히 잘못된 길을 든 것이다. 아니면 당신의 데이터베이스나 네트워크 연결이 active할 때만 동작할 것이다.
+(그런데 가끔 어떤 당신의 architecture가 당신의 코드가 테스트동안 static 변수에 손대도록 의도할 때가 있다. 가능하면 이를 피하라, 그럴 수 없다면, 최소한 각 테스트가 반드시 수행전에 known state로 관련 statics를 리셋하도록 하라.)
+
+- 불필요한 전제 조건들을 피하라.
+관련 없는 수많은 테스트들의 시작에서 공통 setup 코드를 가지는 것을 피하라. 그렇지 않으면, 각 테스트가 어떤 추정에 의지하는지가 불명확하며, 단지 단일 유닛을 테스트하는 것이 아님을 나타낸다.
 An exception: Sometimes I find it useful to have a common setup method shared by a *very small number of unit tests (a handful at the most) but only if all those tests require all of those preconditions. This is related to the context-specification unit testing pattern, but still risks getting unmaintainable if you try to reuse the same setup code for a wide range of tests.
 (By the way, I wouldn’t count pushing multiple data points through the same test (e.g., using NUnit’s [TestCase] API) as violating this orthogonality rule. The test runner may display multiple failures if something changes, but it’s still only one test method to maintain, so that’s fine.) </li>
 
 **Don’t unit-test configuration settings 
+환경 설정(configuration settings)을 유닛 테스트하지 마라
+당연히 당신의 환경 설정은 코드 유닛의 일부가 아니다 (이것이 당신이 당신의 유닛의 코드에서 setting을 추출하는 이유이다). 심지어 당신의 
 **By definition, your configuration settings aren’t part of any unit of code (that’s why you extracted the setting out of your unit’s code). Even if you could write a unit test that inspects your configuration, it merely forces you to specify the same configuration in an additional redundant location. Congratulations: it proves that you can copy and paste! Personally I regard the use of things like filters in ASP.NET MVC as being configuration. Filters like [Authorize] or [RequiresSsl] are configuration options baked into the code. By all means write an integration test for the externally-observable behaviour, but it’s meaningless to try unit testing for the filter attribute’s presence in your source code – it just proves that you can copy and paste again. That doesn’t help you to design anything, and it won’t ever detect any defects. </li>
 
+**유닛 테스트의 이름을 명확하고 일관되게 짓도록 하라**
+만약 당신이 ProductController의 Purchase 액션이 재고가 0일 때 어떻게 동작하는지를 테스트할 때, 
+. 이 이름은 주제(ProductController's Purchase action), 시나리오 (재고가 0), 그리고 결과 ("재고 품절" 화면을 만든다)을 설명한다. 
 Name your unit tests clearly and consistently 
 **If you’re testing how ProductController’s Purchase action behaves when stock is zero, then maybe have a test fixture class called PurchasingTests with a unit test called ProductPurchaseAction_IfStockIsZero_RendersOutOfStockView(). This name describes the **subject (ProductController’s Purchase action), the scenario (stock is zero), and the result (renders “out of stock” view). I don’t know whether there’s an existing name for this naming pattern, though I know others follow it. How about S/S/R?  Avoid non-descriptive unit tests names such as Purchase() or OutOfStock(). Maintenance is hard if you don’t know what you’re trying to maintain. </li> </ul>
 
-Conclusion
-Without doubt, unit testing *can *significantly increase the quality of your project. Many in our industry claim that any unit tests are better than none, but I disagree: a test suite can be a great asset, or it can be a great burden that contributes little. It depends on the quality of those tests, which seems to be determined by how well its developers have understood the goals and principles of unit testing.
+
+#결론
+의심의 여지없이, 유닛 테스트는 당신의 프로젝트의 품질을 *상당히* 증가시킬 수 있다. 우리 업계의 대부분의 사람들이 어떠한 유닛 테스트라도 없는 것보다는 낫다라고 주장한다. 하지만 나는 그에 반대한다 : 테스트 모음(test suite)는 위대한 자산이 될 수도 기여하는 바가 거의 없는 거대한 짐이 될 수도 있다. 이는 개발자들이 유닛 테스트의 목표과 원칙들을 얼마나 잘 이해하고 있는지에 의해 결정되는 테스트의 품질에 달려있다.
 
 By the way, if you want to read up on integration testing (to complement your unit testing skills), check out projects such as Watin, Selenium, and even the ASP.NET MVC integration testing helper library I published recently.
-
-Enter text in [Markdown](http://daringfireball.net/projects/markdown/). Use the toolbar above, or click the **?** button for formatting help.
