@@ -8,6 +8,7 @@ published: true
 
 # Writing Great Unit Tests: Best and Works Practices
 [원본](http://blog.stevensanderson.com/2009/08/24/writing-great-unit-tests-best-and-worst-practises/) / Steve Sanderson, blog.stevensanderson.com
+-_-
 이 글은 최소한 유닛 테스트 경험이 조금이라도 있는 개발자를 목표로 한다. 만약 당신이 유닛 테스트를 작성해본적이 없다면 가이드를 읽고 먼저 해보기를 바란다.
 _-_
 
@@ -36,7 +37,7 @@ _-_
 TDD는 당신의 디자인에 따라 독립적으로 움직이는 소프트웨어 컴포넌트를 당신이 만드는 것을 돕는다. 좋은 유닛 테스트 모음(suite)은 엄청나게 갑지다: 이는 당신의 디자인을 기록하고, 각 컴포넌트의 행동의 명확한 개요를 유지한채로 당신의 코드를 리팩토링하고 확장하기 쉽게 해준다. 하지만, 나쁜 유닛 테스트의 모음은 엄청나게 고통스럽다: 이는 아무것도 명확히 입증하지 못하고, 당신의 코드를 어떻게든 고치거나 리팩토링할 능력을 혹독하게 억제한다. 
 
 당신의 테스트들은 다음 척도에서 어디에 놓여있는가?
-![image.png]({{site.baseurl}}/_drafts/image.png)
+![image.png]({{site.baseurl}}/_posts/2016-04-14-writing-great-unit-tests-images/image.png)
 
 Sweet Spot A / **진정한 유닛 테스트** / 단일 컴포넌트를 디자인 한다
 지저분한 잡종 / 불명확한 목표. 높은 유지비용, 많은 것을 입증하지 못함 (불행히도, 보통 이러하다)
