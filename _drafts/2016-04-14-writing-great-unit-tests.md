@@ -64,7 +64,7 @@ TDD를 통해 만들어진 유닛 테스트는 이 척도의 좌측 극단에 �
 - 불필요한 전제 조건들을 피하라.
 관련 없는 수많은 테스트들의 시작에서 공통 setup 코드를 가지는 것을 피하라. 그렇지 않으면, 각 테스트가 어떤 추정에 의지하는지가 불명확하며, 단지 단일 유닛을 테스트하는 것이 아님을 나타낸다.
 가끔 나는 
-An exception: Sometimes I find it useful to have a common setup method shared by a *very small number of unit tests (a handful at the most) but only if all those tests require all of those preconditions. This is related to the context-specification unit testing pattern, but still risks getting unmaintainable if you try to reuse the same setup code for a wide range of tests.
+가끔 나는 공통 setup 메소드들 매우 작은 수의 유닛 테스트들(대부분 한 웅큼)에서 공유하는 것이 유용하다는 것을 알게 되었다. 하지만 이 테스트들을 but only if all those tests require all of those preconditions. 이는 context-specification 유닛 테스트 패턴과 관련이 있다. 하지만 동일 setup 코드를 테스트에서 광법위하게 재사용하려고 하는 것은 유지보수 불가능하게 만들 위험이 여전이 있다.
 (By the way, I wouldn’t count pushing multiple data points through the same test (e.g., using NUnit’s [TestCase] API) as violating this orthogonality rule. The test runner may display multiple failures if something changes, but it’s still only one test method to maintain, so that’s fine.)
 
 **환경 설정(configuration settings)을 유닛 테스트하지 마라**
