@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Retrofit과 Mockito로 API 테스트하기"
+title: Retrofit과 Mockito로 API 테스트하기
 date: "2016-02-15 15:57:00 +0900"
 categories: android
 published: true
@@ -18,20 +18,19 @@ ArgumentCaptor는 하이브리드 Test double의 한 종류이다; 이는 약간
 
 {% highlight java %}
 getApi().repositories("swanson", new Callback<List<Repository>>() {
+    @Override
+    public void success(List<Repository> repositories, Response response) {
+        if (repositories.isEmpty()) {
+            displaySadMessage();
+        }
 
-@Override
-public void success(List<Repository> repositories, Response response) {
-if (repositories.isEmpty()) {
-displaySadMessage();
-}
+        mAdapter.setRepositories(repositories);
+    }
 
-mAdapter.setRepositories(repositories);
-}
-
-@Override
-public void failure(RetrofitError retrofitError) {
-displayErrorMessage();
-}
+    @Override
+    public void failure(RetrofitError retrofitError) {
+        displayErrorMessage();
+    }
 });
 {% endhighlight %}
 
