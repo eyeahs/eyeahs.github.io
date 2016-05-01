@@ -1,59 +1,51 @@
 ---
 published: false
 ---
-어떤 어플리케이션에서 최고의 클래스들은 자신의 할 일을 하는 것들이다 : BarcodeDecoder, KoopaPhysicsEngine, 그리고 AudioStreamer. 이들 클래스들은 의존을 가지고 있다; 아마 BarcodeCameraFinder, DefaultPhysicsEngine, 그리고 HttpStreamer.
+어떤 어플리케이션에서 최고의 클래스들은 자신의 할 일을 하는 것들이다 : _BarcodeDecoder_, _KoopaPhysicsEngine_, 그리고 _AudioStreamer_. 이들 클래스들은 의존을 가지고 있다; 아마 _BarcodeCameraFinder_, _DefaultPhysicsEngine_, 그리고 _HttpStreamer_.
 
-To contrast, the worst classes in any application are the ones that take up space without doing much at all: the BarcodeDecoderFactory, the CameraServiceLoader, and the MutableContextWrapper. These classes are the clumsy duct tape that wires the interesting stuff together.
+반대로, 어떤 어플리케이션에서 최악의 클래스들은 전혀 하는 일 없이 공간을 차지하는 것들이다 : _BarcodeDecodeFactory_, _CameraServiceLoader_, _MutableContextWrapper_. 이 클래스들은 관심의 대상들을 함께 묶어주는 투박한 덕트 테입이다.
 
-Dagger is a replacement for these FactoryFactory classes that implements the dependency injection design pattern without the burden of writing the boilerplate. It allows you to focus on the interesting classes. Declare dependencies, specify how to satisfy them, and ship your app.
+Dagger는 boilerplate 작성 부담없이 [의존성 주입](https://en.wikipedia.org/wiki/Dependency_injection) 디자인 패턴을 구현하는 저 _FactoryFactory_ 클래스들의 대체품이다. 이것은 당신이 관심 대상이 되는 클래스들에 초점을 맞출 수 있게 해준다. 의존 관계들을 선언하고, 그들을 어떻게 만족할지 명시하고, 당신의 어플리케이션을 출시하라.
 
-By building on standard javax.inject annotations (JSR 330), each class is easy to test. You don’t need a bunch of boilerplate just to swap the RpcCreditCardService out for a FakeCreditCardService.
+[javax.inject](http://docs.oracle.com/javaee/7/api/javax/inject/package-summary.html) 어노테이션들([JSR 330](https://jcp.org/en/jsr/detail?id=330))을 기반으로 하여, 각 **클래스는 테스트하기 쉽다**. 단지 _RpcCreditCardService을_ _FakeCreditCardService으로_ 교환하기 위한 한 뭉치의 boilerplate는 필요하지 않는다.
 
-Dependency injection isn’t just for testing. It also makes it easy to create reusable, interchangeable modules. You can share the same AuthenticationModule across all of your apps. And you can run DevLoggingModule during development and ProdLoggingModule in production to get the right behavior in each situation.
+의존성 주입은 테스트만을 위한 것이 아니다. 이는 **재사용 가능하고, 교체 가능한** 모듈을 만드는 것을 쉽게 해준다. 당신은 동일한 AuthenticationModule을 당신의 앱 전체에 공유할 수 있다. 그리고 당신은 각 상황에 옳은 행동을 얻기 위해서 개발중에는 _DevLoggingModule_을 실행하고 운영에서는 _ProdLoggingModule_을 실행할 수 있다.
 
+# 왜 Dagger 2는 다른가?
 
-### Bindings in the graph
+[의존성 주입](https://en.wikipedia.org/wiki/Dependency_injection) 프레임워크는 주입(injecting)과 설정(configuring)을 위한 온갖 종류의 다양한 API들과 함께 몇 년 동안 존재하고 있다. 그런대, 왜 바퀴를 재발명하는가? Dagger 2은 처음으로 **생성된 코드(generated code)로 전체 스택(full stack)을 구현한다**. 확실히 의존성 주입이 가능한 간단하고, 추적 가능하고(traceable), 성능 기준에 맞도록(performant) 사용자가 손으로 작성했을 코드를 흉내내어 생성하는 것이 원칙이다. 더 많은 디자인에 대한 배경은 [+Gregory Kick](https://plus.google.com/+GregoryKick/posts)의 [강연]((https://www.youtube.com/watch?v=oK_XtfXPkqw&feature=youtu.be))([슬라이드](https://docs.google.com/presentation/d/1fby5VeGU9CN8zjw4lAb2QPPsKRxx6mSwCe9q7ECNSJQ/pub?start=false&loop=false&delayms=3000&slide=id.p))을 보라.
 
-위 예제는 어떻게 좀 더 일반적인 바인딩들을 가진 component를 만드는지를 보여준다. 하지만 그래프에  
-The example above shows how to construct a component with some of the more typcial bindings, but there are a variety of mechanisms for contributing bindings to the graph. The following are available as dependencies and may be used to generate a well-formed component:
+# Dagger 사용하기
 
-* Those declared by @Provides methods within a @Module referenced directly by @Component.modules or transitively via @Module.includes
-* Any type with an @Inject constructor that is unscoped or has a @Scope annotation that matches one of the component’s scopes
-* The component provision methods of the component dependencies
-* The component itself
-* Unqualified builders for any included subcomponent
-* Provider or Lazy wrappers for any of the above bindings
-* A Provider of a Lazy of any of the above bindings (e.g., Provider<Lazy<CoffeeMaker>>)
-* A MembersInjector for any type
-* 
-## Reusable scope
+We’ll demonstrate dependency injection and Dagger by building a coffee maker. For complete sample code that you can compile and run, see Dagger’s coffee example.
 
-Sometimes you want to limit the number of times an @Inject-constructed class is instantiated or a @Provides method is called, but you don’t need to guarantee that the exact same instance is used during the lifetime of any particular component or subcomponent. This can be useful in environments such as Android, where allocations can be expensive.
+## 의존을 선언하기.
 
-For these bindings, you can apply @Reusable scope. @Reusable-scoped bindings, unlike other scopes, are not associated with any single component; instead, each component that actually uses the binding will cache the returned or instantiated object.
+Dagger constructs instances of your application classes and satisfies their dependencies. It uses the javax.inject.Inject annotation to identify which constructors and fields it is interested in.
 
-That means that if you install a module with a @Reusable binding in a component, but only a subcomponent actually uses the binding, then only that subcomponent will cache the binding’s object. If two subcomponents that do not share an ancestor each use the binding, each of them will cache its own object. If a component’s ancestor has already cached the object, the subcomponent will reuse it.
+Use @Inject to annotate the constructor that Dagger should use to create instances of a class. When a new instance is requested, Dagger will obtain the required parameters values and invoke this constructor.
 
-There is no guarantee that the component will call the binding only once, so applying @Reusable to bindings that return mutable objects, or objects where it’s important to refer to the same instance, is dangerous. It’s safe to use @Reusable for immutable objects that you would leave unscoped if you didn’t care how many times they were allocated.
+  class Thermosiphon implements Pump {
+    private final Heater heater;
 
-  @Reusable // It doesn't matter how many scoopers we use, but don't waste them.
-  class CoffeeScooper {
-    @Inject CoffeeScooper() {}
-  }
-
-  @Module
-  class CashRegisterModule {
-    @Provides
-    @Reusable // DON'T DO THIS! You do care which register you put your cash in.
-              // Use a specific scope instead.
-    static CashRegister badIdeaCashRegister() {
-      return new CashRegister();
+    @Inject
+    Thermosiphon(Heater heater) {
+      this.heater = heater;
     }
-  }
 
-
-  @Reusable // DON'T DO THIS! You really do want a new filter each time, so this
-            // should be unscoped.
-  class CoffeeFilter {
-    @Inject CoffeeFilter() {}
+    ...
   }
+Dagger can inject fields directly. In this example it obtains a Heater instance for the heater field and a Pump instance for the pump field.
+
+  class CoffeeMaker {
+    @Inject Heater heater;
+    @Inject Pump pump;
+
+    ...
+  }
+If your class has @Inject-annotated fields but no @Inject-annotated constructor, Dagger will inject those fields if requested, but will not create new instances. Add a no-argument constructor with the @Inject annotation to indicate that Dagger may create instances as well.
+
+Dagger also supports method injection, though constructor or field injection are typically preferred.
+
+Classes that lack @Inject annotations cannot be constructed by Dagger.
+
