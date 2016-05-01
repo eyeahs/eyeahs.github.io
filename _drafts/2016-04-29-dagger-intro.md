@@ -21,7 +21,9 @@ Dagger는 boilerplate 작성 부담없이 [의존성 주입](https://en.wikipedi
 
 ## 의존을 선언하기.
 
+Dagger는 당신의 어플리케이션 클래스들의 인스턴스들을 구성하고 그들의 의존을 만족시킨다.
 Dagger constructs instances of your application classes and satisfies their dependencies. It uses the javax.inject.Inject annotation to identify which constructors and fields it is interested in.
+
 
 Use @Inject to annotate the constructor that Dagger should use to create instances of a class. When a new instance is requested, Dagger will obtain the required parameters values and invoke this constructor.
 
@@ -35,6 +37,7 @@ Use @Inject to annotate the constructor that Dagger should use to create instanc
 
     ...
   }
+  
 Dagger can inject fields directly. In this example it obtains a Heater instance for the heater field and a Pump instance for the pump field.
 
   class CoffeeMaker {
@@ -43,6 +46,7 @@ Dagger can inject fields directly. In this example it obtains a Heater instance 
 
     ...
   }
+  
 If your class has @Inject-annotated fields but no @Inject-annotated constructor, Dagger will inject those fields if requested, but will not create new instances. Add a no-argument constructor with the @Inject annotation to indicate that Dagger may create instances as well.
 
 Dagger also supports method injection, though constructor or field injection are typically preferred.
