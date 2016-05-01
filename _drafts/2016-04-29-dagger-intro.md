@@ -17,7 +17,7 @@ Dagger는 boilerplate 작성 부담없이 [의존성 주입](https://en.wikipedi
 
 # Dagger 사용하기
 
-We’ll demonstrate dependency injection and Dagger by building a coffee maker. For complete sample code that you can compile and run, see Dagger’s coffee example.
+우리는 커피 메이커를 만들면서 의존성 주입과 Dagger의 작동 과정을 보여줄 것이다. 컴파일하고 실행할 수 있는 완전한 샘플 코드는 Dagger의 [커피 예제](https://github.com/google/dagger/tree/master/examples/simple/src/main/java/coffee)를 보라.
 
 ## 의존을 선언하기.
 
