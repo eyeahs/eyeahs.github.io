@@ -1,6 +1,16 @@
 ---
 published: false
 ---
+어떤 어플리케이션에서 최고의 클래스들은 자신의 할 일을 하는 것들이다 : BarcodeDecoder, KoopaPhysicsEngine, 그리고 AudioStreamer. 이들 클래스들은 의존을 가지고 있다; 아마 BarcodeCameraFinder, DefaultPhysicsEngine, 그리고 HttpStreamer.
+
+To contrast, the worst classes in any application are the ones that take up space without doing much at all: the BarcodeDecoderFactory, the CameraServiceLoader, and the MutableContextWrapper. These classes are the clumsy duct tape that wires the interesting stuff together.
+
+Dagger is a replacement for these FactoryFactory classes that implements the dependency injection design pattern without the burden of writing the boilerplate. It allows you to focus on the interesting classes. Declare dependencies, specify how to satisfy them, and ship your app.
+
+By building on standard javax.inject annotations (JSR 330), each class is easy to test. You don’t need a bunch of boilerplate just to swap the RpcCreditCardService out for a FakeCreditCardService.
+
+Dependency injection isn’t just for testing. It also makes it easy to create reusable, interchangeable modules. You can share the same AuthenticationModule across all of your apps. And you can run DevLoggingModule during development and ProdLoggingModule in production to get the right behavior in each situation.
+
 
 ### Bindings in the graph
 
