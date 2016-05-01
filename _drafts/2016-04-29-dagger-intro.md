@@ -53,7 +53,7 @@ Dagger also supports method injection, though constructor or field injection are
 
 Classes that lack @Inject annotations cannot be constructed by Dagger.
 
-## Satisfying Dependencies
+## 의존들을 만족시키기
 
 By default, Dagger satisfies each dependency by constructing an instance of the requested type as described above. When you request a CoffeeMaker, it’ll obtain one by calling new CoffeeMaker() and setting its injectable fields.
 
@@ -91,8 +91,9 @@ All @Provides methods must belong to a module. These are just classes that have 
 
 By convention, @Provides methods are named with a provide prefix and module classes are named with a Module suffix.
 
-## Building the Graph
+## 그래프 만들기(Building the Graph)
 
+_@Inject_와 _@Provides_어노테이션된 클래스들은 그들의 의존들로 연결된 객체들의 그래프를 형성한다.
 The @Inject and @Provides-annotated classes form a graph of objects, linked by their dependencies. Calling code like an application’s main method or an Android Application accesses that graph via a well-defined set of roots. In Dagger 2, that set is defined by an interface with methods that have no arguments and return the desired type. By applying the @Component annotation to such an interface and passing the module types to the modules parameter, Dagger 2 then fully generates an implementation of that contract.
 
     @Component(modules = DripCoffeeModule.class)
@@ -137,7 +138,7 @@ Now that the graph is constructed and the entry point is injected, we run our co
     => => pumping => =>
      [_]P coffee! [_]P
 
-Bindings in the graph
+## Bindings in the graph
 
 The example above shows how to construct a component with some of the more typcial bindings, but there are a variety of mechanisms for contributing bindings to the graph. The following are available as dependencies and may be used to generate a well-formed component:
 
