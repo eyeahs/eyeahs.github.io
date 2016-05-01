@@ -53,3 +53,124 @@ Dagger also supports method injection, though constructor or field injection are
 
 Classes that lack @Inject annotations cannot be constructed by Dagger.
 
+## Satisfying Dependencies
+
+By default, Dagger satisfies each dependency by constructing an instance of the requested type as described above. When you request a CoffeeMaker, it’ll obtain one by calling new CoffeeMaker() and setting its injectable fields.
+
+But @Inject doesn’t work everywhere:
+
+* Interfaces can’t be constructed.
+* Third-party classes can’t be annotated.
+* Configurable objects must be configured!
+* For these cases where @Inject is insufficient or awkward, use an [@Provides](http://google.github.io/dagger/api/latest/dagger/Provides.html)-annotated method to satisfy a * dependency. The method’s return type defines which dependency it satisfies.
+
+For example, provideHeater() is invoked whenever a Heater is required:
+
+  @Provides static Heater provideHeater() {
+    return new ElectricHeater();
+  }
+
+It’s possible for @Provides methods to have dependencies of their own. This one returns a Thermosiphon whenever a Pump is required:
+
+  @Provides static Pump providePump(Thermosiphon pump) {
+    return pump;
+  }
+  
+All @Provides methods must belong to a module. These are just classes that have an [@Module](http://google.github.io/dagger/api/latest/dagger/Module.html) annotation.
+
+  @Module
+  class DripCoffeeModule {
+    @Provides static Heater provideHeater() {
+      return new ElectricHeater();
+    }
+
+    @Provides static Pump providePump(Thermosiphon pump) {
+      return pump;
+    }
+  }
+
+By convention, @Provides methods are named with a provide prefix and module classes are named with a Module suffix.
+
+## Building the Graph
+
+The @Inject and @Provides-annotated classes form a graph of objects, linked by their dependencies. Calling code like an application’s main method or an Android Application accesses that graph via a well-defined set of roots. In Dagger 2, that set is defined by an interface with methods that have no arguments and return the desired type. By applying the @Component annotation to such an interface and passing the module types to the modules parameter, Dagger 2 then fully generates an implementation of that contract.
+
+  @Component(modules = DripCoffeeModule.class)
+  interface CoffeeShop {
+    CoffeeMaker maker();
+  }
+The implementation has the same name as the interface prefixed with Dagger. Obtain an instance by invoking the builder() method on that implementation and use the returned builder to set dependencies and build() a new instance.
+
+  CoffeeShop coffeeShop = DaggerCoffeeShop.builder()
+      .dripCoffeeModule(new DripCoffeeModule())
+      .build();
+
+Note: If your @Component is not a top-level type, the generated component’s name will be include its enclosing types’ names, joined with an underscore. For example, this code:
+
+  class Foo {
+    static class Bar {
+      @Component
+      interface BazComponent {}
+    }
+  }
+
+would generate a component named DaggerFoo_Bar_BazComponent.
+
+Any module with an accessible default constructor can be elided as the builder will construct an instance automatically if none is set. And for any module whose @Provides methods are all static, the implementation doesn’t need an instance at all. If all dependencies can be constructed without the user creating a dependency instance, then the generated implementation will also have a create() method that can be used to get a new instance without having to deal with the builder.
+
+	CoffeeShop coffeeShop = DaggerCoffeeShop.create();
+
+Now, our CoffeeApp can simply use the Dagger-generated implementation of CoffeeShop to get a fully-injected CoffeeMaker.
+
+  public class CoffeeApp {
+    public static void main(String[] args) {
+      CoffeeShop coffeeShop = DaggerCoffeeShop.create();
+      coffeeShop.maker().brew();
+    }
+  }
+
+Now that the graph is constructed and the entry point is injected, we run our coffee maker app. Fun.
+
+  $ java -cp ... coffee.CoffeeApp
+  ~ ~ ~ heating ~ ~ ~
+  => => pumping => =>
+   [_]P coffee! [_]P
+
+## Bindings in the graph
+
+The example above shows how to construct a component with some of the more typcial bindings, but there are a variety of mechanisms for contributing bindings to the graph. The following are available as dependencies and may be used to generate a well-formed component:
+
+Those declared by @Provides methods within a @Module referenced directly by @Component.modules or transitively via @Module.includes
+Any type with an @Inject constructor that is unscoped or has a @Scope annotation that matches one of the component’s scopes
+The component provision methods of the component dependencies
+The component itself
+Unqualified builders for any included subcomponent
+Provider or Lazy wrappers for any of the above bindings
+A Provider of a Lazy of any of the above bindings (e.g., Provider<Lazy<CoffeeMaker>>)
+A MembersInjector for any type
+Singletons and Scoped Bindings
+
+Annotate an @Provides method or injectable class with @Singleton. The graph will use a single instance of the value for all of its clients.
+
+  @Provides @Singleton static Heater provideHeater() {
+    return new ElectricHeater();
+  }
+
+The @Singleton annotation on an injectable class also serves as documentation. It reminds potential maintainers that this class may be shared by multiple threads.
+
+  @Singleton
+  class CoffeeMaker {
+    ...
+  }
+
+Since Dagger 2 associates scoped instances in the graph with instances of component implementations, the components themselves need to declare which scope they intend to represent. For example, it wouldn’t make any sense to have a @Singleton binding and a @RequestScoped binding in the same component because those scopes have different lifecycles and thus must live in components with different lifecycles. To declare that a component is associated with a given scope, simply apply the scope annotation to the component interface.
+
+  @Component(modules = DripCoffeeModule.class)
+  @Singleton
+  interface CoffeeShop {
+    CoffeeMaker maker();
+  }
+
+Components may have multiple scope annotations applied. This declares that they are all aliases to the same scope, and so that component may include scoped bindings with any of the scopes it declares.
+
+
