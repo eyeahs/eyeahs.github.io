@@ -27,25 +27,25 @@ Dagger constructs instances of your application classes and satisfies their depe
 
 Use @Inject to annotate the constructor that Dagger should use to create instances of a class. When a new instance is requested, Dagger will obtain the required parameters values and invoke this constructor.
 
-  class Thermosiphon implements Pump {
-    private final Heater heater;
+    class Thermosiphon implements Pump {
+      private final Heater heater;
 
-    @Inject
-    Thermosiphon(Heater heater) {
-      this.heater = heater;
+      @Inject
+      Thermosiphon(Heater heater) {
+        this.heater = heater;
+      }
+
+      ...
     }
-
-    ...
-  }
   
 Dagger can inject fields directly. In this example it obtains a Heater instance for the heater field and a Pump instance for the pump field.
 
-  class CoffeeMaker {
-    @Inject Heater heater;
-    @Inject Pump pump;
+    class CoffeeMaker {
+      @Inject Heater heater;
+      @Inject Pump pump;
 
-    ...
-  }
+      ...
+    }
   
 If your class has @Inject-annotated fields but no @Inject-annotated constructor, Dagger will inject those fields if requested, but will not create new instances. Add a no-argument constructor with the @Inject annotation to indicate that Dagger may create instances as well.
 
@@ -66,28 +66,28 @@ But @Inject doesn’t work everywhere:
 
 For example, provideHeater() is invoked whenever a Heater is required:
 
-  @Provides static Heater provideHeater() {
-    return new ElectricHeater();
-  }
-
-It’s possible for @Provides methods to have dependencies of their own. This one returns a Thermosiphon whenever a Pump is required:
-
-  @Provides static Pump providePump(Thermosiphon pump) {
-    return pump;
-  }
-  
-All @Provides methods must belong to a module. These are just classes that have an [@Module](http://google.github.io/dagger/api/latest/dagger/Module.html) annotation.
-
-  @Module
-  class DripCoffeeModule {
     @Provides static Heater provideHeater() {
       return new ElectricHeater();
     }
 
+It’s possible for @Provides methods to have dependencies of their own. This one returns a Thermosiphon whenever a Pump is required:
+
     @Provides static Pump providePump(Thermosiphon pump) {
       return pump;
     }
-  }
+  
+All @Provides methods must belong to a module. These are just classes that have an [@Module](http://google.github.io/dagger/api/latest/dagger/Module.html) annotation.
+
+    @Module
+    class DripCoffeeModule {
+      @Provides static Heater provideHeater() {
+        return new ElectricHeater();
+      }
+
+      @Provides static Pump providePump(Thermosiphon pump) {
+        return pump;
+      }
+    }
 
 By convention, @Provides methods are named with a provide prefix and module classes are named with a Module suffix.
 
@@ -95,24 +95,25 @@ By convention, @Provides methods are named with a provide prefix and module clas
 
 The @Inject and @Provides-annotated classes form a graph of objects, linked by their dependencies. Calling code like an application’s main method or an Android Application accesses that graph via a well-defined set of roots. In Dagger 2, that set is defined by an interface with methods that have no arguments and return the desired type. By applying the @Component annotation to such an interface and passing the module types to the modules parameter, Dagger 2 then fully generates an implementation of that contract.
 
-  @Component(modules = DripCoffeeModule.class)
-  interface CoffeeShop {
-    CoffeeMaker maker();
-  }
+    @Component(modules = DripCoffeeModule.class)
+    interface CoffeeShop {
+      CoffeeMaker maker();
+    }
+  
 The implementation has the same name as the interface prefixed with Dagger. Obtain an instance by invoking the builder() method on that implementation and use the returned builder to set dependencies and build() a new instance.
 
-  CoffeeShop coffeeShop = DaggerCoffeeShop.builder()
-      .dripCoffeeModule(new DripCoffeeModule())
-      .build();
+    CoffeeShop coffeeShop = DaggerCoffeeShop.builder()
+        .dripCoffeeModule(new DripCoffeeModule())
+        .build();
 
 Note: If your @Component is not a top-level type, the generated component’s name will be include its enclosing types’ names, joined with an underscore. For example, this code:
 
-  class Foo {
-    static class Bar {
-      @Component
-      interface BazComponent {}
+    class Foo {
+      static class Bar {
+        @Component
+        interface BazComponent {}
+      }
     }
-  }
 
 would generate a component named DaggerFoo_Bar_BazComponent.
 
@@ -122,19 +123,19 @@ Any module with an accessible default constructor can be elided as the builder w
 
 Now, our CoffeeApp can simply use the Dagger-generated implementation of CoffeeShop to get a fully-injected CoffeeMaker.
 
-  public class CoffeeApp {
-    public static void main(String[] args) {
-      CoffeeShop coffeeShop = DaggerCoffeeShop.create();
-      coffeeShop.maker().brew();
+    public class CoffeeApp {
+      public static void main(String[] args) {
+        CoffeeShop coffeeShop = DaggerCoffeeShop.create();
+        coffeeShop.maker().brew();
+      }
     }
-  }
 
 Now that the graph is constructed and the entry point is injected, we run our coffee maker app. Fun.
 
-  $ java -cp ... coffee.CoffeeApp
-  ~ ~ ~ heating ~ ~ ~
-  => => pumping => =>
-   [_]P coffee! [_]P
+    $ java -cp ... coffee.CoffeeApp
+    ~ ~ ~ heating ~ ~ ~
+    => => pumping => =>
+     [_]P coffee! [_]P
 
 Bindings in the graph
 
