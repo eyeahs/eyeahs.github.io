@@ -14,8 +14,9 @@ Not all Context instances are created equal.  Depending on the Android applicati
 
 ## Activity/Service – inherit from ContextWrapper which implements the same API, but proxies all of its method calls to a hidden internal Context instance, also known as its base context.  Whenever the framework creates a new Activity or Service instance, it also creates a new ContextImpl instance to do all of the heavy lifting that either component will wrap.  Each Activity or Service, and their corresponding base context, are unique per-instance.
 
-## BroadcastReceiver – is not a Context in and of itself, but the framework passes a Context to it in onReceive() each time a new broadcast event comes in.  This instance is a ReceiverRestrictedContext with two main functions disabled; calling registerReceiver() and bindService().  These two functions are not allowed from within an existing BroadcastReceiver.onReceive().  Each time a receiver processes a broadcast, the Context handed to it is a new instance.
+**BroadcastReceiver**은 Context 그 자체는 아니지만, 새로운 broadcast 이벤트가 도착할때마다 프레임워크는 _onReceive()_을 통해 BroadcastReceiver에 Context를 전달한다. 이 인스턴스는 두가지 주요 함수들인 _registerReceiver()_와 _bindService()_의 호출이 허용되지 않는 _ReceiverRestrictedContext_이다. 이 두 함수들은 존재하는 BroadcastReceiver.onReceive()내부에서 허용되지 않는다. 리시버가 broadcast를 처리할 때 마다 Context의 새로운 인스턴스가 전달된다.
 
+**ContentProvider**
 ## ContentProvider – is also not a Context but is given one when created that can be accessed via getContext().  If the ContentProvider is running local to the caller (i.e. same application process), then this will actually return the same Application singleton.  However, if the two are in separate processes, this will be a newly created instance representing the package the provider is running in.
 
 # Saved References
@@ -82,7 +83,10 @@ The common actions you can safely take with a given Context object depends on wh
 | Register BroadcastReceiver | YES | YES | YES | YES | NO(3) |
 | Load Resource Values | YES | YES | YES | YES | YES |
 
-1. An application CAN start an Activity from here, but it requires that a new task be created.  This may fit specific use cases, but can create non-standard back stack behaviors in your application and is generally not recommended or considered good practice.
+1. 어플리케이션에서 Activity를 시작할 수 있지만 이는 새로운 task의 생성을 요구한다. 이는 특별한 유스케이스들에는 적합할 것이지만 당신의 어플리케이션에 비표준 백스택 동작들을 만들 수 있다. 그리고 일반적으로 이를 좋은 관례(good practice)로 고려하거나 추천할 수 없다.
+2. 이는 적법하다. 하지만 당신의 Application에 정의된 테마가 아니라 당신의 앱이 실행되고 있는 시스템의 기본 테마로 inflation될 것이다.
+3. 만약 리시버가 null
+안드로이드 4.2 이상에서, 
 2. This is legal, but inflation will be done with the default theme for the system on which you are running, not what’s defined in your application.
 3. Allowed if the receiver is null, which is used for obtaining the current value of a sticky broadcast, on Android 4.2 and above.
 
