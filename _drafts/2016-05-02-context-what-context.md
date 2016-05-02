@@ -10,9 +10,11 @@ published: false
 # Context Types
 Not all Context instances are created equal.  Depending on the Android application component, the Context you have access to varies slightly:
 
-## Application – is a singleton instance running in your application process.  It can be accessed via methods like getApplication() from an Activity or Service, and getApplicationContext() from any other object that inherits from Context.  Regardless of where or how it is accessed, you will always receive the same instance from within your process.
+**Application**은 당신의 어플리케이션 프로세스안에서 작동하는 싱글톤 인스턴스이다. Activity나 Service에서는 _getApplication()_를 통해, 그리고 Context에서 상속받은 어떤 객체에서도 _getApplicationContext()_를 통해 이것에 접근할 수 있다. 어디서 또는 어떻게 접근하였는지와 상관없이, 당신의 process내에서는 언제나 동일한 인스턴스를 받게 될 것이다.
 
 ## Activity/Service – inherit from ContextWrapper which implements the same API, but proxies all of its method calls to a hidden internal Context instance, also known as its base context.  Whenever the framework creates a new Activity or Service instance, it also creates a new ContextImpl instance to do all of the heavy lifting that either component will wrap.  Each Activity or Service, and their corresponding base context, are unique per-instance.
+**Activity/Service**는 ContextWrapper
+프레임워크가 새로운 Activity 또는 Service 인스턴스를 만들때는 언제든지, 새로운 ContextImpl 인스턴스를 생성한다.
 
 **BroadcastReceiver**은 Context 그 자체는 아니지만, 새로운 broadcast 이벤트가 도착할때마다 프레임워크는 _onReceive()_을 통해 BroadcastReceiver에 Context를 전달한다. 이 인스턴스는 두가지 주요 함수들인 _registerReceiver()_와 _bindService()_의 호출이 허용되지 않는 _ReceiverRestrictedContext_이다. 이 두 함수들은 존재하는 BroadcastReceiver.onReceive()내부에서 허용되지 않는다. 리시버가 broadcast를 처리할 때 마다 Context의 새로운 인스턴스가 전달된다.
 
