@@ -5,8 +5,6 @@ date: "2016-04-18 16:07:46 +0900"
 categories: unittest
 published: true
 ---
-ㅋㅋ
-
 # Writing Great Unit Tests: Best and Works Practices
 [원본](http://blog.stevensanderson.com/2009/08/24/writing-great-unit-tests-best-and-worst-practises/) / Steve Sanderson, blog.stevensanderson.com
 
@@ -37,16 +35,12 @@ _이 글은 최소한 유닛 테스트 경험이 조금이라도 있는 개발�
 ## Good unit tests vs bad ones
 TDD는 당신의 디자인에 따라 독립적으로 움직이는 소프트웨어 컴포넌트를 당신이 만드는 것을 돕는다. 좋은 유닛 테스트 모음(suite)은 엄청나게 갑지다: 이는 당신의 디자인을 기록하고, 각 컴포넌트의 행동의 명확한 개요를 유지한채로 당신의 코드를 리팩토링하고 확장하기 쉽게 해준다. 하지만, 나쁜 유닛 테스트의 모음은 엄청나게 고통스럽다: 이는 아무것도 명확히 입증하지 못하고, 당신의 코드를 어떻게든 고치거나 리팩토링할 능력을 혹독하게 억제한다.
 
-당신의 테스트들은 다음 척도에서 어디에 놓여있는가?
-![image.png]({{site.baseurl}}/2016-04-14-writing-great-unit-tests-image.png)
-![]({{site.baseurl}}/2016-04-14-writing-great-unit-tests-image.png)
-
 ![2016-04-14-writing-great-unit-tests-image.png]({{site.baseurl}}/_posts/2016-04-14-writing-great-unit-tests-image.png)
 
-Sweet Spot A / **진정한 유닛 테스트** / 단일 컴포넌트를 디자인 한다
-지저분한 잡종 / 불명확한 목표. 높은 유지비용, 많은 것을 입증하지 못함 (불행히도, 보통 이러하다)
-
-Sweet Spot B / **통합 테스트** / 퇴행을 발견하기 위해 전체 시스템을 자동화한다.
+| Sweet Spot A | 지저분한 잡종 | Sweet Spot B |
+|-------------|------------|-------------|
+| **진정한 유닛 테스트** | 불명확한 목표 | **통합 테스트** |
+| 단일 컴포넌트를 디자인한다 | 높은 유지비용, 입증하는 것이 많지 않음 / (불행하지만 보통은 이런 상태이다) | 퇴행을 발견하기 위해 전체 시스템을 자동화한다. |
 
 TDD를 통해 만들어진 유닛 테스트는 이 척도의 좌측 극단에 위치한다. 그것들은 단일 유닛 코드의 행동에 대한 많은 지식을 담고 잇다. 만약 유닛의 행동이 변경되면 유닛 테스트도 그렇게 되어야 하며, 역도 동일하다. 하지만 그것들은 당신의 코드 베이스의 다른 부분에 대한 어떠한 지식과 추정도 가지고 있지 않기 때문에 **당신의 코드 베이스의 다른 부분들을 변경하는 것은 그것들이 실패하도록 만들지 않는다** (그리고 당신의 것들이 그렇게 되었다면 이는 그것들은 진짜 유닛 테스트가 아님을 보여준다). Therefore they’re cheap to maintain, and as a development technique, TDD scales up to any size of project.
 
