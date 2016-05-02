@@ -35,7 +35,7 @@ _이 글은 최소한 유닛 테스트 경험이 조금이라도 있는 개발�
 ## Good unit tests vs bad ones
 TDD는 당신의 디자인에 따라 독립적으로 움직이는 소프트웨어 컴포넌트를 당신이 만드는 것을 돕는다. 좋은 유닛 테스트 모음(suite)은 엄청나게 갑지다: 이는 당신의 디자인을 기록하고, 각 컴포넌트의 행동의 명확한 개요를 유지한채로 당신의 코드를 리팩토링하고 확장하기 쉽게 해준다. 하지만, 나쁜 유닛 테스트의 모음은 엄청나게 고통스럽다: 이는 아무것도 명확히 입증하지 못하고, 당신의 코드를 어떻게든 고치거나 리팩토링할 능력을 혹독하게 억제한다.
 
-![2016-04-14-writing-great-unit-tests-image.png]({{site.baseurl}}/_posts/2016-04-14-writing-great-unit-tests-image.png)
+![2016-04-14-writing-great-unit-tests-image.png]({{site.baseurl}}/_posts/images/2016-04-14-writing-great-unit-tests-image.png)
 
 | Sweet Spot A | 지저분한 잡종 | Sweet Spot B |
 |-------------|------------|-------------|
