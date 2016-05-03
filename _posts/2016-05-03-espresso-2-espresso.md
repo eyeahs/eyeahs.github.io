@@ -34,7 +34,7 @@ View의 R.id로 이를 찾는 것은 아주 간단하다:
 
 	onView(withId(R.id.my_view))
 
-가끔, R.id 값은 여러 view들에서 공유될 수 있다. 이런 일이 생기면 특정 R.id를 사용한 시도는 (예를 들어) _AmbiguousViewMatcherException_를 당신에게 준다. The exception message provides you with a text representation of the current view hierarchy, which you can search for and find the views that match the non-unique R.id:
+가끔, _R.id_ 값은 여러 view들에서 공유될 수 있다. 이런 일이 생기면 특정 _R.id_를 사용한 시도는 당신에게 (예를 들어) _AmbiguousViewMatcherException_를 준다. The exception message provides you with a text representation of the current view hierarchy, which you can search for and find the views that match the non-unique R.id:
 
     java.lang.RuntimeException:
     com.google.android.apps.common.testing.ui.espresso.AmbiguousViewMatcherException:
@@ -49,21 +49,21 @@ View의 R.id로 이를 찾는 것은 아주 간단하다:
     is-focused=false, is-focusable=true, enabled=true, selected=false, is-layout-requested=false, text=Hello!, root-is-layout-requested=false, x=0.0, y=0.0, child-count=1}
 	****MATCHES****
     
-Looking through the various attributes of the views, you may find uniquely identifiable properties (in the example above, one of the views has the text “Hello!”). You can use this to narrow down your search by using combination matchers:
+View들의 다양항 속성들을 살펴보면, 유일하게 인식 가능한 속성을 찾을 수 있을 것이다 (위 예제에서는, view들 중 하나는 "Hello!" 텍스트를 가진다). 이를 사용하여 matcher들의 조합을 사용하여 당신의 검색을 좁힐 수 있다.
 
 	onView(allOf(withId(R.id.my_view), withText("Hello!")))
 
-You can also use not to reverse any of the matchers:
+어느 matcher들을 반전하기 위해 _not_을 사용할 수도 있다:
 
 	onView(allOf(withId(R.id.my_view), not(withText("Unwanted"))))
 
-See ViewMatchers for the view matchers provided by Espresso.
+Espresso가 제공하는 view matcher를 위해 [ViewMatchers](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/matcher/ViewMatchers.java)를 보라.
 
-Note: In a well-behaved application, all views that a user can interact with should either contain descriptive text or have a content description (see Android accessibility guidelines. If you are not able to narrow down an onView search using ‘withText’ or ‘withContentDescription’, consider treating it as an accessibility bug.
+Note: 품행이 단정한 어플리케이션에서는, 사용자가 상호 작용할 수 있는 모든 뷰들은 descriptive text 또는 content description 둘 중 어느 하나를 가져야 한다([Android accessibility guidelines](http://developer.android.com/intl/ko/guide/topics/ui/accessibility/apps.html)를 보라. 만약 당신이 'withText'나 'withContentDescription'을 사용하여 onView 검색을 좁힐 수 없다면 이를 접근성 버르고 다루는 것을 고려하라)
 
 Note: Use the least descriptive matcher that finds the one view you’re looking for. Do not over-specify as this will force the framework to do more work than is necessary. For example, if a view is uniquely identifiable by its text, you need not specify that the view is also assignable from TextView. For a lot of views the R.id of the view should be sufficient.
 
-Note: If the target view is inside an AdapterView (such as ListView, GridView, Spinner) the onView method might not work and it is recommended to use the onData method instead.
+Note: 만약 목표가 되는 view가 (_ListView_, _GridView_, _Spinner_같은) _AdapterView_ 내부에 있다면 onView 메소드는 동작하지 않을 것이다. 이를 위해서는 _onData_ 메소드를 대신 사용하는 것을 권장한다.
 
 # Performing an action on a view
 
