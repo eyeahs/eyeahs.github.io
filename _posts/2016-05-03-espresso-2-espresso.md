@@ -61,27 +61,30 @@ Espresso가 제공하는 view matcher를 위해 [ViewMatchers](https://android.g
 
 Note: 품행이 단정한 어플리케이션에서는, 사용자가 상호 작용할 수 있는 모든 뷰들은 descriptive text 또는 content description 둘 중 어느 하나를 가져야 한다([Android accessibility guidelines](http://developer.android.com/intl/ko/guide/topics/ui/accessibility/apps.html)를 보라. 만약 당신이 'withText'나 'withContentDescription'을 사용하여 onView 검색을 좁힐 수 없다면 이를 접근성 버르고 다루는 것을 고려하라)
 
-Note: Use the least descriptive matcher that finds the one view you’re looking for. Do not over-specify as this will force the framework to do more work than is necessary. For example, if a view is uniquely identifiable by its text, you need not specify that the view is also assignable from TextView. For a lot of views the R.id of the view should be sufficient.
+Note: 당신이 찾고 있는 view 하나를 검색하기 위해 최소한의 descriptive matcher를 사용하라. 과도하게 명시하지 마라. 이는 프레임워크가 필요 이상으로 많은 일을 하도록 강제한다. 예를 들어, 만약 view가 그것의 텍스트로 유일하게 인식 가능하다면, view가 TextView로 지정할 수 있는지를 명시할 필요가 없다. 많은 view들을 위해서는 view의 R.id로 충분할 것이다.
 
-Note: 만약 목표가 되는 view가 (_ListView_, _GridView_, _Spinner_같은) _AdapterView_ 내부에 있다면 onView 메소드는 동작하지 않을 것이다. 이를 위해서는 _onData_ 메소드를 대신 사용하는 것을 권장한다.
+Note: 만약 타겟 view가 (_ListView_, _GridView_, _Spinner_같은) _AdapterView_ 내부에 있다면 onView 메소드는 동작하지 않을 것이다. 이를 위해서는 _onData_ 메소드를 대신 사용하는 것을 권장한다.
 
-# Performing an action on a view
+# View에 행위를 수행하기
 
-When you have found a suitable matcher for the target view, it is possible to perform ViewActions on it using the perform method.
+타겟 view를 위한 적절한 matcher를 찾았다면, 여기에 perform 메소드를 사용하여 _ViewAction_을 수행할 수 있다.
 
-For example, to click on the view:
+예를 들어, view를 클릭:
 
 	onView(...).perform(click());
 
-You can execute more than one action with one perform call:
+한 perform 호출에 하나 이상의 행위를 수행할 수 있다:
 
 	onView(...).perform(typeText("Hello"), click());
 
-If the view you are working with is located inside a ScrollView (vertical or horizontal), consider preceding actions that require the view to be displayed (like click() and typeText()) with scrollTo(). This ensures that the view is displayed before proceeding to the other action:
+을 요구하는 (click()이나 typeText()같은) 앞선 행위를 고려하라.
+만약 당신이 작업하고 있는 view가 ScrollView 내부에 존재한다면 (수직이든 수평이든), click()이나 typeText()처럼 scrollTo()를 통해 뷰가 화면에 표시되어야 함을 요구하는 선행 행위를 고려하라. 이것은 다른 행위를 수행하기 전에 view가 화면에 표시됨을 보장한다.
 
 	onView(...).perform(scrollTo(), click());
 
-Note: scrollTo() will have no effect if the view is already displayed so you can safely use it in cases when the view is displayed due to larger screen size (for example, when your tests run on both smaller and larger screen resolutions).
+Note: 만약 view가 이미 화면에 표시되었다면 _scrollTo()_은 
+
+will have no effect if the view is already displayed so you can safely use it in cases when the view is displayed due to larger screen size (for example, when your tests run on both smaller and larger screen resolutions).
 
 See ViewActions for the view actions provided by Espresso.
 
