@@ -105,7 +105,7 @@ Note: onView의 인수에 "assertions"을 넣지 마라 - 대신, 당신이 chec
 
 **Note**: view가 화면에 표시되지 않았는지에 대한 assert와 view가 view 계층에서 존재하지 않는지에 대한 assert간의 차이점에 관심을 가지도록 하라.
 
-# onView를 사용한 간단한 테스트
+# onView를 사용하는 간단한 테스트로 시작하기
 
 이 예제에서 _SimpleActivity_는 _Button_과 _TextView_를 포함한다. 버튼이 클릭되면 _TextView_의 내용이 "Hello Espresso!"로 변경된다. Espresso로 이를 어떻게 테스트하는지가 여기 있다:
 
@@ -137,21 +137,21 @@ Note: You may choose to bypass the onData() loading action for items in adapter 
 
 **Warning:** AdapterView의 커스텀 구현들이 만약 상속된 계약들(특히 _getItem()_ API)을 어기면 onData()메소드에 문제가 있을 수 있다. 이런 경우들 최선의 행동 방식은 당신의 어플리케이션 코드를 고치는 것이다. 만약 이렇게 할 수 없다면 당신은 일치하는 커스텀 _AdapterViewProtocol_을 구현할 수 있다. 더 상세한 정보를 위해서 Espresso에서 제공되는 기본 _AdapterViewProtocols_을 들여다 보라.
 
-# Get started with a simple test using onData
+# onData를 사용하는 간단한 테스트로 시작하기
 
-This simple test demonstrates how to use onData(). SimpleActivity contains a Spinner with a few items - Strings that represent types of coffee beverages. When an item is selected, there is a TextView that changes to "One %s a day!" where %s is the selected item. The goal of this test is to open the Spinner, select a specific item and then verify that the TextView contains the item. As the Spinner class is based on AdapterView it is recommended to use onData() instead of onView() for matching the item.
+이 간단한 테스트는 어떻게 _onData()_를 사용하는지를 보여준다. _SimpleActivity_은 약간의 항목을 -커피 음료의 유형들을 나타내는 스트링들- 가진 Spinner를 포함한다. 항목이 선택되면, "One %s a day!"로 변경되는 _TextView_가 있다. %s은 선택된 항목이다. 이 테스트의 목적은 SPinner를 열고 특정 항목을 선택한 뒤 TextView가 item을 포함하는 지를 검증하는 것이다. _Spinner_ 클래스가 _AdapterView_에 기반하고 있기 때문에 항목 매칭을 위해 _onView()_ 대신 _onView()_를 사용하는 것이 권장된다.
 
-1. Click on the Spinner to open the item selection
+1. 항목 선택을 열기 위해 Spinner를 클릭하라
 
 	onView(withId(R.id.spinner_simple)).perform(click());
 
-2. Click on the item “Americano”
+2. “Americano” 항목을 클릭하라
 
-For the item selection the Spinner creates a ListView with its contents - this can be very long and the element not contributed to the view hierarchy - by using onData() we force our desired element into the view hierarchy. The items in the Spinner are Strings, we want to match an item that is a String and is equal to the String “Americano”:
+항목 선택을 위해 Spinner는 자신의 내용들로 _ListView_를 생성한다. 이 항목은 매우 길어서 view 계층에 제공되지 않을 수 있다. 우리는 _onData()_를 사용해 우리가 원하는 항목을 view 계층에 존재하도록 강제한다. The items in the Spinner are Strings, we want to match an item that is a String and is equal to the String “Americano”:
 
 	onData(allOf(is(instanceOf(String.class)), is("Americano"))).perform(click());
 
-3. Verify that the TextView contains the String “Americano”
+3. TextView가 스트링 "Americano"를 포함하는지를 검증하라
 
 	onView(withId(R.id.spinnertext_simple))
 	  .check(matches(withText(containsString("Americano"))));
