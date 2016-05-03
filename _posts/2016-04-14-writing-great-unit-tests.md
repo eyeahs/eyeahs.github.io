@@ -1,9 +1,12 @@
 ---
 layout: post
+category: blog
 title: "Writing Great Unit Tests: Best and Works Practices"
 date: "2016-04-18 16:07:46 +0900"
 categories: unittest
 published: true
+splash: ""
+tags: ""
 ---
 # Writing Great Unit Tests: Best and Works Practices
 [원본](http://blog.stevensanderson.com/2009/08/24/writing-great-unit-tests-best-and-worst-practises/) / Steve Sanderson, blog.stevensanderson.com
