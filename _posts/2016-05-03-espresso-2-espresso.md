@@ -158,17 +158,17 @@ For the item selection the Spinner creates a ListView with its contents - this c
 
 # Debugging
 
-Espresso provides useful debugging information when a test fails:
+Espresso는 테스트 실패시 유용한 디버깅 정보를 제공한다:
 
 ## Logging
 
-Espresso logs all view actions to logcat. For example:
+Espresso는 logcat에 모든 view 행위들을 로그를 남긴다. 예를 들어:
 
 	ViewInteraction: Performing 'single click' action on view with text: Espresso
  
 ## View hierarchy
 
-Espresso prints the view hierarchy in the exception string when onView() fails. * If onView() does not find the target view, a NoMatchingViewException is thrown. You can examine the view hierarchy in the exception string to analyze why the matcher did not match any views. * If onView() finds multiple views that match the given matcher, an AmbiguousViewMatcherException is thrown. The view hierarchy is printed and all views that were matched are marked with the MATCHES label:
+Espresso는 _onView()_가 실패했을 때 예외 문구안에 view 계층을 출력한다. * 만약 _onView()_가 타겟 view를 찾지 못하면, _NoMatchingViewException_가 던져진다. You can examine the view hierarchy in the exception string to analyze why the matcher did not match any views. * If onView() finds multiple views that match the given matcher, an AmbiguousViewMatcherException is thrown. The view hierarchy is printed and all views that were matched are marked with the MATCHES label:
 
     java.lang.RuntimeException:
     com.google.android.apps.common.testing.ui.espresso.AmbiguousViewMatcherException:
@@ -186,4 +186,4 @@ Espresso prints the view hierarchy in the exception string when onView() fails. 
 
 ## AdapterView warnings
 
-Espresso warns users about presence of AdapterView widgets. When an onView() operation throws a NoMatchingViewException and AdapterView widgets are present in the view hierarchy, the most common solution is to use onData(). The exception message will include a warning with a list of the adapter views. You may use this information to invoke onData to load the target view.
+Espresso는 사용자에게 _AdapterView_ 위젯들이 존재함을 경고한다. 만약 _onView()_ 작업이 _NoMatchingViewException_을 던지고 _AdapterView_ 위젯들이 view 계층에 존재한다면, 가장 흔한 해결책은 onData()를 사용하는 것이다. 예외 메시지는 adapter view들의 목록을 가진 경고를 포함할 것이다. 당신은 타겟 view를 로드하기 위해 onData를 부르는데 이 정보를 이용할 것 이다.
