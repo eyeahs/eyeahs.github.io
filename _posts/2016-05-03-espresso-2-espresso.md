@@ -1,10 +1,11 @@
 ---
-layout: blog
+layout: post
 category: blog
+title: "Espresso #2 - Espresso 기초"
+date: "2016-04-18 16:07:46 +0900"
+published: true
 splash: ""
 tags: ""
-published: false
-title: "Espresso #2 - Espresso 기초"
 ---
 Espresso API는 테스트 작성자에게 사용자가 어플리케이션과 상호 작용 할 때 무엇을 할 것인지 대해 생각하도록 격려한다 - UI 요소들을 위치에 두고 그들과 상호작용하는 것. 동시에 이 프레임워크는 어플리케이션의 Activity들과 View들에 직접 접근하는 것을 막는다. UI 스레드에서 시작된 이 객체들을 잡고 작업하는 것이 비정상적인 테스트의 주된 원인이기 때문이다. 그러므로, 당신은 Espresso API에서 getView나 getCurrentActivity같은 메소드들을 볼 수 없을 것이다. 하지만 당신은 여전히 당신의 _ViewAction_들과 _ViewAssertions_들을 구현함을 통해 View에서 안전하게 작업을 할 수 있다.
 
