@@ -4,28 +4,28 @@ category: post
 splash: ""
 tags: ""
 published: false
-title: "Espresso #2 - Espresso Intents"
+title: "Espresso #3 - Espresso Intents"
 ---
 
-Espresso-Intents는 테스트 대상 어플리케이션에 의해 발송된 Intent들의 검증과 스터빙(stubbing)을 가능하게 하는 Espresso의 extension이다. 이는 Mockito와 비슷하지만 Android Intent들을 위한 것이다.
+Espresso-Intents는 테스트 대상 어플리케이션에 의해 발송된 Intent들의 검증과 스터빙(stubbing)을 가능하게 하는 Espresso의 extension이다. 이는 Android Intent들을 위한 Mockito와 비슷하다.
 
 # Download Espresso-Intents
 
-* Make sure you have installed the Android Support Repository (see instructions).
-* Open your app’s build.gradle file. This is usually not the top-level build.gradle file but app/build.gradle.
+* Android Supoort Repository를 설치하였는지 확인하라.
+* 당신의 어플리케이션의 build.gradle 파일을 열어라. 보통 최상위 build.gradle 파일이 아니라 app/build.gradle이다.
 
-Add the following line inside dependencies:
+다음 라인을 depedencies안에 추가한다:
 
     androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
 
-Espresso-Intents is only compatible with Espresso 2.1+ and the testing support library 0.3 so make sure you update those lines as well:
+Espresso-Intents는 Espresso 2.1+와 testing support library 0.3에서만 호환되므로 다음 라인들을 다음과 같이 업데이트했음을 확인한다:
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
 
 # IntentsTestRule
-Espresso_Intents를 사용할 때 _ActivityTestRule_대신 _IntentsTestRule_을 사용한다. _IntentsTestRule_은 UI 기능 테스트에서 Espresso-Intents API들을 사용하기 쉽게 해준다. 이 클래스는 @Test로 어노테이션된 각각의 테스트전에 Espresso-Intents을 초기화하고 각 테스트가 실행된 뒤 Espresso_Intents를 놓아주는 _ActivityTestRule_의 확장이다. Activity는 각각의 테스트 뒤에 종료될 것이고 이 규칙은 _ActivityTestRule_에서도 동일한 방식으로 사용될 수 있다.
+Espresso_Intents를 사용할 때 _ActivityTestRule_대신 _IntentsTestRule_을 사용한다. _IntentsTestRule_은 UI 기능 테스트에서 Espresso-Intents API들을 쉽게 사용할 수 있게 해준다. 이 클래스는 @Test로 어노테이션된 각각의 테스트 이전에 Espresso-Intents을 초기화하고 각 테스트가 실행된 후 Espresso_Intents를 릴리즈해주는 _ActivityTestRule_의 확장이다. Activity는 각각의 테스트 후에 종료될 것이고 이 규칙은 _ActivityTestRule_에서도 동일한 방식으로 사용될 수 있다.
 
 # Intent 검증
 
@@ -38,15 +38,14 @@ public void validateIntentSentToPackage() {
     // 외부의 "phone" activity가 시작되는 결과를 만드는 사용자 액션
     user.clickOnView(system.getView(R.id.callButton));
 
-    // Using a canned RecordedIntentMatcher to validate that an intent resolving
-    // to the "phone" activity has been sent.
+    // "phone" Activity에 대한 resolving Intent가 발송되었는지 입증하기 위해
+    // 미리 준비된 RecordedIntentMatcher를 사용한다.
     intended(toPackage("com.android.phone"));
 }
 
 ## Intent stubbing
 
-(Mockito.when의 사촌인) intending API를 사용하여, startActivityForResult로 시작된 Activity들의 응답을 제공할 있다. (이는 
-Using the intending API (cousin of Mockito.when), you can provide a response for activities that are launched with startActivityForResult (this is particularly useful for external activities since we cannot manipulate the user interface of an external activity nor control the ActivityResult returned to the activity under test):
+(Mockito.when의 사촌인) intending API를 사용하여, startActivityForResult로 시작된 Activity들에게 응답을 제공할 있다. (이는 특히 외부 activity들에게 유용한다. 우리는 외부 activity의 사용자 인터페이스를 조종 할 수도 없고 테스트 대상 activity에게 반환되는  ActivityResult를 통제할 수도 없기 때문이다):
 
 intent stubbing 예제 테스트:
 
@@ -58,14 +57,14 @@ intent stubbing 예제 테스트:
         resultData.putExtra("phone", phoneNumber);
         ActivityResult result = new ActivityResult(Activity.RESULT_OK, resultData);
 
-        // Intent가 "contacts"에 보내 졌을 때 보여질 result stubbing을 설정한다.
+        // Intent가 "contacts"에 보내 졌을 때 보여질 stubbing된 result를 설정한다.
         intending(toPackage("com.android.contacts")).respondWith(result));
 
-        // User action that results in "contacts" activity being launched.
-        // Launching activity expects phoneNumber to be returned and displays it on the screen.
+        // "contacts" activity가 실행될 사용자 행위
+        // Activity를 실행함으  phoneNumber가 반환되고 그것이 화면에 표시되는 것이 기대된다.
         onView(withId(R.id.pickButton)).perform(click());
 
-        // Assert that data we set up above is shown.
+        // 위에서 우리가 설정했던 데이터를 assert한다.
         onView(withId(R.id.phoneNumber).check(matches(withText(phoneNumber)));
     }
 
