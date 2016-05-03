@@ -19,23 +19,21 @@ ArgumentCaptor는 하이브리드 Test double의 한 종류이다; 이는 약간
 우리는 Retrofit으로 API 호출을 만들고 콜백을 제공한다. 이 라이브러리는 서버가 응답하였을 때 응답 데이터를 넘기면서 콜백을 실행한다.
 유저 리파지토리를 조회하는 GitHub API가 있다고 하자.
 
-{% highlight java %}
-getApi().repositories("swanson", new Callback<List<Repository>>() {
-    @Override
-    public void success(List<Repository> repositories, Response response) {
-        if (repositories.isEmpty()) {
-            displaySadMessage();
+    getApi().repositories("swanson", new Callback<List<Repository>>() {
+        @Override
+        public void success(List<Repository> repositories, Response response) {
+            if (repositories.isEmpty()) {
+                displaySadMessage();
+            }
+
+            mAdapter.setRepositories(repositories);
         }
 
-        mAdapter.setRepositories(repositories);
-    }
-
-    @Override
-    public void failure(RetrofitError retrofitError) {
-        displayErrorMessage();
-    }
-});
-{% endhighlight %}
+        @Override
+        public void failure(RetrofitError retrofitError) {
+            displayErrorMessage();
+        }
+    });
 
 여기에 우리가 테스트하고 싶은 세가지 케이스가 있다 : the happy path (우리는 몇몇 리파지토리들을 받았고 이를 우리의 어뎁터에 넘겨줬다), the error path (어떤 서버 에러가 있었고, 유저에게 토스트 메시지를 보여 준다), 그리고 a special case (유저는 리파지토리를 가지고 있지 않으며, 유저에게 토스트 메시지를 보여 준다)
 두 번째와 세 번째 경우는 당신이 실제 API 서버에 접속하는 경우 테스트하기 어려울 것이다. 내가 알기로 Github는 최근 DDOS 이슈들이 있지만 당신의 에러 케이스를 테스트할 때 그것에 의지할 수는 없다.
