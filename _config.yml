@@ -24,7 +24,7 @@ prose:
       - name: "category"
         field:
           element: "hidden"
-          value: "blog"
+          value: "post"
       - name: "layout"
         field:
           element: "hidden"
