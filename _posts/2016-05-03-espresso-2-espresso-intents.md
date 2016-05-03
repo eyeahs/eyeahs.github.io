@@ -1,10 +1,11 @@
 ---
-layout: blog
-category: post
+layout: post
+category: blog
 splash: ""
 tags: ""
-published: false
+published: true
 title: "Espresso #3 - Espresso Intents"
+date: "2016-05-03 20:00:00 +09:00"
 ---
 
 Espresso-Intents는 테스트 대상 어플리케이션에 의해 발송된 Intent들의 검증과 스터빙(stubbing)을 가능하게 하는 Espresso의 extension이다. 이는 Android Intent들을 위한 Mockito와 비슷하다.
