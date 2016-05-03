@@ -1,10 +1,12 @@
 ---
-layout: blog
+layout: post
 category: blog
+title: "Espresso #1 - Espresso setup instructions"
+date: "2016-04-18 16:07:46 +0900"
+categories: unittest
+published: true
 splash: ""
 tags: ""
-published: true
-title: "Espresso #1 - Espresso setup instructions"
 ---
 [원문](https://google.github.io/android-testing-support-library/docs/espresso/setup/index.html)
 
