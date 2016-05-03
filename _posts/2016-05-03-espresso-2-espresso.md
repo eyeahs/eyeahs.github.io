@@ -7,13 +7,14 @@ published: true
 splash: ""
 tags: ""
 ---
-Espresso API는 테스트 작성자에게 사용자가 어플리케이션과 상호 작용 할 때 무엇을 할 것인지 대해 생각하도록 격려한다 - UI 요소들을 위치에 두고 그들과 상호작용하는 것. 동시에 이 프레임워크는 어플리케이션의 Activity들과 View들에 직접 접근하는 것을 막는다. UI 스레드에서 시작된 이 객체들을 잡고 작업하는 것이 비정상적인 테스트의 주된 원인이기 때문이다. 그러므로, 당신은 Espresso API에서 getView나 getCurrentActivity같은 메소드들을 볼 수 없을 것이다. 하지만 당신은 여전히 당신의 _ViewAction_들과 _ViewAssertions_들을 구현함을 통해 View에서 안전하게 작업을 할 수 있다.
+
+Espresso API는 테스트 작성자에게 사용자가 (UI요소들을 위치에 두고 그들과 상호 작용하는) 어플리케이션과 상호 작용하는 동안 무엇을 할 것인지의 관점으로 생각하는 것을 돕는다. 동시에 이 프레임워크는 어플리케이션의 Activity들과 View들에 직접 접근하는 것을 막는다. 이 객체들을 잡고 UI 스레드에서 시작된 이것들에 작업을 하는 것이 비정상적인 테스트의 주된 원인이기 때문이다. 그러므로, 당신은 Espresso API에서 getView나 getCurrentActivity같은 메소드들을 볼 수 없을 것이다. 하지만 당신은 여전히 당신의 _ViewAction_들과 _ViewAssertions_들을 구현함을 통해 View에서 안전하게 작업을 할 수 있다.
 
 다음은 Espresso의 주요 구성 요소들의 개요이다:
 
 * **Espresso** – View들과의 상호 작용의 진입점(onView와 onData를 통해서). 또한 어떤 뷰와도 묶일 필요가 없는 APIs들을 노출한다(pressBack).
 * **ViewMatchers** – _Matcher<? super View>_ 인터페이스를 구현한 객체들의 모임. 현재 View 계층 내에 위치한 view의 위치를 찾기 위해 하나 또는 그 이상의 ViewMatchers를 _onView_ 메소드에게 전달할 수 있다.
-* **ViewActions** – _ViewInteraction.perform()_ 메소드에게 전달할 수 있는 _ViewAction들의_ 모임 (예를 들어, click())
+* **ViewActions** – _ViewInteraction.perform()_ 메소드에게 전달할 수 있는 _ViewAction_들의 모임 (예를 들어, click())
 * **ViewAssertions** – _ViewInteraction.check()_메소드에 전달할 수 있는 _ViewAssertion_들의 모임. 대부분 시간, 당신은 matches assertion을 사용할 것이다. 이것은 현재 선택된 view의 상태를 assert하기 위해 View matcher를 사용한다.
 
 예:
@@ -132,9 +133,9 @@ Note: onView의 인수에 "assertions"을 넣지 마라 - 대신, 당신이 chec
 
 # Using onData with _AdapterView_ controls (_ListView_, _GridView_, …)
 
-AdpaterView는 Adapter에서 그것의 데이터를 동적으로 적재하는 특별한 형태의 위젯이다. 대부분의 일반적인 _AdapterView_의 예제는 _ListView_이다. LinearLayout처럼 정적 위젯과는 달리, 현재 view 계층에는 AdapterView 자식들의 부분 집합만 로드될 것이며, 단순한 _onView()_ 검색은 현재 로드되지 않은 view는 찾지 못할 것이다. Espresso handles this by providing a separate onData() entry point which is able to first load the adapter item in question (bringing it into focus) prior to operating on it or any of its children.
-
-Note: You may choose to bypass the onData() loading action for items in adapter views that are initially displayed on screen because they are already loaded. However, it is safer to always use onData().
+AdapterView는 Adapter에 자신의 데이터를 동적으로 적재하는 특별한 형태의 위젯이다. 대부분의 일반적인 _AdapterView_의 예제는 _ListView_이다. LinearLayout처럼 정적 위젯과는 달리, 현재 view 계층에는 AdapterView 자식들의 부분 집합만 로드될 것이며, 단순한 _onView()_ 검색은 현재 로드되지 않은 view는 찾지 못할 것이다. Espresso는 이를 adapter의 항목 또는 그것의 자식들 중 어딘가에게 작업을 수행하기 전에 먼저 질문하고 (그것에 초첨을 맞추어) 로드할 수 있는 분리된 onData() 진입점을 제공하여 처리한다.
+ 
+Note: 초기에 스크린에 표시되는 Adapter view안의 항목에 대해서는 onData() 로딩 작업을 하는 것을 우회하는 선택을 할 수 도 있다. 이는 그들이 이미 로드되었기 때문이다. 하지만 onData()를 계속 사용하는 것이 더 안전한다.
 
 **Warning:** AdapterView의 커스텀 구현들이 만약 상속된 계약들(특히 _getItem()_ API)을 어기면 onData()메소드에 문제가 있을 수 있다. 이런 경우들 최선의 행동 방식은 당신의 어플리케이션 코드를 고치는 것이다. 만약 이렇게 할 수 없다면 당신은 일치하는 커스텀 _AdapterViewProtocol_을 구현할 수 있다. 더 상세한 정보를 위해서 Espresso에서 제공되는 기본 _AdapterViewProtocols_을 들여다 보라.
 
@@ -148,7 +149,7 @@ Note: You may choose to bypass the onData() loading action for items in adapter 
 
 ### 2.“Americano” 항목을 클릭하라
 
-항목 선택을 위해 Spinner는 자신의 내용들로 _ListView_를 생성한다. 이 항목은 매우 길어서 view 계층에 제공되지 않을 수 있다. 우리는 _onData()_를 사용해 우리가 원하는 항목을 view 계층에 존재하도록 강제한다. The items in the Spinner are Strings, we want to match an item that is a String and is equal to the String “Americano”:
+항목 선택을 위해 Spinner는 자신의 내용들로 _ListView_를 생성한다. 이 항목은 매우 길어서 view 계층에 제공되지 않을 수 있다. 우리는 _onData()_를 사용해 우리가 원하는 항목이 view 계층에 존재하도록 강제한다. Spinner내부의 항목들은 String들이며, 우리리는 String이며 "Americano"와 동일한 String인 항목과 맞추기를 원한다.
 
 	onData(allOf(is(instanceOf(String.class)), is("Americano"))).perform(click());
 
