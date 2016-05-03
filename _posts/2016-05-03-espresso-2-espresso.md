@@ -57,7 +57,7 @@ View들의 다양항 속성들을 살펴보면, 유일하게 인식 가능한 �
 
 	onView(allOf(withId(R.id.my_view), not(withText("Unwanted"))))
 
-Espresso가 제공하는 view matcher를 위해 [ViewMatchers](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/matcher/ViewMatchers.java)를 보라.
+Espresso가 제공하는 view matcher들은 [ViewMatchers](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/matcher/ViewMatchers.java)를 보라.
 
 Note: 품행이 단정한 어플리케이션에서는, 사용자가 상호 작용할 수 있는 모든 뷰들은 descriptive text 또는 content description 둘 중 어느 하나를 가져야 한다([Android accessibility guidelines](http://developer.android.com/intl/ko/guide/topics/ui/accessibility/apps.html)를 보라. 만약 당신이 'withText'나 'withContentDescription'을 사용하여 onView 검색을 좁힐 수 없다면 이를 접근성 버르고 다루는 것을 고려하라)
 
@@ -82,11 +82,9 @@ Note: 만약 타겟 view가 (_ListView_, _GridView_, _Spinner_같은) _AdapterVi
 
 	onView(...).perform(scrollTo(), click());
 
-Note: 만약 view가 이미 화면에 표시되었다면 _scrollTo()_은 
+Note: 만약 view가 이미 화면에 표시되었다면 _scrollTo()_은 아무 영향도 주지 않는다. 그래서 큰 스크린 사이즈로 인해 view가 표시되어 있는 경우에도 안전하게 사용할 수 있다 (예를 들어, 당신의 테스트가 크고, 작은 스크린 해상도 모두에서 수행할 때)
 
-will have no effect if the view is already displayed so you can safely use it in cases when the view is displayed due to larger screen size (for example, when your tests run on both smaller and larger screen resolutions).
-
-See ViewActions for the view actions provided by Espresso.
+Espresso가 제공하는 view actions은 [ViewActions](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/action/ViewActions.java)를 보라.
 
 # Checking if a view fulfills an assertion
 
