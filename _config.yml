@@ -9,11 +9,8 @@ github_username:  eyeahs
 gems:
   - jekyll-paginate
 
-#Others
-markdown: redcarpet
-
 # Build settings
-# markdown: kramdown
+markdown: kramdown
 # markdown: rdiscount
 
 permalink: pretty
