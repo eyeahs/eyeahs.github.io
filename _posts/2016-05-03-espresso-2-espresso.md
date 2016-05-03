@@ -110,7 +110,7 @@ Note: onView의 인수에 "assertions"을 넣지 마라 - 대신, 당신이 chec
 
 이 예제에서 _SimpleActivity_는 _Button_과 _TextView_를 포함한다. 버튼이 클릭되면 _TextView_의 내용이 "Hello Espresso!"로 변경된다. Espresso로 이를 어떻게 테스트하는지가 여기 있다:
 
-## 1.버튼을 클릭하라
+### 1.버튼을 클릭하라
 
 첫 단계는 버튼을 찾는 것을 돕는 속성을 찾는 것이다. _SimpleActivity_의 버튼은 유일한 R.id를 가진다 - 완벽하다!
 
@@ -120,7 +120,7 @@ Note: onView의 인수에 "assertions"을 넣지 마라 - 대신, 당신이 chec
 
 	onView(withId(R.id.button_simple)).perform(click());
 
-## 2.이제 TextView에 "Hello Espresso!"가 들어있는지 확인하라
+### 2.이제 TextView에 "Hello Espresso!"가 들어있는지 확인하라
 
 검증할 텍스트를 가진 _TextView_ 역시 유일한 R.id를 가진다:
 
@@ -142,17 +142,17 @@ Note: You may choose to bypass the onData() loading action for items in adapter 
 
 이 간단한 테스트는 어떻게 _onData()_를 사용하는지를 보여준다. _SimpleActivity_은 약간의 항목을 -커피 음료의 유형들을 나타내는 스트링들- 가진 Spinner를 포함한다. 항목이 선택되면, "One %s a day!"로 변경되는 _TextView_가 있다. %s은 선택된 항목이다. 이 테스트의 목적은 SPinner를 열고 특정 항목을 선택한 뒤 TextView가 item을 포함하는 지를 검증하는 것이다. _Spinner_ 클래스가 _AdapterView_에 기반하고 있기 때문에 항목 매칭을 위해 _onView()_ 대신 _onView()_를 사용하는 것이 권장된다.
 
-## 1.항목 선택을 열기 위해 Spinner를 클릭하라
+### 1.항목 선택을 열기 위해 Spinner를 클릭하라
 
 	onView(withId(R.id.spinner_simple)).perform(click());
 
-## 2.“Americano” 항목을 클릭하라
+### 2.“Americano” 항목을 클릭하라
 
 항목 선택을 위해 Spinner는 자신의 내용들로 _ListView_를 생성한다. 이 항목은 매우 길어서 view 계층에 제공되지 않을 수 있다. 우리는 _onData()_를 사용해 우리가 원하는 항목을 view 계층에 존재하도록 강제한다. The items in the Spinner are Strings, we want to match an item that is a String and is equal to the String “Americano”:
 
 	onData(allOf(is(instanceOf(String.class)), is("Americano"))).perform(click());
 
-## 3.TextView가 스트링 "Americano"를 포함하는지를 검증하라
+### 3.TextView가 스트링 "Americano"를 포함하는지를 검증하라
 
 	onView(withId(R.id.spinnertext_simple))
 	  .check(matches(withText(containsString("Americano"))));
