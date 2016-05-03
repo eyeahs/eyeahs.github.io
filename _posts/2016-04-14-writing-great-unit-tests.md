@@ -8,7 +8,6 @@ published: true
 splash: ""
 tags: ""
 ---
-# Writing Great Unit Tests: Best and Works Practices
 [원본](http://blog.stevensanderson.com/2009/08/24/writing-great-unit-tests-best-and-worst-practises/) / Steve Sanderson, blog.stevensanderson.com
 
 _이 글은 유닛 테스트 경험이 최소 조금이라도 있는 개발자를 목표로 한다. 만약 당신이 유닛 테스트를 작성해본적이 없다면 먼저 가이드를 읽고 실행해보기를 바란다._
