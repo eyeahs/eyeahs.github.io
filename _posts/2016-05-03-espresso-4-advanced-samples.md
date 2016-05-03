@@ -23,24 +23,23 @@ title: "espresso-4-Advanced-Samples"
 
 ## onData와 커스텀 ViewMatcher로 데이터 매칭하기
 
-아래의 Activity는 ListView를 포함한다.
-[SimpleAdapter](http://developer.android.com/intl/ko/reference/android/widget/SimpleAdapter.html)
-The activity below contains a ListView, which is backed by a SimpleAdapter that holds data for each row in a Map<String, Object>. Each map has an entry with key "STR" that contains the content (string, “item: x”) and a key "LEN" that contains an Integer, the length of the content.
+아래의 Activity는 각 행을 위해 Map<String, Object>안에 데이터를 가지고 있는 [SimpleAdapter](http://developer.android.com/intl/ko/reference/android/widget/SimpleAdapter.html)
+의 원조를 받는 ListView를 포함한다. 각 map은 content(string, "item:x")이 들어있는 키 "STR"과 content의 길이인 Interger가 들어있는 키 "LEN"를 가진다.
 
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/list_activity.png)
 
-The code for a click on the row with “item: 50” looks like this:
+"item: 50"을 가진 열을 클릭하는 코드는 다음과 같다:
 
 	onData(allOf(is(instanceOf(Map.class)), hasEntry(equalTo("STR"), is("item: 50")))
 	  .perform(click());
   
-Let’s take apart the Matcher<Object> inside onData:
+onData안의 Matcher<Object>를 분해해보자:
 
 	is(instanceOf(Map.class))
 
-narrows the search to any item of the AdapterView, which is a Map.
+AdapterView에서 Map인 특정 항목으로 검색을 좁힌다.
 
-In our case, this is every row of the list view, but we want to click specifically on “item: 50”, so we narrow the search further with:
+우리의 경우, 이는 목록 view의 모든 열이다. 하지만 우리는 명확하게 "item: 50"을 클릭하기를 원한다. 그래서 다음과 같이 검색을 더 좁힌다:
 
 	hasEntry(equalTo("STR"), is("item: 50"))
 
@@ -73,7 +72,20 @@ Now the code to click on the item is simple:
     
 For the full code of this test, take a look at [AdapterViewTest#testClickOnItem50](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java) and the [custom matcher](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/LongListMatchers.java).
 
+# View의 특정 자식 view에 매칭하기
 
+위 샘플은 ListView의 열 전체의 중간을 클릭하는 문제가 있다. 만약 우리가 열을 특정 자식에게 
+The sample above issues a click in the middle of the entire row of a ListView. But what if we want to operate on a specific child of the row? For example, we would like to click on the second column of the row of the LongListActivity, which displays the String.length of the first row (to make this less abstract, you can imagine the G+ app that shows a list of comments and each comment has a +1 button next to it):
+
+![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/item50.png)
+
+이제 당신의 DataInteraction에 onChildView 명시를 추가하라:
+
+    onData(withItemContent("item: 60"))
+      .onChildView(withId(R.id.item_size))
+      .perform(click());
+
+Note: 이 예제는 위 샘플의 withItemConent matcher를 사용한다! [AdapterViewTest#testClickOnSpecificChildOfRow60](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java)를 보라!
 
 
 
