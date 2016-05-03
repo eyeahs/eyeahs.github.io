@@ -3,7 +3,7 @@ layout: blog
 category: blog
 splash: ""
 tags: ""
-published: false
+published: true
 title: "Espresso #1 - Espresso setup instructions"
 ---
 [원문](https://google.github.io/android-testing-support-library/docs/espresso/setup/index.html)
