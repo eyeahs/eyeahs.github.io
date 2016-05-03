@@ -86,56 +86,56 @@ Note: 만약 view가 이미 화면에 표시되었다면 _scrollTo()_은 아무 
 
 Espresso가 제공하는 view actions은 [ViewActions](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/action/ViewActions.java)를 보라.
 
-# Checking if a view fulfills an assertion
+# View가 assertion을 만족시키는지 확인하기
 
-Assertions can be applied to the currently selected view with the check() method. The most used assertion is the matches() assertion, it uses a ViewMatcher to assert the state of the currently selected view.
+Assertion들은 _check()_ 메소드를 이용해 현재 선택된 view에 적용 될 수 있다. 가장 많이 사용되는 assertion은 현재 선택된 뷰의 상태를 assert하기 위해 _ViewMatcher()_를 사용하는 _matches()_ assertion이다.
 
-For example, to check that a view has the text “Hello!”:
+예를 들어, view가 "Hello!" 텍스트를 가지고 있는지 확인하기 위해:
 
 	onView(...).check(matches(withText("Hello!")));
 
-Note: Do not put “assertions” into the onView argument - instead, clearly specify what you are checking inside the check block. For example:
+Note: onView의 인수에 "assertions"을 넣지 마라 - 대신, 당신이 check 블록 내부에서 확인하고자 하는 것을 명확하게 명시하라. 예를 들어:
 
-If you want to assert that “Hello!” is content of the view, the following is considered bad practice:
+만약 당신이 "Hello!"가 view의 내용인지를 assert하기를 원한다면, 다음은 bad practice로 간주된다:
 
-    // Don't use assertions like withText inside onView.
+    // onView내부에 withText같은 assertion들을 사용하지 마라.
     onView(allOf(withId(...), withText("Hello!"))).check(matches(isDisplayed()));
 
-On the other hand, if you want to assert that a view with the text “Hello!” is visible - for example after a change of the views visibility flag - the code is fine.
+반면, 당신이 "Hello!"를 가진 텍스트가 visible한지를 assert하기를 원한다면 -예를 들어 view들의 visibility 플래그가 변경된 후- 이 코드는 괜찮다.
 
-Note: Be sure to pay attention to the difference between asserting that a view is not displayed and asserting that a view is not present in the view hierarchy.
+**Note**: view가 화면에 표시되지 않았는지에 대한 assert와 view가 view 계층에서 존재하지 않는지에 대한 assert간의 차이점에 관심을 가지도록 하라.
 
-# Get started with a simple test using onView
+# onView를 사용한 간단한 테스트
 
-In this example SimpleActivity contains a Button and a TextView. When the button is clicked the content of the TextView changes to "Hello Espresso!". Here’s how to test this with Espresso:
+이 예제에서 _SimpleActivity_는 _Button_과 _TextView_를 포함한다. 버튼이 클릭되면 _TextView_의 내용이 "Hello Espresso!"로 변경된다. Espresso로 이를 어떻게 테스트하는지가 여기 있다:
 
-1. Click on the button
+1. 버튼을 클릭하라
 
-The first step is to look for a property that helps to find the button. The button in the SimpleActivity has a unique R.id - perfect!
+첫 단계는 버튼을 찾는 것을 돕는 속성을 찾는 것이다. _SimpleActivity_의 버튼은 유일한 R.id를 가진다 - 완벽하다!
 
 	onView(withId(R.id.button_simple))
 
-Now to perform the click:
+이제 click을 수행하기다:
 
 	onView(withId(R.id.button_simple)).perform(click());
 
-2. Check that the TextView now contains “Hello Espresso!”
+2. 이제 TextView에 "Hello Espresso!"가 들어있는지 확인하라
 
-The TextView with the text to verify has a unique R.id too:
+검증할 텍스트를 가진 _TextView_ 역시 유일한 R.id를 가진다:
 
 	onView(withId(R.id.text_simple))
 
-Now to verify the content text:
+이젠 테스트 내용을 검증하기다:
 
 	onView(withId(R.id.text_simple)).check(matches(withText("Hello Espresso!")));
 
-# Using onData with AdapterView controls (ListView, GridView, …)
+# Using onData with _AdapterView_ controls (_ListView_, _GridView_, …)
 
-AdapterView is a special type of widget that loads its data dynamically from an Adapter. The most common example of an AdapterView is ListView. As opposed to static widgets like LinearLayout, only a subset of the AdapterView children may be loaded into the current view hierarchy and a simple onView() search would not find views that are not currently loaded. Espresso handles this by providing a separate onData() entry point which is able to first load the adapter item in question (bringing it into focus) prior to operating on it or any of its children.
+AdpaterView는 Adapter에서 그것의 데이터를 동적으로 적재하는 특별한 형태의 위젯이다. 대부분의 일반적인 _AdapterView_의 예제는 _ListView_이다. LinearLayout처럼 정적 위젯과는 달리, 현재 view 계층에는 AdapterView 자식들의 부분 집합만 로드될 것이며, 단순한 _onView()_ 검색은 현재 로드되지 않은 view는 찾지 못할 것이다. Espresso handles this by providing a separate onData() entry point which is able to first load the adapter item in question (bringing it into focus) prior to operating on it or any of its children.
 
 Note: You may choose to bypass the onData() loading action for items in adapter views that are initially displayed on screen because they are already loaded. However, it is safer to always use onData().
 
-Warning: Custom implementations of AdapterView can have problems with the onData() method, if they break inheritance contracts (particularly the getItem() API). In such cases, the best course of action is to refactor your application code. If you cannot do so, you can implement a matching custom AdapterViewProtocol. Take a look at the default AdapterViewProtocols provided by Espresso for more information.
+**Warning:** AdapterView의 커스텀 구현들이 만약 상속된 계약들(특히 _getItem()_ API)을 어기면 onData()메소드에 문제가 있을 수 있다. 이런 경우들 최선의 행동 방식은 당신의 어플리케이션 코드를 고치는 것이다. 만약 이렇게 할 수 없다면 당신은 일치하는 커스텀 _AdapterViewProtocol_을 구현할 수 있다. 더 상세한 정보를 위해서 Espresso에서 제공되는 기본 _AdapterViewProtocols_을 들여다 보라.
 
 # Get started with a simple test using onData
 
