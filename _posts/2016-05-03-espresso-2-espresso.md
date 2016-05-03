@@ -13,46 +13,50 @@ Espresso API는 테스트 작성자에게 사용자가 어플리케이션과 상
 * **Espresso** – View들과의 상호 작용의 진입점(onView와 onData를 통해서). 또한 어떤 뷰와도 묶일 필요가 없는 APIs들을 노출한다(pressBack).
 * **ViewMatchers** – _Matcher<? super View>_ 인터페이스를 구현한 객체들의 모임. 현재 View 계층 내에 위치한 view의 위치를 찾기 위해 하나 또는 그 이상의 ViewMatchers를 _onView_ 메소드에게 전달할 수 있다.
 * **ViewActions** – _ViewInteraction.perform()_ 메소드에게 전달할 수 있는 _ViewAction들의_ 모임 (예를 들어, click())
-* **ViewAssertions** – _ViewAssertion_들의 모임 
-A collection of ViewAssertions that can be passed the ViewInteraction.check() method. Most of the time, you will use the matches assertion, which uses a View matcher to assert the state of the currently selected view.
+* **ViewAssertions** – _ViewInteraction.check()_메소드에 전달할 수 있는 _ViewAssertion_들의 모임. 대부분 시간, 당신은 matches assertion을 사용할 것이다. 이것은 현재 선택된 view의 상태를 assert하기 위해 View matcher를 사용한다.
 
-Example:
+예:
 
-    onView(withId(R.id.my_view))      // withId(R.id.my_view) is a ViewMatcher
-      .perform(click())               // click() is a ViewAction
-      .check(matches(isDisplayed())); // matches(isDisplayed()) is a ViewAssertion
+    onView(withId(R.id.my_view))      // withId(R.id.my_view)은 ViewMatcher
+      .perform(click())               // click()은 ViewAction
+      .check(matches(isDisplayed())); // matches(isDisplayed())은 ViewAssertion
 
-# Finding a view with onView
+# onView로 view를 찾기
 
-In the vast majority of cases, the onView method takes a hamcrest matcher that is expected to match one — and only one — view within the current view hierarchy. Matchers are powerful and will be familiar to those who have used them with Mockito or Junit. If you are not familiar with hamcrest matchers, we suggest you start with a quick look at this presentation.
+막대한 경우들에서, onView메소드는 현재 view 계층내에서 유일한 한가지와 일치함이 예상되는 hamcrest matcher를 받는다. Matcher들은 강력하다. 그리고 Mockito나 JUnit에서 이것들을 사용하는 사람들에게 친숙할 것이다. 만약 당신이 hamcrest matcher에 익숙하지 않다면 [이 슬라이드](http://www.slideshare.net/shaiyallin/hamcrest-matchers)를 먼저 훑어 보기를 권장한다.
 
-Often the desired view has a unique R.id and a simple withId matcher will narrow down the view search. However, there are many legitimate cases when you cannot determine R.id at test development time. For example, the specific view may not have an R.id or the R.id is not unique. This can make normal instrumentation tests brittle and complicated to write because the normal way to access the view (with findViewById()) does not work. Thus, you may need to access private members of the Activity or Fragment holding the view or find a container with a known R.id and navigate to its content for the particular view.
+보통 희망하던 view는 유일한 R.id를 가지며 단순한 withId matcher는 view 검색을 줄일 것이다. 하지만 테스트를 개발할 때 R.id를 확정할 수 없는 정당한 경우들이 많이 있다. 예를 들어, 특정 view는 R.id를 가지고 있지 않거나 R.id가 유일하지 않다. 이는 view에 접근하기 위한 (_findViewById()_를 통한) 일반적인 방식이 동작하지 않기 때문에 일반적인 Instrumentation 테스트를 불안정하고 작성하기 복잡하게 만들 수 있다. 이와 같이 당신은 view를 가지고 있는 Activity나 Fragment의 private 멤버들에 접근하거나 특정 view를 위해 알려진 R.id로 컨테이너를 찾고 그것의 내용을 다룰 필요가 있을 것이다.
 
-Espresso handles this problem cleanly by allowing you to narrow down the view using either existing ViewMatchers or your own custom ones.
+Espresso는 기존의 ViewMatcher들이나 당신이 커스텀한 ViewMatcher들 어느 것이든 사용하여 view를 좁힐 수 있도록 허용하여 이 문제를 깔끔하게 처리한다.
 
-Finding a view by its R.id is as simple as:
 
-onView(withId(R.id.my_view))
-Sometimes, R.id values are shared between multiple views. When this happens an attempt to use a particular R.id gives you an AmbiguousViewMatcherException (for example). The exception message provides you with a text representation of the current view hierarchy, which you can search for and find the views that match the non-unique R.id:
+View의 R.id로 이를 찾는 것은 아주 간단하다:
 
-java.lang.RuntimeException:
-com.google.android.apps.common.testing.ui.espresso.AmbiguousViewMatcherException:
-This matcher matches multiple views in the hierarchy: (withId: is <123456789>)
+	onView(withId(R.id.my_view))
+
+가끔, R.id 값은 여러 view들에서 공유될 수 있다. 이런 일이 생기면 특정 R.id를 사용한 시도는 (예를 들어) _AmbiguousViewMatcherException_를 당신에게 준다. The exception message provides you with a text representation of the current view hierarchy, which you can search for and find the views that match the non-unique R.id:
+
+    java.lang.RuntimeException:
+    com.google.android.apps.common.testing.ui.espresso.AmbiguousViewMatcherException:
+    This matcher matches multiple views in the hierarchy: (withId: is <123456789>)
 …
 
-+----->SomeView{id=123456789, res-name=plus_one_standard_ann_button, visibility=VISIBLE, width=523, height=48, has-focus=false, has-focusable=true, window-focus=true,
-is-focused=false, is-focusable=false, enabled=true, selected=false, is-layout-requested=false, text=, root-is-layout-requested=false, x=0.0, y=625.0, child-count=1}
-****MATCHES****
-|
-+------>OtherView{id=123456789, res-name=plus_one_standard_ann_button, visibility=VISIBLE, width=523, height=48, has-focus=false, has-focusable=true, window-focus=true,
-is-focused=false, is-focusable=true, enabled=true, selected=false, is-layout-requested=false, text=Hello!, root-is-layout-requested=false, x=0.0, y=0.0, child-count=1}
-****MATCHES****
+    +----->SomeView{id=123456789, res-name=plus_one_standard_ann_button, visibility=VISIBLE, width=523, height=48, has-focus=false, has-focusable=true, window-focus=true,
+    is-focused=false, is-focusable=false, enabled=true, selected=false, is-layout-requested=false, text=, root-is-layout-requested=false, x=0.0, y=625.0, child-count=1}
+    ****MATCHES****
+    |
+    +------>OtherView{id=123456789, res-name=plus_one_standard_ann_button, visibility=VISIBLE, width=523, height=48, has-focus=false, has-focusable=true, window-focus=true,
+    is-focused=false, is-focusable=true, enabled=true, selected=false, is-layout-requested=false, text=Hello!, root-is-layout-requested=false, x=0.0, y=0.0, child-count=1}
+	****MATCHES****
+    
 Looking through the various attributes of the views, you may find uniquely identifiable properties (in the example above, one of the views has the text “Hello!”). You can use this to narrow down your search by using combination matchers:
 
-onView(allOf(withId(R.id.my_view), withText("Hello!")))
+	onView(allOf(withId(R.id.my_view), withText("Hello!")))
+
 You can also use not to reverse any of the matchers:
 
-onView(allOf(withId(R.id.my_view), not(withText("Unwanted"))))
+	onView(allOf(withId(R.id.my_view), not(withText("Unwanted"))))
+
 See ViewMatchers for the view matchers provided by Espresso.
 
 Note: In a well-behaved application, all views that a user can interact with should either contain descriptive text or have a content description (see Android accessibility guidelines. If you are not able to narrow down an onView search using ‘withText’ or ‘withContentDescription’, consider treating it as an accessibility bug.
@@ -61,41 +65,46 @@ Note: Use the least descriptive matcher that finds the one view you’re looking
 
 Note: If the target view is inside an AdapterView (such as ListView, GridView, Spinner) the onView method might not work and it is recommended to use the onData method instead.
 
-Performing an action on a view
+# Performing an action on a view
 
 When you have found a suitable matcher for the target view, it is possible to perform ViewActions on it using the perform method.
 
 For example, to click on the view:
 
-onView(...).perform(click());
+	onView(...).perform(click());
+
 You can execute more than one action with one perform call:
 
-onView(...).perform(typeText("Hello"), click());
+	onView(...).perform(typeText("Hello"), click());
+
 If the view you are working with is located inside a ScrollView (vertical or horizontal), consider preceding actions that require the view to be displayed (like click() and typeText()) with scrollTo(). This ensures that the view is displayed before proceeding to the other action:
 
-onView(...).perform(scrollTo(), click());
+	onView(...).perform(scrollTo(), click());
+
 Note: scrollTo() will have no effect if the view is already displayed so you can safely use it in cases when the view is displayed due to larger screen size (for example, when your tests run on both smaller and larger screen resolutions).
 
 See ViewActions for the view actions provided by Espresso.
 
-Checking if a view fulfills an assertion
+# Checking if a view fulfills an assertion
 
 Assertions can be applied to the currently selected view with the check() method. The most used assertion is the matches() assertion, it uses a ViewMatcher to assert the state of the currently selected view.
 
 For example, to check that a view has the text “Hello!”:
 
-onView(...).check(matches(withText("Hello!")));
+	onView(...).check(matches(withText("Hello!")));
+
 Note: Do not put “assertions” into the onView argument - instead, clearly specify what you are checking inside the check block. For example:
 
 If you want to assert that “Hello!” is content of the view, the following is considered bad practice:
 
-// Don't use assertions like withText inside onView.
-onView(allOf(withId(...), withText("Hello!"))).check(matches(isDisplayed()));
+    // Don't use assertions like withText inside onView.
+    onView(allOf(withId(...), withText("Hello!"))).check(matches(isDisplayed()));
+
 On the other hand, if you want to assert that a view with the text “Hello!” is visible - for example after a change of the views visibility flag - the code is fine.
 
 Note: Be sure to pay attention to the difference between asserting that a view is not displayed and asserting that a view is not present in the view hierarchy.
 
-Get started with a simple test using onView
+# Get started with a simple test using onView
 
 In this example SimpleActivity contains a Button and a TextView. When the button is clicked the content of the TextView changes to "Hello Espresso!". Here’s how to test this with Espresso:
 
@@ -103,19 +112,23 @@ In this example SimpleActivity contains a Button and a TextView. When the button
 
 The first step is to look for a property that helps to find the button. The button in the SimpleActivity has a unique R.id - perfect!
 
-onView(withId(R.id.button_simple))
+	onView(withId(R.id.button_simple))
+
 Now to perform the click:
 
-onView(withId(R.id.button_simple)).perform(click());
+	onView(withId(R.id.button_simple)).perform(click());
+
 2. Check that the TextView now contains “Hello Espresso!”
 
 The TextView with the text to verify has a unique R.id too:
 
-onView(withId(R.id.text_simple))
+	onView(withId(R.id.text_simple))
+
 Now to verify the content text:
 
-onView(withId(R.id.text_simple)).check(matches(withText("Hello Espresso!")));
-Using onData with AdapterView controls (ListView, GridView, …)
+	onView(withId(R.id.text_simple)).check(matches(withText("Hello Espresso!")));
+
+# Using onData with AdapterView controls (ListView, GridView, …)
 
 AdapterView is a special type of widget that loads its data dynamically from an Adapter. The most common example of an AdapterView is ListView. As opposed to static widgets like LinearLayout, only a subset of the AdapterView children may be loaded into the current view hierarchy and a simple onView() search would not find views that are not currently loaded. Espresso handles this by providing a separate onData() entry point which is able to first load the adapter item in question (bringing it into focus) prior to operating on it or any of its children.
 
@@ -123,50 +136,53 @@ Note: You may choose to bypass the onData() loading action for items in adapter 
 
 Warning: Custom implementations of AdapterView can have problems with the onData() method, if they break inheritance contracts (particularly the getItem() API). In such cases, the best course of action is to refactor your application code. If you cannot do so, you can implement a matching custom AdapterViewProtocol. Take a look at the default AdapterViewProtocols provided by Espresso for more information.
 
-Get started with a simple test using onData
+# Get started with a simple test using onData
 
 This simple test demonstrates how to use onData(). SimpleActivity contains a Spinner with a few items - Strings that represent types of coffee beverages. When an item is selected, there is a TextView that changes to "One %s a day!" where %s is the selected item. The goal of this test is to open the Spinner, select a specific item and then verify that the TextView contains the item. As the Spinner class is based on AdapterView it is recommended to use onData() instead of onView() for matching the item.
 
 1. Click on the Spinner to open the item selection
 
-onView(withId(R.id.spinner_simple)).perform(click());
+	onView(withId(R.id.spinner_simple)).perform(click());
+
 2. Click on the item “Americano”
 
 For the item selection the Spinner creates a ListView with its contents - this can be very long and the element not contributed to the view hierarchy - by using onData() we force our desired element into the view hierarchy. The items in the Spinner are Strings, we want to match an item that is a String and is equal to the String “Americano”:
 
-onData(allOf(is(instanceOf(String.class)), is("Americano"))).perform(click());
+	onData(allOf(is(instanceOf(String.class)), is("Americano"))).perform(click());
+
 3. Verify that the TextView contains the String “Americano”
 
-onView(withId(R.id.spinnertext_simple))
-  .check(matches(withText(containsString("Americano"))));
-Debugging
+	onView(withId(R.id.spinnertext_simple))
+	  .check(matches(withText(containsString("Americano"))));
+
+# Debugging
 
 Espresso provides useful debugging information when a test fails:
 
-Logging
+## Logging
 
 Espresso logs all view actions to logcat. For example:
 
-  ViewInteraction: Performing 'single click' action on view with text: Espresso
+	ViewInteraction: Performing 'single click' action on view with text: Espresso
  
-View hierarchy
+## View hierarchy
 
 Espresso prints the view hierarchy in the exception string when onView() fails. * If onView() does not find the target view, a NoMatchingViewException is thrown. You can examine the view hierarchy in the exception string to analyze why the matcher did not match any views. * If onView() finds multiple views that match the given matcher, an AmbiguousViewMatcherException is thrown. The view hierarchy is printed and all views that were matched are marked with the MATCHES label:
 
-java.lang.RuntimeException:
-com.google.android.apps.common.testing.ui.espresso.AmbiguousViewMatcherException:
-This matcher matches multiple views in the hierarchy: (withId: is <123456789>)
+    java.lang.RuntimeException:
+    com.google.android.apps.common.testing.ui.espresso.AmbiguousViewMatcherException:
+    This matcher matches multiple views in the hierarchy: (withId: is <123456789>)
 …
 
-+----->SomeView{id=123456789, res-name=plus_one_standard_ann_button, visibility=VISIBLE, width=523, height=48, has-focus=false, has-focusable=true, window-focus=true,
-is-focused=false, is-focusable=false, enabled=true, selected=false, is-layout-requested=false, text=, root-is-layout-requested=false, x=0.0, y=625.0, child-count=1}
-****MATCHES****
-|
-+------>OtherView{id=123456789, res-name=plus_one_standard_ann_button, visibility=VISIBLE, width=523, height=48, has-focus=false, has-focusable=true, window-focus=true,
-is-focused=false, is-focusable=true, enabled=true, selected=false, is-layout-requested=false, text=Hello!, root-is-layout-requested=false, x=0.0, y=0.0, child-count=1}
-****MATCHES****
-When dealing with a complicated view hierarchy or unexpected behavior of widgets it is always helpful to use the Android View Hierarchy Viewer for an explanation.
+    +----->SomeView{id=123456789, res-name=plus_one_standard_ann_button, visibility=VISIBLE, width=523, height=48, has-focus=false, has-focusable=true, window-focus=true,
+    is-focused=false, is-focusable=false, enabled=true, selected=false, is-layout-requested=false, text=, root-is-layout-requested=false, x=0.0, y=625.0, child-count=1}
+    ****MATCHES****
+    |
+    +------>OtherView{id=123456789, res-name=plus_one_standard_ann_button, visibility=VISIBLE, width=523, height=48, has-focus=false, has-focusable=true, window-focus=true,
+    is-focused=false, is-focusable=true, enabled=true, selected=false, is-layout-requested=false, text=Hello!, root-is-layout-requested=false, x=0.0, y=0.0, child-count=1}
+    ****MATCHES****
+    When dealing with a complicated view hierarchy or unexpected behavior of widgets it is always helpful to use the Android View Hierarchy Viewer for an explanation.
 
-AdapterView warnings
+## AdapterView warnings
 
 Espresso warns users about presence of AdapterView widgets. When an onView() operation throws a NoMatchingViewException and AdapterView widgets are present in the view hierarchy, the most common solution is to use onData(). The exception message will include a warning with a list of the adapter views. You may use this information to invoke onData to load the target view.
