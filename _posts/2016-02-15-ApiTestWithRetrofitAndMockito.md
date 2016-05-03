@@ -11,29 +11,31 @@ tags: ""
 
 원본 : [Reliable API testing for Android with Retrofit and Mockito](http://mdswanson.com/blog/2013/12/16/reliable-android-http-testing-with-retrofit-and-mockito.html)
 
-API와 상호 작용하는 HTTP 호출을 테스트하는 것은 언제나 어렵고 다루기 싫은 일이다. 실제 웹 서버에 접속하게 되면 많은 이슈들- 부서지기 쉬운 테스트(인터넷이나 API가 다운되어 생기는 테스트 실패)이자 불완전한 테스트("Rate limit 초과 케이스를 어떻게 유발시켜야 할까? 이것이 동작했으면 좋겠는데..") -이 발생한다.
-이 이슈는 안드로이드처럼 HTTP 호출이 비동기여야 하는 플랫폼에서 더 한층 복잡해진다. 이제 당신은 혼란스럽게 타이밍을 추가하고, 아마 당신의 API 호출 테스트에 타올을 던질 준비가 되었을 것이다.
+API와 상호 작용하는 HTTP 호출을 테스트하는 것은 언제나 하기 싫고 어려운 일이다. 실제 웹 서버에 접속하게 되면 많은 이슈들 -부서지기 쉽고(인터넷이나 API가 다운되어 생기는 테스트 실패)고 불완전한("Rate limit 초과 케이스를 어떻게 유발시켜야 할까? 이것이 동작했으면 좋겠는데...")테스트-이 발생한다.
+이 이슈는 안드로이드같이 HTTP 호출이 비동기여야만 하는 플랫폼에서 더 한층 복잡해진다. 이제 당신은 혼란스럽게 타이밍을 추가하고, 아마 당신의 API 호출 테스트에 타올을 던질 준비가 되었을 것이다.
 
 이런 이슈들을 해결하고 HTTP 호출들을 믿음직하게 사용하는 방법은 Mockito(자바를 위한 Test double 라이브러리)에 포함된 멋진 유틸리티인 ArgumentCaptor를 사용하는 것이다.
 ArgumentCaptor는 하이브리드 Test double의 한 종류이다; 이는 약간 stub이고 약간 spy이지만 완전히 같지는 않다. 인수(argument) captor는 -놀랍지 않게- mock/stub에 전달된 인수들을 붙잡고 저장하는데 사용한다. 여기서의 진정한 승리는 붙잡은 인수로 메소드들을 호출하는 기능이다. 이는 Retrofit의 콜백같은 곳에서 엄청나게 잘 동작한다.
 우리는 Retrofit으로 API 호출을 만들고 콜백을 제공한다. 이 라이브러리는 서버가 응답하였을 때 응답 데이터를 넘기면서 콜백을 실행한다.
 유저 리파지토리를 조회하는 GitHub API가 있다고 하자.
 
-    getApi().repositories("swanson", new Callback<List<Repository>>() {
-        @Override
-        public void success(List<Repository> repositories, Response response) {
-            if (repositories.isEmpty()) {
-                displaySadMessage();
-            }
-
-            mAdapter.setRepositories(repositories);
+{% highlight java %}
+getApi().repositories("swanson", new Callback<List<Repository>>() {
+    @Override
+    public void success(List<Repository> repositories, Response response) {
+        if (repositories.isEmpty()) {
+            displaySadMessage();
         }
 
-        @Override
-        public void failure(RetrofitError retrofitError) {
-            displayErrorMessage();
-        }
-    });
+        mAdapter.setRepositories(repositories);
+    }
+
+    @Override
+    public void failure(RetrofitError retrofitError) {
+        displayErrorMessage();
+    }
+});
+{% endhighlight %}
 
 여기에 우리가 테스트하고 싶은 세가지 케이스가 있다 : the happy path (우리는 몇몇 리파지토리들을 받았고 이를 우리의 어뎁터에 넘겨줬다), the error path (어떤 서버 에러가 있었고, 유저에게 토스트 메시지를 보여 준다), 그리고 a special case (유저는 리파지토리를 가지고 있지 않으며, 유저에게 토스트 메시지를 보여 준다)
 두 번째와 세 번째 경우는 당신이 실제 API 서버에 접속하는 경우 테스트하기 어려울 것이다. 내가 알기로 Github는 최근 DDOS 이슈들이 있지만 당신의 에러 케이스를 테스트할 때 그것에 의지할 수는 없다.
