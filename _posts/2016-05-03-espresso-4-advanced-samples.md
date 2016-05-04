@@ -87,128 +87,134 @@ Map클래스의 객체와만 매치할 수 있기를 원하기 때문에 Bounded
 
 Note: 이 예제는 위 샘플의 withItemConent matcher를 사용한다! [AdapterViewTest#testClickOnSpecificChildOfRow60](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java)를 보라!
 
+# Matching a view that is a footer/header in a ListView
 
-Matching a view that is a footer/header in a ListView
+Header들과 Footer들은 ListView에 addHeaerView/addFooterView API를 통해 추가된다. 이들을 Espresoo.onData를 사용하여 로드하기 위해서는 데이터 객체 (두번째 파라미터)를 preset value로 추가해야 한다. 예를 들어:
 
-Headers and footers are added to ListViews via the addHeaderView/addFooterView APIs. To load them using Espresso.onData, make sure to set the data object (second param) to a preset value. For example:
+    public static final String FOOTER = "FOOTER";
+    ...
+    View footerView = layoutInflater.inflate(R.layout.list_item, listView, false);
+    ((TextView) footerView.findViewById(R.id.item_content)).setText("count:");
+    ((TextView) footerView.findViewById(R.id.item_size)).setText(String.valueOf(data.size()));
+    listView.addFooterView(footerView, FOOTER, true);
 
-public static final String FOOTER = "FOOTER";
-...
-View footerView = layoutInflater.inflate(R.layout.list_item, listView, false);
-((TextView) footerView.findViewById(R.id.item_content)).setText("count:");
-((TextView) footerView.findViewById(R.id.item_size)).setText(String.valueOf(data.size()));
-listView.addFooterView(footerView, FOOTER, true);
-Then, you can write a matcher that matches this object:
+그리고, 다신은 이 객체를 매치하는  matcher를 작성할 수 있다:
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+    import static org.hamcrest.Matchers.allOf;
+    import static org.hamcrest.Matchers.instanceOf;
+    import static org.hamcrest.Matchers.is;
 
-@SuppressWarnings("unchecked")
-public static Matcher<Object> isFooter() {
-  return allOf(is(instanceOf(String.class)), is(LongListActivity.FOOTER));
-}
-And loading the view in a test is trivial:
+    @SuppressWarnings("unchecked")
+    public static Matcher<Object> isFooter() {
+      return allOf(is(instanceOf(String.class)), is(LongListActivity.FOOTER));
+    }
 
-import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
-import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
-import static com.google.android.apps.common.testing.ui.espresso.sample.LongListMatchers.isFooter;
+그리고 테스트에서 view를 로드하는 것은 간단하다:
 
-public void testClickFooter() {
-  onData(isFooter())
-    .perform(click());
-  ...
-}
-Take a look at the full code sample at: AdapterViewtest#testClickFooter
+    import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
+    import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+    import static com.google.android.apps.common.testing.ui.espresso.sample.LongListMatchers.isFooter;
 
-Matching a view that is inside an ActionBar
+    public void testClickFooter() {
+      onData(isFooter())
+        .perform(click());
+      ...
+    }
+    
+전체 코드 샘플은 [AdapterViewtest#testClickFooter](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java)을 보라.
 
-The ActionBarTestActivity has two different action bars: a normal ActionBar and a contextual action bar that is created from a options menu. Both action bars have one item that is always visible and two items that are only visible in overflow menu. When an item is clicked, it changes a TextView to the content of the clicked item.
+# ActionBar 내부의 view에 매칭하기.
 
-Matching visible icons on both of the action bars is easy:
+ActionBarTestActivity는 두 개의 다른 action bar들를 가진다 : 일반저긴 ActionBar와 options menuㅔ서 생성된 Contextual Action bar이다. 두 action bar들은 언제나 visible한 항목 하나와 overflow 메뉴에서만 항상 visible한 항목 두 개를 가진다. 항목이 클릭되면, 이는 TextView를 클릭된 항목의 내용으로 변경한다.
 
-public void testClickActionBarItem() {
-  // We make sure the contextual action bar is hidden.
-  onView(withId(R.id.hide_contextual_action_bar))
-    .perform(click());
+두 action bar에 모두 있는 visible 아이콘의 매칭은 쉽다:
 
-  // Click on the icon - we can find it by the r.Id.
-  onView(withId(R.id.action_save))
-    .perform(click());
+    public void testClickActionBarItem() {
+      // Contexual action bar가 숨겨지도록 한다.
+      onView(withId(R.id.hide_contextual_action_bar))
+        .perform(click());
 
-  // Verify that we have really clicked on the icon by checking the TextView content.
-  onView(withId(R.id.text_action_bar_result))
-    .check(matches(withText("Save")));
-}
+      // 아이콘을 클릭한다 - 이것은 r.Id를 통해 찾을 수 있다.
+      onView(withId(R.id.action_save))
+        .perform(click());
 
+      // TextView의 내용을 체크하여 아이콘이 실제로 클릭되었는 지를 검증한다.
+      onView(withId(R.id.text_action_bar_result))
+        .check(matches(withText("Save")));
+    }
 
-The code looks identical for the contextual action bar:
+![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_icon.png)
+
+contextual action bar를 위한 코드도 동일하게 보인다:
 
 public void testClickActionModeItem() {
-  // Make sure we show the contextual action bar.
+  // Contextual action bar가 표시되도록 한다.
   onView(withId(R.id.show_contextual_action_bar))
     .perform(click());
 
-  // Click on the icon.
+  // 아이콘을 클릭한다.
   onView((withId(R.id.action_lock)))
     .perform(click());
 
-  // Verify that we have really clicked on the icon by checking the TextView content.
+        // TextView의 내용을 체크하여 아이콘이 실제로 클릭되었는 지를 검증한다.
   onView(withId(R.id.text_action_bar_result))
     .check(matches(withText("Lock")));
 }
 
+![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_contextual_icon.png)
 
-Clicking on items in the overflow menu is a bit trickier for the normal action bar as some devices have a hardware overflow menu button (they will open the overflowing items in an options menu) and some devices have a software overflow menu button (they will open a normal overflow menu). Luckily, Espresso handles that for us.
+Overflow 메뉴의 항목을 클릭하는 것은 일반 action bar보다 약간 다루기 힘들다. 어떤 단말은 하드웨어 overflow 메뉴 버튼(options menu에 overflowing item을 열 것이다)을 가지고 있고 어떤 단말은 소프트웨어 overflow menu button(일반 overflow menu를 열것이다)가지고 있기 때문이다. 운이 좋게도, Espresso는 우리를 위해 이를 처리한다.
 
-For the normal action bar:
+일단 Action bar에서는:
 
 public void testActionBarOverflow() {
-  // Make sure we hide the contextual action bar.
+      // Contexual action bar가 숨겨지도록 한다.
   onView(withId(R.id.hide_contextual_action_bar))
     .perform(click());
 
-  // Open the overflow menu OR open the options menu,
-  // depending on if the device has a hardware or software overflow menu button.
+  // 단말이 hardware 또는 software overflow 메뉴 버튼을 가지고 있냐에 따라
+  // Overflow 메뉴 또는 options 메뉴를 연다.
   openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-  // Click the item.
+  // 항목 클릭
   onView(withText("World"))
     .perform(click());
 
-  // Verify that we have really clicked on the icon by checking the TextView content.
+  // TextView의 내용을 체크하여 아이콘이 실제로 클릭 되었는지를 검증한다.
   onView(withId(R.id.text_action_bar_result))
     .check(matches(withText("World")));
 }
 
+![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_hidden_overflow.png)
 
-This is how this looks on devices with a hardware overflow menu button:
+하드웨어 overflow 메뉴 버튼을 가진 단말에서는 이렇게 보여진다:
 
+![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_hidden_no_overflow.png)
 
-
-For the contextual action bar it is really easy again:
+Contextual action bar를 위해서도 정말 매우 쉽다:
 
 public void testActionModeOverflow() {
-  // Show the contextual action bar.
+  // Contextual action bar를 보여준다.
   onView(withId(R.id.show_contextual_action_bar))
     .perform(click());
 
-  // Open the overflow menu from contextual action mode.
+  // contextual action mode를 위해 option menu를 연다.
   openContextualActionModeOverflowMenu();
 
-  // Click on the item.
+  // 항목을 클릭한다.
   onView(withText("Key"))
     .perform(click());
 
-  // Verify that we have really clicked on the icon by checking the TextView content.
+  // TextView의 내용을 체크하여 아이콘이 실제로 클릭 되었는지를 검증한다.
   onView(withId(R.id.text_action_bar_result))
     .check(matches(withText("Key")));
   }
 
+![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_contextual_hidden.png)
 
-See the full code for these samples: ActionBarTest.java.
+이 셈플들의 전체 코드를 보라 : [ActionBarTest.java](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/ActionBarTest.java)
 
-ViewAssertions
+# ViewAssertions
 
 Asserting that a view is not displayed
 
