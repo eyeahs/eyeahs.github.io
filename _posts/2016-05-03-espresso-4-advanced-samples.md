@@ -218,6 +218,7 @@ public void testActionModeOverflow() {
 
 ## 표시되지 않은 view를 assert하기
 
+일련의 행위들을 수행한 뒤, 당신은 분명히 테스트 대상 UI의 상태를 assert하고 싶을 것이다. 가끔은 이는 반증 사례일 수도 있다 (
 After performing a series of actions, you will certainly want to assert the state of the UI under test. Sometimes, this may be a negative case (for example, something is not happening). Keep in mind that you can turn any hamcrest view matcher into a ViewAssertion by using ViewAssertions.matches.
 
 In the example below, we take the isDisplayed matcher and reverse it using the standard “not” matcher:
