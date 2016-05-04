@@ -11,12 +11,12 @@ title: "espresso-4-Advanced-Samples"
 # ViewMatchers
 
 ## 다른 View 옆의 view에 매칭하기
-레이아웃은 그들 스스로 어떠한 유일점이 없는 어떤 뷰들 포함할 수 있다(예를 들어 주소록 목록에서 반복하는 전화 버튼은 view 계층에서 다른 전화 버튼들과 동일한 R.id, 동일한 문자열, 그리고 동일한 속성들을 가지고 있을 수 있다).
+레이아웃은 유일점이 없는 뷰들을 포함할 수 있다(예를 들어 주소록 목록에서 반복되는 전화 버튼은 view 계층에서 다른 전화 버튼들과 동일한 R.id, 동일한 문자열, 그리고 동일한 속성들을 가지고 있을 것이다).
 
 예를 들어, 이 activity에서, "7"이라는 글자는 여러 열에서 반복된다.
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/hasSibling.png)
 
-종종, 유일하지 않은 view는 그 옆에 위치한 어떤 유일한 레이블과 쌍을 이룰 수 있다(예를 들어 주소록의 전화 버튼 옆의 이름). 이 경우, 당신은 당신의 선택을 좁히기 위해 hasSibling matcher를 사용할 수 있다:
+종종, 유일하지 않은 view는 그 옆에 위치한 어떤 유일한 레이블과 쌍을 이룰 수 있다 (예를 들어 주소록의 전화 버튼 옆의 이름). 이 경우, 당신은 당신의 선택을 좁히기 위해 hasSibling matcher를 사용할 수 있다:
 
 	onView(allOf(withText("7"), hasSibling(withText("item: 0"))))
       .perform(click());
@@ -43,7 +43,7 @@ onData안의 Matcher<Object>를 분해해보자:
 
 	hasEntry(equalTo("STR"), is("item: 50"))
 
-Matcher<String, Object>는 어느 key와 value을 가진 entry를 포함한 어느 Map을 매치한다. 이를 찾기 위한 코드는 길고 우리는 다른 위치에서 이를 재사용하고 싶다 - 이를 위해 커스텀 "withItemContent" matcher를 만들도록 하자.
+이 Matcher<String, Object>는 key "STR"과 value "item: 50"인 entry를 가진 어떤 Map를 매치한다. 이 코드는 길고 다른 위치에서 재사용하고 싶기 때문에 - 커스텀 "withItemContent" matcher를 만들도록 하자.
 
       return new BoundedMatcher<Object, Map>(Map.class) {
         @Override
@@ -61,6 +61,7 @@ Matcher<String, Object>는 어느 key와 value을 가진 entry를 포함한 어�
     
 Map클래스의 객체와만 매치할 수 있기를 원하기 때문에 BoundedMatcher를 기반으로 사용한다. We override the matchesSafely method, put in the matcher we found earlier and match it against a Matcher<String> that can be passed as an argument. 이는 우리가 withItemContent(equalTo("foo"))를 할 수 있게 해준다. 코드를 간결하게 하기 위해, equalTo를 미리 하고 String을 받는 다른 matcher를 만든다.
 
+
     public static Matcher<Object> withItemContent(String expectedText) {
       checkNotNull(expectedText);
       return withItemContent(equalTo(expectedText));
@@ -74,8 +75,7 @@ Map클래스의 객체와만 매치할 수 있기를 원하기 때문에 Bounded
 
 # View의 특정 자식 view에 매칭하기
 
-위 샘플은 ListView의 열 전체의 중간을 클릭하는 문제가 있다. 만약 우리가 열을 특정 자식에게 
-The sample above issues a click in the middle of the entire row of a ListView. But what if we want to operate on a specific child of the row? For example, we would like to click on the second column of the row of the LongListActivity, which displays the String.length of the first row (to make this less abstract, you can imagine the G+ app that shows a list of comments and each comment has a +1 button next to it):
+위 샘플은 ListView의 열 전체의 중간을 클릭하는 문제가 있다. 만약 우리가 열의 특정 자식에게 작업을 하고 싶으면 어찌 되는가? 예를 들어, LongListActivity의 열의 두번째 행을 클릭하고 싶다. 이는 첫 열의 String.length을 표시한다. (이를 덜 추상적으로 하자면, 당신은 G+앱이 댓글 목록을 보여주며 각 댓글의 옆에 +1 버튼이 있는 것을 생각해보라)
 
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/item50.png)
 
