@@ -23,8 +23,8 @@ title: "espresso-4-Advanced-Samples"
 
 ## onData와 커스텀 ViewMatcher로 데이터 매칭하기
 
-아래의 Activity는 각 행을 위해 Map<String, Object>안에 데이터를 가지고 있는 [SimpleAdapter](http://developer.android.com/intl/ko/reference/android/widget/SimpleAdapter.html)
-의 원조를 받는 ListView를 포함한다. 각 map은 content(string, "item:x")이 들어있는 키 "STR"과 content의 길이인 Interger가 들어있는 키 "LEN"를 가진다.
+아래의 Activity는 [SimpleAdapter](http://developer.android.com/intl/ko/reference/android/widget/SimpleAdapter.html)
+의 원조를 받는 ListView를 포함한다. SimpleAdapter는 각 행을 위한 데이터를 Map<String, Object>에 보유하고 있다. 각 map은 키 "STR"에 content(string, "item:x")이 들어있는 entry와 키 "LEN"에 content의 길이인 Interger가 들어있는 entry를 가진다.
 
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/list_activity.png)
 
@@ -37,13 +37,13 @@ onData안의 Matcher<Object>를 분해해보자:
 
 	is(instanceOf(Map.class))
 
-AdapterView에서 Map인 특정 항목으로 검색을 좁힌다.
+이는 AdapterView의 특정 항목이 Map인 경우로 검색을 좁힌다.
 
-우리의 경우, 이는 목록 view의 모든 열이다. 하지만 우리는 명확하게 "item: 50"을 클릭하기를 원한다. 그래서 다음과 같이 검색을 더 좁힌다:
+우리의 경우, 목록 view의 모든 열이 해당되지만 우리는 명확히 "item: 50"을 클릭하기를 원한다. 그래서 다음과 같이 검색을 더 좁힌다:
 
 	hasEntry(equalTo("STR"), is("item: 50"))
 
-This Matcher<String, Object> will match any Map that contains an entry with any key and value = “item: 50”. As the code to look up this is long and we want to reuse it in other locations - let us write a custom “withItemContent” matcher for that.
+Matcher<String, Object>는 어느 key와 value을 가진 entry를 포함한 어느 Map을 매치한다. 이를 찾기 위한 코드는 길고 우리는 다른 위치에서 이를 재사용하고 싶다 - 이를 위해 커스텀 "withItemContent" matcher를 만들도록 하자.
 
       return new BoundedMatcher<Object, Map>(Map.class) {
         @Override
@@ -59,18 +59,18 @@ This Matcher<String, Object> will match any Map that contains an entry with any 
       };
     }
     
-We use a BoundedMatcher as a base because we want to be able to only match on objects of class Map. We override the matchesSafely method, put in the matcher we found earlier and match it against a Matcher<String> that can be passed as an argument. This allows us to do withItemContent(equalTo("foo")). For code brevity, we create another matcher that already does the equalTo for us and accepts a String.
+Map클래스의 객체와만 매치할 수 있기를 원하기 때문에 BoundedMatcher를 기반으로 사용한다. We override the matchesSafely method, put in the matcher we found earlier and match it against a Matcher<String> that can be passed as an argument. 이는 우리가 withItemContent(equalTo("foo"))를 할 수 있게 해준다. 코드를 간결하게 하기 위해, equalTo를 미리 하고 String을 받는 다른 matcher를 만든다.
 
     public static Matcher<Object> withItemContent(String expectedText) {
       checkNotNull(expectedText);
       return withItemContent(equalTo(expectedText));
     }
     
-Now the code to click on the item is simple:
+이제 항목을 클릭하기 위한 코드는 간단하다:
 
 	onData(withItemContent("item: 50")) .perform(click());
     
-For the full code of this test, take a look at [AdapterViewTest#testClickOnItem50](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java) and the [custom matcher](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/LongListMatchers.java).
+이 테스트의 전체 코드는 [AdapterViewTest#testClickOnItem50](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java)과 [custom matcher](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/LongListMatchers.java)을 보라.
 
 # View의 특정 자식 view에 매칭하기
 
