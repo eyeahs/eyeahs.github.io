@@ -75,7 +75,7 @@ Map클래스의 객체와만 매치할 수 있기를 원하기 때문에 Bounded
 
 ## View의 특정 자식 view에 매칭하기
 
-위 샘플은 ListView의 열 전체의 중간을 클릭하는 문제가 있다. 만약 우리가 열의 특정 자식에게 작업을 하고 싶으면 어떻게 해야하나? 예를 들어, LongListActivity의 열에 첫 행의 String.length을 표시하는 두번째 행을 클릭하고 싶다. (이를 덜 추상적으로 하자면, 당신은 G+앱이 댓글 목록을 보여주며 각 댓글의 옆에 +1 버튼이 있는 것을 생각해보라)
+위 샘플은 ListView의 열 전체의 중간을 클릭하는 문제가 있다. 만약 우리가 열의 특정 자식에게 작업을 하고 싶으면 어떻게 해야하나? 예를 들어, LongListActivity의 열안의 첫 행의 String.length을 표시하는 두번째 행을 클릭하고 싶다. (이를 덜 추상적으로 말하자면, 당신은 G+앱이 댓글 목록을 보여주며 각 댓글의 옆에 +1 버튼이 있는 것을 생각해보라)
 
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/item50.png)
 
