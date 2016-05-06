@@ -11,7 +11,7 @@ title: "espresso-4-Advanced-Samples"
 # ViewMatchers
 
 ## 다른 View 옆의 view에 매칭하기
-레이아웃은 유일점이 없는 뷰들을 포함할 수 있다(예를 들어 주소록 목록에서 반복되는 전화 버튼은 view 계층에서 다른 전화 버튼들과 동일한 R.id, 동일한 문자열, 그리고 동일한 속성들을 가지고 있을 것이다).
+레이아웃은 유일한 값이 없는 뷰들을 포함할 수 있다(예를 들어 주소록 목록에서 반복되는 전화 버튼은 view 계층에서 다른 전화 버튼들과 동일한 R.id, 동일한 문자열, 그리고 동일한 속성들을 가지고 있을 것이다).
 
 예를 들어, 이 activity에서, "7"이라는 글자는 여러 열에서 반복된다.
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/hasSibling.png)
@@ -218,10 +218,9 @@ public void testActionModeOverflow() {
 
 ## 표시되지 않은 view를 assert하기
 
-일련의 행위들을 수행한 뒤, 당신은 분명히 테스트 대상 UI의 상태를 assert하고 싶을 것이다. 가끔은 이는 반증 사례일 수도 있다 (
-After performing a series of actions, you will certainly want to assert the state of the UI under test. Sometimes, this may be a negative case (for example, something is not happening). Keep in mind that you can turn any hamcrest view matcher into a ViewAssertion by using ViewAssertions.matches.
+일련의 행위들을 수행한 뒤에는 당신은 분명히 테스트 대상 UI의 상태를 assert하고 싶을 것이다. 가끔은 이는 부정 사례일 수도 있다 (예를 들어, 어떤 것이 일어나지 않았다). 어떤 hamcrest view matcher이든 ViewAssertions.matcher를 사용하여 ViewAssertion으로 바꿀 수 있음을 잊지마라.
 
-In the example below, we take the isDisplayed matcher and reverse it using the standard “not” matcher:
+아래 예제에서, 우리는 isDisplayed matcher를 가지고 표준 "not" matcher를 사용하여 역으로 만든다:
 
     import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
     import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
@@ -232,11 +231,11 @@ In the example below, we take the isDisplayed matcher and reverse it using the s
     onView(withId(R.id.bottom_left))
       .check(matches(not(isDisplayed())));
       
-The above approach works if the view is still part of the hierarchy. If it is not, you will get a NoMatchingViewException and you need to use ViewAssertions.doesNotExist (see below).
+위의 접근법은 view가 여전히 계층의 일부이라면 동작할 것이다. 그렇지 않다면, 당신은 NoMatchingViewException을 받을 것이고 ViewAssertions.doesNotExist를 사용할 필요가 있다(아래를 보라).
 
-## Asserting that a view is not present
+## 존재하지 않는 view를 assert하기
 
-If the view is gone from the view hierarchy (e.g. this may happen if an action caused a transition to another activity), you should use ViewAssertions.doesNotExist:
+만약 view가 view 계층에서 사라지면 (예를 들어, 행위가 다른 activity로 이동함을 야기할 경우 발생할 것이다), ViewAssertions.doesNotExist를 사용하여야 한다:
 
     import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
     import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.doesNotExist;
@@ -366,4 +365,3 @@ Take a look at the sample or the sample on GitHub.
 그외 
 http://www.vogella.com/tutorials/AndroidTestingEspresso/article.html
 https://androidresearch.wordpress.com/2015/04/04/an-introduction-to-espresso/
-
