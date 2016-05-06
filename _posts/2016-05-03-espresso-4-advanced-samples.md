@@ -10,21 +10,21 @@ title: "espresso-4-Advanced-Samples"
 
 # ViewMatchers
 
-## 다른 View 옆의 view에 매칭하기
-레이아웃은 유일한 값이 없는 뷰들을 포함할 수 있다(예를 들어 주소록 목록에서 반복되는 전화 버튼은 view 계층에서 다른 전화 버튼들과 동일한 R.id, 동일한 문자열, 그리고 동일한 속성들을 가지고 있을 것이다).
+## 다른 view 옆의 view에 연결하기
+레이아웃은 유일한 값이 없는 뷰들을 가질 수 있다(예를 들어 주소록 목록에서 반복되는 전화 버튼은 view 계층에서 다른 전화 버튼들과 동일한 R.id, 동일한 문자열, 그리고 동일한 속성들을 가질 수 있다).
 
-예를 들어, 이 activity에서, "7"이라는 글자는 여러 열에서 반복된다.
+예를 들어, 이 activity에서, "7"이라는 텍스트는 여러 열에서 반복된다.
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/hasSibling.png)
 
-종종, 유일하지 않은 view는 그 옆에 위치한 어떤 유일한 레이블과 쌍을 이룰 수 있다 (예를 들어 주소록의 전화 버튼 옆의 이름). 이 경우, 당신은 당신의 선택을 좁히기 위해 hasSibling matcher를 사용할 수 있다:
+종종, 유일하지 않은 view는 그 옆에 위치한 어떤 유일한 레이블과 쌍을 이룰 수 있다(예를 들어 주소록의 전화 버튼 옆의 이름). 이 경우, 당신은 당신의 선택을 좁히기 위해 hasSibling matcher를 사용할 수 있다:
 
 	onView(allOf(withText("7"), hasSibling(withText("item: 0"))))
       .perform(click());
 
-## onData와 커스텀 ViewMatcher로 데이터 매칭하기
+## onData와 커스텀 ViewMatcher로 데이터에 연결하기
 
 아래의 Activity는 [SimpleAdapter](http://developer.android.com/intl/ko/reference/android/widget/SimpleAdapter.html)
-의 원조를 받는 ListView를 포함한다. SimpleAdapter는 각 행을 위한 데이터를 Map<String, Object>에 보유하고 있다. 각 map은 키 "STR"에 content(string, "item:x")이 들어있는 entry와 키 "LEN"에 content의 길이인 Interger가 들어있는 entry를 가진다.
+의 도움을 받는 ListView를 포함한다. SimpleAdapter는 Map<String, Object>에 각 행을 위한 데이터를 가지고 있다. 각 map은 키 "STR"에 content(string, "item:x")를 가지는 entry와 키 "LEN"에 content의 length인 Interger를 가지는 entry를 가진다.
 
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/list_activity.png)
 
@@ -33,7 +33,7 @@ title: "espresso-4-Advanced-Samples"
 	onData(allOf(is(instanceOf(Map.class)), hasEntry(equalTo("STR"), is("item: 50")))
 	  .perform(click());
   
-onData안의 Matcher<Object>를 분해해보자:
+onData안의 Matcher<Object>를 분리해서 보자:
 
 	is(instanceOf(Map.class))
 
@@ -43,7 +43,7 @@ onData안의 Matcher<Object>를 분해해보자:
 
 	hasEntry(equalTo("STR"), is("item: 50"))
 
-이 Matcher<String, Object>는 key "STR"과 value "item: 50"인 entry를 가진 어떤 Map를 매치한다. 이 코드는 길고 다른 위치에서 재사용하고 싶기 때문에 - 커스텀 "withItemContent" matcher를 만들도록 하자.
+이 Matcher<String, Object>는 key가 "STR"이고 value는 "item: 50"인 entry를 포함하는 어떤 Map과 연결할 것이다. 이 찾기를 위한 코드는 길다. 그리고 우리는 이 코드를 다른 위치에서 재사용하고 싶기 때문에 - 우리는 이를 위한 커스텀 "withItemContent" matcher를 만들도록 하자.
 
       return new BoundedMatcher<Object, Map>(Map.class) {
         @Override
