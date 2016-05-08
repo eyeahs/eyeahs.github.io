@@ -1,11 +1,8 @@
 ---
 layout: post
 category: blog
-splash: ""
-tags: ""
 published: true
 title: "espresso-4-Advanced-Samples"
-
 date: "2016-05-08 10:50:00 +09:00"
 ---
 [원본](https://google.github.io/android-testing-support-library/docs/espresso/advanced/index.html)
@@ -16,7 +13,7 @@ date: "2016-05-08 10:50:00 +09:00"
 레이아웃은 유일한 값이 없는 뷰들을 가질 수 있다(예를 들어 주소록 목록에서 반복되는 전화 버튼은 view 계층에서 다른 전화 버튼들과 동일한 R.id, 동일한 문자열, 그리고 동일한 속성들을 가질 수 있다).
 
 예를 들어, 이 activity에서, "7"이라는 텍스트는 여러 열에서 반복된다.
-![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/hasSibling.png)
+![]({{site.baseurl}}https://google.github.io/android-testing-support-library/docs/images/hasSibling.png)
 
 가끔은 유일하지 않은 view는 그 옆에 위치한 어떤 유일한 레이블과 쌍을 이룰 수 있다(예를 들어 주소록의 전화 버튼 옆의 이름). 이런 경우, 선택을 좁히기 위해 hasSibling matcher를 사용할 수 있다:
 
