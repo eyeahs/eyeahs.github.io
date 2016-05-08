@@ -4,8 +4,6 @@ category: blog
 title: "Espresso #2 - Espresso 기초"
 date: "2016-05-03 20:02:00 +0900"
 published: true
-splash: ""
-tags: ""
 ---
 
 [원본](https://google.github.io/android-testing-support-library/docs/espresso/basics/index.html)
@@ -143,7 +141,7 @@ Note: 초기에 스크린에 표시되는 Adapter view안의 항목에 대해서
 
 # onData를 사용하는 간단한 테스트로 시작하기
 
-이 간단한 테스트는 어떻게 onData()를 사용하는지를 보여준다. SimpleActivity은 약간의 항목을 -커피 음료의 유형들을 나타내는 스트링들- 가진 Spinner를 포함한다. 항목이 선택되면, "One %s a day!"(%s은 선택된 항목)으로 변경되는 TextView가 있다. 이 테스트의 목적은 Spinner를 열고 특정 항목을 선택한 뒤 TextView가 item을 포함하는 지를 검증하는 것이다. Spinner 클래스가 AdapterView에 기반하고 있기 때문에 항목 매칭을 위해 onView() 대신 onData()를 사용하는 것이 권장된다.
+이 간단한 테스트는 어떻게 onData()를 사용하는지를 보여준다. SimpleActivity은 약간의 항목을 -커피 음료의 유형들을 나타내는 스트링들- 가진 Spinner를 포함한다. 항목이 선택되면, "One %s a day!"(%s은 선택된 항목)으로 변경되는 TextView가 있다. 이 테스트의 목적은 Spinner를 열고 특정 항목을 선택한 뒤 TextView가 item을 포함하는 지를 검증하는 것이다. Spinner 클래스는 AdapterView에 기반하고 있으므로 항목 매칭을 위해 onView() 대신 onData()를 사용하는 것이 권장된다.
 
 ### 1.항목 선택을 열기 위해 Spinner를 클릭하라
 
