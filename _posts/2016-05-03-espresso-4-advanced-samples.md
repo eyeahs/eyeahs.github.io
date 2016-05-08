@@ -149,19 +149,19 @@ Header들과 Footer들은 ListView에 addHeaerView/addFooterView API를 통해 �
 
 contextual action bar를 위한 코드도 동일하게 보인다:
 
-public void testClickActionModeItem() {
-  // Contextual action bar가 표시되도록 한다.
-  onView(withId(R.id.show_contextual_action_bar))
-    .perform(click());
+    public void testClickActionModeItem() {
+      // Contextual action bar가 표시되도록 한다.
+      onView(withId(R.id.show_contextual_action_bar))
+        .perform(click());
 
-  // 아이콘을 클릭한다.
-  onView((withId(R.id.action_lock)))
-    .perform(click());
+      // 아이콘을 클릭한다.
+      onView((withId(R.id.action_lock)))
+        .perform(click());
 
-        // TextView의 내용을 체크하여 아이콘이 실제로 클릭되었는 지를 검증한다.
-  onView(withId(R.id.text_action_bar_result))
-    .check(matches(withText("Lock")));
-}
+            // TextView의 내용을 체크하여 아이콘이 실제로 클릭되었는 지를 검증한다.
+      onView(withId(R.id.text_action_bar_result))
+        .check(matches(withText("Lock")));
+    }
 
 ![](https://google.github.io/android-testing-support-library/docs/images/actionbar_contextual_icon.png)
 
@@ -169,23 +169,23 @@ Overflow 메뉴의 항목을 클릭하는 것은 일반 action bar보다 약간 
 
 일단 Action bar에서는:
 
-public void testActionBarOverflow() {
-      // Contexual action bar가 숨겨지도록 한다.
-  onView(withId(R.id.hide_contextual_action_bar))
-    .perform(click());
+    public void testActionBarOverflow() {
+          // Contexual action bar가 숨겨지도록 한다.
+      onView(withId(R.id.hide_contextual_action_bar))
+        .perform(click());
 
-  // 단말이 hardware 또는 software overflow 메뉴 버튼을 가지고 있냐에 따라
-  // Overflow 메뉴 또는 options 메뉴를 연다.
-  openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+      // 단말이 hardware 또는 software overflow 메뉴 버튼을 가지고 있냐에 따라
+      // Overflow 메뉴 또는 options 메뉴를 연다.
+      openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-  // 항목 클릭
-  onView(withText("World"))
-    .perform(click());
+      // 항목 클릭
+      onView(withText("World"))
+        .perform(click());
 
-  // TextView의 내용을 체크하여 아이콘이 실제로 클릭 되었는지를 검증한다.
-  onView(withId(R.id.text_action_bar_result))
-    .check(matches(withText("World")));
-}
+      // TextView의 내용을 체크하여 아이콘이 실제로 클릭 되었는지를 검증한다.
+      onView(withId(R.id.text_action_bar_result))
+        .check(matches(withText("World")));
+    }
 
 ![](https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_hidden_overflow.png)
 
@@ -195,22 +195,22 @@ public void testActionBarOverflow() {
 
 Contextual action bar를 위해서도 정말 매우 쉽다:
 
-public void testActionModeOverflow() {
-  // Contextual action bar를 보여준다.
-  onView(withId(R.id.show_contextual_action_bar))
-    .perform(click());
+    public void testActionModeOverflow() {
+      // Contextual action bar를 보여준다.
+      onView(withId(R.id.show_contextual_action_bar))
+        .perform(click());
 
-  // contextual action mode를 위해 option menu를 연다.
-  openContextualActionModeOverflowMenu();
+      // contextual action mode를 위해 option menu를 연다.
+      openContextualActionModeOverflowMenu();
 
-  // 항목을 클릭한다.
-  onView(withText("Key"))
-    .perform(click());
+      // 항목을 클릭한다.
+      onView(withText("Key"))
+        .perform(click());
 
-  // TextView의 내용을 체크하여 아이콘이 실제로 클릭 되었는지를 검증한다.
-  onView(withId(R.id.text_action_bar_result))
-    .check(matches(withText("Key")));
-  }
+      // TextView의 내용을 체크하여 아이콘이 실제로 클릭 되었는지를 검증한다.
+      onView(withId(R.id.text_action_bar_result))
+        .check(matches(withText("Key")));
+      }
 
 ![](https://google.github.io/android-testing-support-library/docs/images/actionbar_contextual_hidden.png)
 
