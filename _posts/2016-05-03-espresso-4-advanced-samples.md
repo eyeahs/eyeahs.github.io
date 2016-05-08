@@ -13,7 +13,7 @@ date: "2016-05-08 10:50:00 +09:00"
 레이아웃은 유일한 값이 없는 뷰들을 가질 수 있다(예를 들어 주소록 목록에서 반복되는 전화 버튼은 view 계층에서 다른 전화 버튼들과 동일한 R.id, 동일한 문자열, 그리고 동일한 속성들을 가질 수 있다).
 
 예를 들어, 이 activity에서, "7"이라는 텍스트는 여러 열에서 반복된다.
-![]({{site.baseurl}}https://google.github.io/android-testing-support-library/docs/images/hasSibling.png)
+![](https://google.github.io/android-testing-support-library/docs/images/hasSibling.png)
 
 가끔은 유일하지 않은 view는 그 옆에 위치한 어떤 유일한 레이블과 쌍을 이룰 수 있다(예를 들어 주소록의 전화 버튼 옆의 이름). 이런 경우, 선택을 좁히기 위해 hasSibling matcher를 사용할 수 있다:
 
@@ -25,7 +25,7 @@ date: "2016-05-08 10:50:00 +09:00"
 아래의 Activity는 [SimpleAdapter](http://developer.android.com/intl/ko/reference/android/widget/SimpleAdapter.html)
 의 도움을 받는 ListView를 포함한다. SimpleAdapter는 Map<String, Object>에 각 행을 위한 데이터를 가지고 있다. 각 map은 키 "STR"에 content(string, "item:x")를 가지는 entry와 키 "LEN"에 content의 length인 Interger를 가지는 entry를 가진다.
 
-![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/list_activity.png)
+![](https://google.github.io/android-testing-support-library/docs/images/list_activity.png)
 
 "item: 50"을 가진 열을 클릭하는 코드는 다음과 같다:
 
@@ -78,7 +78,7 @@ Map 클래스의 객체에 일치 할 수 있도록 BoundedMatcher를 기반으�
 
 위 샘플은 ListView의 열 전체의 중앙을 클릭하는 문제가 있다. 만약 우리가 열의 특정한 자식에게 작업을 하고 싶으면 어떻게 해야할까? 예를 들어, LongListActivity의 열 내부에 있는 첫 행의 String.length을 표시하는 두번째 행을 클릭하고 싶다. (이를 덜 추상적으로 말하자면, 당신은 G+앱이 댓글 목록을 보여주며 각 댓글의 옆에 +1 버튼이 있는 것을 생각해보라)
 
-![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/item50.png)
+![](https://google.github.io/android-testing-support-library/docs/images/item50.png)
 
 이제 당신의 DataInteraction에 onChildView 명시를 추가하라:
 
@@ -144,7 +144,7 @@ Header들과 Footer들은 ListView에 addHeaerView/addFooterView API를 통해 �
         .check(matches(withText("Save")));
     }
 
-![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_icon.png)
+![](https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_icon.png)
 
 contextual action bar를 위한 코드도 동일하게 보인다:
 
@@ -162,7 +162,7 @@ public void testClickActionModeItem() {
     .check(matches(withText("Lock")));
 }
 
-![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_contextual_icon.png)
+![](https://google.github.io/android-testing-support-library/docs/images/actionbar_contextual_icon.png)
 
 Overflow 메뉴의 항목을 클릭하는 것은 일반 action bar보다 약간 다루기 힘들다. 어떤 단말은 하드웨어 overflow 메뉴 버튼(options menu에 overflowing item을 열 것이다)을 가지고 있고 어떤 단말은 소프트웨어 overflow menu button(일반 overflow menu를 열것이다)가지고 있기 때문이다. 운이 좋게도, Espresso는 우리를 위해 이를 처리한다.
 
@@ -186,11 +186,11 @@ public void testActionBarOverflow() {
     .check(matches(withText("World")));
 }
 
-![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_hidden_overflow.png)
+![](https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_hidden_overflow.png)
 
 하드웨어 overflow 메뉴 버튼을 가진 단말에서는 이렇게 보여진다:
 
-![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_hidden_no_overflow.png)
+![](https://google.github.io/android-testing-support-library/docs/images/actionbar_normal_hidden_no_overflow.png)
 
 Contextual action bar를 위해서도 정말 매우 쉽다:
 
@@ -211,7 +211,7 @@ public void testActionModeOverflow() {
     .check(matches(withText("Key")));
   }
 
-![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/actionbar_contextual_hidden.png)
+![](https://google.github.io/android-testing-support-library/docs/images/actionbar_contextual_hidden.png)
 
 이 셈플들의 전체 코드를 보라 : [ActionBarTest.java](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/ActionBarTest.java)
 
