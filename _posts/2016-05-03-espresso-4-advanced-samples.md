@@ -1,8 +1,12 @@
 ---
-layout: blog
-category: post
-published: false
+layout: post
+category: blog
+splash: ""
+tags: ""
+published: true
 title: "espresso-4-Advanced-Samples"
+
+date: "2016-05-08 10:50:00 +09:00"
 ---
 [원본](https://google.github.io/android-testing-support-library/docs/espresso/advanced/index.html)
 
