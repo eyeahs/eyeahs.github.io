@@ -1,8 +1,6 @@
 ---
 layout: blog
 category: post
-splash: ""
-tags: ""
 published: false
 title: "espresso-4-Advanced-Samples"
 ---
@@ -16,7 +14,7 @@ title: "espresso-4-Advanced-Samples"
 예를 들어, 이 activity에서, "7"이라는 텍스트는 여러 열에서 반복된다.
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/hasSibling.png)
 
-종종, 유일하지 않은 view는 그 옆에 위치한 어떤 유일한 레이블과 쌍을 이룰 수 있다(예를 들어 주소록의 전화 버튼 옆의 이름). 이 경우, 당신은 당신의 선택을 좁히기 위해 hasSibling matcher를 사용할 수 있다:
+가끔은 유일하지 않은 view는 그 옆에 위치한 어떤 유일한 레이블과 쌍을 이룰 수 있다(예를 들어 주소록의 전화 버튼 옆의 이름). 이런 경우, 선택을 좁히기 위해 hasSibling matcher를 사용할 수 있다:
 
 	onView(allOf(withText("7"), hasSibling(withText("item: 0"))))
       .perform(click());
@@ -33,11 +31,11 @@ title: "espresso-4-Advanced-Samples"
 	onData(allOf(is(instanceOf(Map.class)), hasEntry(equalTo("STR"), is("item: 50")))
 	  .perform(click());
   
-onData안의 Matcher<Object>를 분리해서 보자:
+onData내부의 Matcher<Object>를 분리해서 보자:
 
 	is(instanceOf(Map.class))
 
-이는 AdapterView의 특정 항목이 Map인 경우로 검색을 좁힌다.
+이는 AdapterView의 항목들 중 Map인 경우로 검색을 좁힌다.
 
 우리의 경우, 목록 view의 모든 열이 해당되지만 우리는 명확히 "item: 50"을 클릭하기를 원한다. 그래서 다음과 같이 검색을 더 좁힌다:
 
@@ -45,6 +43,10 @@ onData안의 Matcher<Object>를 분리해서 보자:
 
 이 Matcher<String, Object>는 key가 "STR"이고 value는 "item: 50"인 entry를 포함하는 어떤 Map과 연결할 것이다. 이 찾기를 위한 코드는 길다. 그리고 우리는 이 코드를 다른 위치에서 재사용하고 싶기 때문에 - 우리는 이를 위한 커스텀 "withItemContent" matcher를 만들도록 하자.
 
+    @SuppressWarnings("rawtypes")
+    public static Matcher<Object> withItemContent(final Matcher<String> itemTextMatcher) {
+      // 테스트가 잘못된 matcher를 생성하였을 때 빠르게 실패하기 위한 전제 조건을 사용한다.
+      checkNotNull(itemTextMatcher);
       return new BoundedMatcher<Object, Map>(Map.class) {
         @Override
         public boolean matchesSafely(Map map) {
@@ -59,8 +61,7 @@ onData안의 Matcher<Object>를 분리해서 보자:
       };
     }
     
-Map클래스의 객체와만 매치할 수 있기를 원하기 때문에 BoundedMatcher를 기반으로 사용한다. We override the matchesSafely method, put in the matcher we found earlier and match it against a Matcher<String> that can be passed as an argument. 이는 우리가 withItemContent(equalTo("foo"))를 할 수 있게 해준다. 코드를 간결하게 하기 위해, equalTo를 미리 하고 String을 받는 다른 matcher를 만든다.
-
+Map 클래스의 객체에만 매치할 수 있도록 BoundedMatcher를 기반으로 한다. matchesSafely 메소드를 오버라이드한 뒤 우리가 이전에 찾은 matcher에 넣은 뒤 인수로 전달받는 Matcher<String>와 이를 비교해본다. 이는 우리가 withItemContent(equalTo("foo"))를 할 수 있게 해준다. 코드를 간결하게 하기 위해, equalTo를 미리 하고 String을 받는 다른 matcher를 만든다.
 
     public static Matcher<Object> withItemContent(String expectedText) {
       checkNotNull(expectedText);
@@ -69,13 +70,13 @@ Map클래스의 객체와만 매치할 수 있기를 원하기 때문에 Bounded
     
 이제 항목을 클릭하기 위한 코드는 간단하다:
 
-	onData(withItemContent("item: 50")) .perform(click());
+	onData(withItemContent("item: 50")).perform(click());
     
 이 테스트의 전체 코드는 [AdapterViewTest#testClickOnItem50](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java)과 [custom matcher](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/LongListMatchers.java)을 보라.
 
 ## View의 특정 자식 view에 매칭하기
 
-위 샘플은 ListView의 열 전체의 중간을 클릭하는 문제가 있다. 만약 우리가 열의 특정 자식에게 작업을 하고 싶으면 어떻게 해야하나? 예를 들어, LongListActivity의 열안의 첫 행의 String.length을 표시하는 두번째 행을 클릭하고 싶다. (이를 덜 추상적으로 말하자면, 당신은 G+앱이 댓글 목록을 보여주며 각 댓글의 옆에 +1 버튼이 있는 것을 생각해보라)
+위 샘플은 ListView의 열 전체의 중앙을 클릭하는 문제가 있다. 만약 우리가 열의 특정한 자식에게 작업을 하고 싶으면 어떻게 해야할까? 예를 들어, LongListActivity의 열 내부에 있는 첫 행의 String.length을 표시하는 두번째 행을 클릭하고 싶다. (이를 덜 추상적으로 말하자면, 당신은 G+앱이 댓글 목록을 보여주며 각 댓글의 옆에 +1 버튼이 있는 것을 생각해보라)
 
 ![]({{site.baseurl}}/https://google.github.io/android-testing-support-library/docs/images/item50.png)
 
@@ -98,7 +99,7 @@ Header들과 Footer들은 ListView에 addHeaerView/addFooterView API를 통해 �
     ((TextView) footerView.findViewById(R.id.item_size)).setText(String.valueOf(data.size()));
     listView.addFooterView(footerView, FOOTER, true);
 
-그리고, 다신은 이 객체를 매치하는  matcher를 작성할 수 있다:
+그리고, 다신은 이 객체를 매치하는 matcher를 작성할 수 있다:
 
     import static org.hamcrest.Matchers.allOf;
     import static org.hamcrest.Matchers.instanceOf;
