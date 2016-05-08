@@ -41,7 +41,7 @@ onData내부의 Matcher<Object>를 분리해서 보자:
 
 	hasEntry(equalTo("STR"), is("item: 50"))
 
-이 Matcher<String, Object>는 key가 "STR"이고 value는 "item: 50"인 entry를 포함하는 어떤 Map과 연결할 것이다. 이 찾기를 위한 코드는 길다. 그리고 우리는 이 코드를 다른 위치에서 재사용하고 싶기 때문에 - 우리는 이를 위한 커스텀 "withItemContent" matcher를 만들도록 하자.
+이 Matcher<String, Object>는 key가 "STR"이고 value는 "item: 50"인 entry를 포함하는 어떤 Map과 연결할 것이다. 이 검색을 위한 코드는 길다. 그리고 우리는 이 코드를 다른 위치에서도 재사용하고 싶기 때문에 - 이를 위한 커스텀 "withItemContent" matcher를 만들도록 하자.
 
     @SuppressWarnings("rawtypes")
     public static Matcher<Object> withItemContent(final Matcher<String> itemTextMatcher) {
@@ -61,8 +61,7 @@ onData내부의 Matcher<Object>를 분리해서 보자:
       };
     }
     
-Map 클래스의 객체에만 매치할 수 있도록 BoundedMatcher를 기반으로 한다. matchesSafely 메소드를 오버라이드한 뒤 우리가 이전에 찾은 matcher에 넣은 뒤 인수로 전달받는 Matcher<String>와 이를 비교해본다. 이는 우리가 withItemContent(equalTo("foo"))를 할 수 있게 해준다. 코드를 간결하게 하기 위해, equalTo를 미리 하고 String을 받는 다른 matcher를 만든다.
-
+Map 클래스의 객체에 일치 할 수 있도록 BoundedMatcher를 기반으로 한다. matchesSafely 메소드를 오버라이드한 뒤 인수로 전달받는 Matcher<String>를 이전에 찾은 matcher에 넣고 이를 비교해본다. 이는 우리가 withItemContent(equalTo("foo"))를 할 수 있게 해준다. 코드를 간결하게 하기 위해, equalTo를 미리 수행한 String을 받는 다른 matcher를 만들자.
     public static Matcher<Object> withItemContent(String expectedText) {
       checkNotNull(expectedText);
       return withItemContent(equalTo(expectedText));
@@ -74,7 +73,7 @@ Map 클래스의 객체에만 매치할 수 있도록 BoundedMatcher를 기반�
     
 이 테스트의 전체 코드는 [AdapterViewTest#testClickOnItem50](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java)과 [custom matcher](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/LongListMatchers.java)을 보라.
 
-## View의 특정 자식 view에 매칭하기
+## View의 특정 자식 view와 일치시키기
 
 위 샘플은 ListView의 열 전체의 중앙을 클릭하는 문제가 있다. 만약 우리가 열의 특정한 자식에게 작업을 하고 싶으면 어떻게 해야할까? 예를 들어, LongListActivity의 열 내부에 있는 첫 행의 String.length을 표시하는 두번째 행을 클릭하고 싶다. (이를 덜 추상적으로 말하자면, 당신은 G+앱이 댓글 목록을 보여주며 각 댓글의 옆에 +1 버튼이 있는 것을 생각해보라)
 
@@ -99,7 +98,7 @@ Header들과 Footer들은 ListView에 addHeaerView/addFooterView API를 통해 �
     ((TextView) footerView.findViewById(R.id.item_size)).setText(String.valueOf(data.size()));
     listView.addFooterView(footerView, FOOTER, true);
 
-그리고, 다신은 이 객체를 매치하는 matcher를 작성할 수 있다:
+그러면 이 객체에 일치시키는 matcher를 작성할 수 있다:
 
     import static org.hamcrest.Matchers.allOf;
     import static org.hamcrest.Matchers.instanceOf;
@@ -124,9 +123,9 @@ Header들과 Footer들은 ListView에 addHeaerView/addFooterView API를 통해 �
     
 전체 코드 샘플은 [AdapterViewtest#testClickFooter](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java)을 보라.
 
-## ActionBar 내부의 view에 매칭하기.
+## ActionBar 내부의 view와 일치시키기
 
-[ActionBarTestActivity](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/main/java/android/support/test/testapp/ActionBarTestActivity.java)는 두 개의 다른 action bar들를 가진다 : 일반적인 ActionBar와 [options menu](http://developer.android.com/intl/ko/guide/topics/ui/menus.html#options-menu)에서 생성된 Contextual Action bar이다. 두 action bar들은 언제나 visible한 항목 하나와 overflow 메뉴에서만 항상 visible한 항목 두 개를 가진다. 항목이 클릭되면, 이는 TextView를 클릭된 항목의 내용으로 변경한다.
+[ActionBarTestActivity](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/main/java/android/support/test/testapp/ActionBarTestActivity.java)는 두 개의 다른 action bar들을 가진다 : 일반적인 ActionBar와 [options menu](http://developer.android.com/intl/ko/guide/topics/ui/menus.html#options-menu)에서 생성된 Contextual Action bar이다. 두 action bar들은 언제나 visible한 항목 하나와 overflow 메뉴에서만 항상 visible한 항목 두 개를 가진다. 항목이 클릭되면, 이는 TextView를 클릭된 항목의 내용으로 변경한다.
 
 두 action bar에 모두 있는 visible 아이콘의 매칭은 쉽다:
 
@@ -219,7 +218,7 @@ public void testActionModeOverflow() {
 
 ## 표시되지 않은 view를 assert하기
 
-일련의 행위들을 수행한 뒤에는 당신은 분명히 테스트 대상 UI의 상태를 assert하고 싶을 것이다. 가끔은 이는 부정 사례일 수도 있다 (예를 들어, 어떤 것이 일어나지 않았다). 어떤 hamcrest view matcher이든 ViewAssertions.matcher를 사용하여 ViewAssertion으로 바꿀 수 있음을 잊지마라.
+일련의 행위들을 수행한 뒤에는 테스트 대상 UI의 상태를 assert하고 싶을 것이다. 가끔은 이는 negative case일 수도 있다 (예를 들어, '어떤 것이 일어나지 않았다'). 어떤 hamcrest view matcher라도 ViewAssertions.matcher를 이용해 ViewAssertion으로 바꿀 수 있음을 잊지마라.
 
 아래 예제에서, 우리는 isDisplayed matcher를 가지고 표준 "not" matcher를 사용하여 역으로 만든다:
 
