@@ -298,14 +298,14 @@ Espresso의 가장 중요한 특징은 모든 테스트 작업과 테스트 대�
 
 In such cases, the first thing we suggest is to put on your testability hat and ask whether the user of non-standard background operations is warranted. In some cases, it may have happened due to poor understanding of Android and the application could benefit from refactoring (for example, by converting custom creation of threads to AsyncTasks). However, sometimes refactoring is not possible. The good news? Espresso can still synchronize test operations with your custom resources.
 
-Here’s what you need to do:
+우리가 해야 할 일이 여기 있다:
 
-* Implement the [IdlingResource](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/idling-resource/src/main/java/android/support/test/espresso/IdlingResource.java) interface and expose it to your test.
-* Register one or more of your IdlingResource(s) with Espresso by calling [Espresso.registerIdlingResource](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/Espresso.java) in test setup.
+* [IdlingResource](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/idling-resource/src/main/java/android/support/test/espresso/IdlingResource.java) 인터페이스를 구현한 다음 이를 당신의 테스트에 노출하라.
+* [Espresso.registerIdlingResource](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/Espresso.java)를 test setup에서 호출하여 하나 또는 그 이상의 IdlingResource(s)를 Espresso에 등록하라
 
-To see how IdlingResource can be used take a look at the [AdvancedSynchronizationTest](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdvancedSynchronizationTest.java) and the [CountingIdlingResource](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/contrib/src/main/java/android/support/test/espresso/contrib/CountingIdlingResource.java) class.
+어떻게 IdlingResource를 사용하는지를 보기 위해서 [AdvancedSynchronizationTest](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdvancedSynchronizationTest.java) 과 [CountingIdlingResource](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/contrib/src/main/java/android/support/test/espresso/contrib/CountingIdlingResource.java) 클래스를 보라.
 
-Note that the IdlingResource interface is implemented in your app under test so you need to add dependencies carefully:
+IdlingResource 인터페이스는 당신의 테스트 대상 어플리케이션에 구현되어야 함으로 당신은 조심스럽게 의존을 추가할 필요가 있다:
 
     // IdlingResource is used in the app under test
     compile 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
