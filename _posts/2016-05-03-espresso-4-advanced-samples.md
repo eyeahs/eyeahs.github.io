@@ -244,11 +244,11 @@ public void testActionModeOverflow() {
     onView(withId(R.id.bottom_left))
       .check(doesNotExist());
 
-## Asserting that a data item is not in an adapter
+## Adapter안에 없는 데이터를 assert하기
 
-To prove a particular data item is not within an AdapterView you have to do things a little differently. We have to find the AdapterView we’re interested in and interrogate the data its holding. We don’t need to use onData(). Instead, we use onView to find the AdapterView and then use another matcher to work on the data inside the view.
+특정 데이터 항목이 AdapterView안에 존재하지 않는 다는 것을 증명하기 위해서는 조금 다른 일을 해야 한다. 우리가 관심을 가지는 AdapterView를 찾고 그것이 가지고 있는 데이터를 심문한다. onData()를 사용할 필요가 없다. 대신 AdapterView를 찾기 위해 onView를 사용한 뒤 view 내부의 데이터에서 작업을 하기 위해 다른 matcher를 사용한다.
 
-First the matcher:
+첫번째 matcher:
 
     private static Matcher<View> withAdaptedData(final Matcher<Object> dataMatcher) {
       return new TypeSafeMatcher<View>() {
@@ -276,14 +276,15 @@ First the matcher:
       };
     }
     
-Then the all we need is an onView that finds the AdapterView:
+그 뒤 우리에게 필요한 것은 AdapterView를 찾기 위한 onView뿐이다:
 
     @SuppressWarnings("unchecked")
     public void testDataItemNotInAdapter(){
       onView(withId(R.id.list))
           .check(matches(not(withAdaptedData(withItemContent("item: 168")))));
       }
-And we have an assertion that will fail if an item that is equal to “item: 168” exists in an adapter view with the id list.
+      
+그러면 R.id.list인 adapter view에 존재하는 항목이 "item: 168"과 동일하면 실패하게 되는 assertion을 가지게 된다.
 
 For the full sample look at [AdapterViewTest#testDataItemNotInAdapter](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java).
 
