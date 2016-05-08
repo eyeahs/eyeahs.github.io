@@ -290,11 +290,11 @@ For the full sample look at [AdapterViewTest#testDataItemNotInAdapter](https://a
 
 # Idling resources
 
-## Using registerIdlingResource to synchronize with custom resources
+## 커스텀 resources와 동조하는 registerIdlingResource 사용하기
 
-The centerpiece of Espresso is its ability to seamlessly synchronize all test operations with the application under test. By default, Espresso waits for UI events in the current message queue to process and default AsyncTasks* to complete before it moves on to the next test operation. This should address the majority of application/test synchronization in your application.
+Espresso의 가장 중요한 특징은 모든 테스트 작업과 테스트 대상 어플리케이션이 끊어짐 없이 동조하는 능력이다. 기본적으로 Espresso는 다음 테스트 작업으로 이동하기 전에 현재 메시지 큐 내부의 UI 이벤트가 처리되고 기본적인 AsyncTask가 종료되기를 기다린다. This should address the majority of application/test synchronization in your application.
 
-However, there are instances where applications perform background operations (such as communicating with web services) via non-standard means; for example: creation and management of threads directly and the use of custom services.
+하지만 어플리케이션에서 (웹 서비스와 커뮤니케이션같이) 비-표준 수단을 통한 백그라운드 작업을 수행하는 경우가 있다; 예를 들어; 직접 스레드들을 생성, 관리하고 커스텀 서비스를 사용.
 
 In such cases, the first thing we suggest is to put on your testability hat and ask whether the user of non-standard background operations is warranted. In some cases, it may have happened due to poor understanding of Android and the application could benefit from refactoring (for example, by converting custom creation of threads to AsyncTasks). However, sometimes refactoring is not possible. The good news? Espresso can still synchronize test operations with your custom resources.
 
@@ -315,11 +315,11 @@ Note that the IdlingResource interface is implemented in your app under test so 
 
 # Customization
 
-## Using a custom failure handler
+## 커스텀 failure handler 사용하기
 
-Replacing the default FailureHandler of Espresso with a custom one allows for additional (or different) error handling - e.g. taking a screenshot or dumping extra debug information.
+Espresso의 기본 FailureHandler를 커스텀으로 변경하면 추가적(또는 다른) 에러 처리가 가능한다 - 예를 들어, 스크린샷을 찍거나 추가적인 디버그 정보를 dumping하기
 
-The CustomFailureHandlerTest example demonstrates how to implement a custom failure handler:
+[CustomFailureHandlerTest](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/CustomFailureHandlerTest.java?autodive=0%2F%2F%2F%2F) 예제는 어떻게 커스텀 failure handler를 구현하는 지를 보여준다:
 
     private static class CustomFailureHandler implements FailureHandler {
       private final FailureHandler delegate;
@@ -338,7 +338,7 @@ The CustomFailureHandlerTest example demonstrates how to implement a custom fail
       }
     }
 
-This failure handler throws a MySpecialException instead of a NoMatchingViewException and delegates all other failures to the DefaultFailureHandler. The CustomFailureHandler can be registered with Espresso in the setUp() of the test:
+이 failure handler는 NoMatchingViewException대신 MySpecialException을 던지고 모든 다른 failure들은 DefaultFailureHandler에 위임한다. CustomFailureHandler는 테스트의 setup()에서 Espresso에 등록될 수 있다:
 
     @Override
     public void setUp() throws Exception {
@@ -347,7 +347,7 @@ This failure handler throws a MySpecialException instead of a NoMatchingViewExce
       setFailureHandler(new CustomFailureHandler(getInstrumentation().getTargetContext()));
     }
     
-For more information see the FailureHandler interface and Espresso.setFailureHandler.
+For more information see the [FailureHandler](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/FailureHandler.java) interface and [Espresso.setFailureHandler](https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/Espresso.java).
 
 # inRoot
 
