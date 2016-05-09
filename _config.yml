@@ -24,11 +24,11 @@ prose:
       - name: "category"
         field:
           element: "hidden"
-          value: "post"
+          value: "blog"
       - name: "layout"
         field:
           element: "hidden"
-          value: "blog"
+          value: "post"
       - name: "title"
         field:
           element: "text"
