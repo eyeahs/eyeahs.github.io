@@ -63,4 +63,21 @@ Espresso로 Title bar의 값을 체크하려면 어떻게 해야 할까?
 
 _withToolbarTitle()_는 우리에게 타입 안정성을 제공하는 커스텀 _BoundedMatcher_를 반환한다. matchesSafely()에서Toolbar.getTitle()를 호출하여 그것의 값을 검증한다.
 
-이 커스텀 matcher를 사용하기 위해서, 
+이 커스텀 matcher를 사용하기 위해서, 우리는 _Toolbar_ 자신을 검색하는 헬퍼 함수를 변경하고, 기대하는 title을 가지고 있는지 체크한다. string 대신 text matcher를 받는 _withToolbarTitle_에 _is(title)_을 전달하였음에 주목하라. 이 방법은 우리가 _startsWith_와  _endsWith_같은 다른 matcher를 사용할 수 있게 한다.
+
+# 소스 코드와 노트들
+
+https://github.com/chiuki/espresso-samples/ under toolbar-title
+
+* 이 _Toolbar_는 우리가 AppCompat을 사용하므로 실제로는 _android.support.v7.widget.Toolbar_이다.
+* 두 시도 모두, 단 하나의 _Toolbar_만 있다는 것을 가정한다. 당신이 하나 이상을 가지고 있다면, 당신이 매치하기 원하는 것을 정확히 찾아내기 위한 추가 matcher들이 필요할 수도 있다. 
+* 우리가 toolbar title를 어떻게 매치하는지에 대한 상세 구현을 숨기기 위해 헬퍼 function _matchToolbarTitle()_을 사용한다. 이 방식으로, 밑에 있는 코드가 변경되어도, toolbar title을 매치하고자 하는 테스트들 모두를 위해 단 한 곳만 업데이트하면 된다.
+* 헬퍼 function _matchToolbarTitle()_은 _ViewInteraction_을 반환한다. 이는 Toolbar의 다른 속성들을 검증하기 위한 호출들과 체이닝할 수 있게 한다. 예를 들어 당신은 이런 것들을 할 수 있다:
+
+	matchToolbarTitle(title)
+  		.check(matches(isDisplayed()));
+
+Article inspired by discussion with Danny Roa, Jacob Tabak and Jake Wharton.
+
+Like this article? Take a look at the outline of my Espresso book and fill in this form to push me to write it! Also check out the published courses: https://gumroad.com/chiuki
+
