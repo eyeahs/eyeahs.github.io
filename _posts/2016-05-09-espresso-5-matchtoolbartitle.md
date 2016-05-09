@@ -8,11 +8,11 @@ title: "Espresso-5-MatchToolbarTitle"
 
 Espresso로 Title bar의 값을 체크하려면 어떻게 해야 할까?
 
-<이미지>
+![](https://raw.githubusercontent.com/eyeahs/eyeahs.github.io/master/_images/espresso5/my_awesome_title.png)
 
 [Hierarchy Viewer](http://developer.android.com/intl/ko/tools/help/hierarchy-viewer.html)를 사용해서 살펴보자. 만약 단말이 루팅되지 않았다면 ANDROID_HVPROTO=ddm과 함께 실행해야 한다는 것을 기억하자.
 
-<이미지>
+![](https://raw.githubusercontent.com/eyeahs/eyeahs.github.io/master/_images/espresso5/hierarchy_viewer.png)
 
 # 첫 시도 : TextView에 매치하기
 
