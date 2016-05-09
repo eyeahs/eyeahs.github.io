@@ -1,8 +1,8 @@
 ---
-layout: blog
-category: post
+layout: post
+category: blog
 published: true
-title: "Espresso-5-MatchToolbarTitle"
+title: "Espresso - Match Toolbar Title"
 date: "2016-05-09 15:35:00 +09:00"
 ---
 [원본](http://blog.sqisland.com/2015/05/espresso-match-toolbar-title.html)
