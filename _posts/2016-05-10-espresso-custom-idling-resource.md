@@ -1,7 +1,9 @@
 ---
 layout: post
 category: blog
-published: false
+published: true
+date: "2016-05-03 20:00:00 +0900"
+categories: unittest
 title: "Espresso - Custom Idling Resource"
 ---
 [원본](http://blog.sqisland.com/2015/04/espresso-custom-idling-resource.html)
