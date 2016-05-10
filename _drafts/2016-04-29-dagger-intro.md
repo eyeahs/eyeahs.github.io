@@ -1,5 +1,8 @@
 ---
+layout: post
+category: blog
 published: false
+title: Untitled
 ---
 어떤 어플리케이션에서 최고의 클래스들은 자신의 할 일을 하는 것들이다 : _BarcodeDecoder_, _KoopaPhysicsEngine_, 그리고 _AudioStreamer_. 이들 클래스들은 의존을 가지고 있다; 아마 _BarcodeCameraFinder_, _DefaultPhysicsEngine_, 그리고 _HttpStreamer_.
 
@@ -21,11 +24,9 @@ Dagger는 boilerplate 작성 부담없이 [의존성 주입](https://en.wikipedi
 
 ## 의존을 선언하기.
 
-Dagger는 당신의 어플리케이션 클래스들의 인스턴스들을 구성하고 그들의 의존을 만족시킨다.
-Dagger constructs instances of your application classes and satisfies their dependencies. It uses the javax.inject.Inject annotation to identify which constructors and fields it is interested in.
+Dagger는 당신의 어플리케이션 클래스들의 인스턴스들을 구성하고 그들의 의존을 만족시킨다. Dagger는 자신이 관심을 가질 필드들과 생성자들을 확인하기 위해 javax.inject.Inject 어노테이션을 사용한다.
 
-
-Use @Inject to annotate the constructor that Dagger should use to create instances of a class. When a new instance is requested, Dagger will obtain the required parameters values and invoke this constructor.
+Dagger가 클래스의 인스턴스를 생성할 때 사용해야 할 생성자에 @Inject 어노테이션을 사용한다. 새로운 인스턴스가 요구될 때 Dagger는 필요한 파라미터를 획득하고 이 생성자를 불러낼 것이다.
 
     class Thermosiphon implements Pump {
       private final Heater heater;
@@ -38,7 +39,7 @@ Use @Inject to annotate the constructor that Dagger should use to create instanc
       ...
     }
   
-Dagger can inject fields directly. In this example it obtains a Heater instance for the heater field and a Pump instance for the pump field.
+Dagger는 필드에 직접 주입할 수 있다. 이 예제에서 Dagger는 heater 필드를 위해 Heater 인스턴스를, pump 필드를 위해 Pump 인스턴스를 획득한다.
 
     class CoffeeMaker {
       @Inject Heater heater;
@@ -47,7 +48,7 @@ Dagger can inject fields directly. In this example it obtains a Heater instance 
       ...
     }
   
-If your class has @Inject-annotated fields but no @Inject-annotated constructor, Dagger will inject those fields if requested, but will not create new instances. Add a no-argument constructor with the @Inject annotation to indicate that Dagger may create instances as well.
+만약 당신의 클래스가 @Inject 어노테이션된 필드를 가지고 있고 @Inject 어노테이션된 생성자가 없다면 Dagger는 요청을 받았을 때 이 필드들을 주입해줄 것이지만 새로운 인스턴스를 생성해주지는 않을 것이다. Add a no-argument constructor with the @Inject annotation to indicate that Dagger may create instances as well.
 
 Dagger also supports method injection, though constructor or field injection are typically preferred.
 
@@ -207,4 +208,3 @@ There is no guarantee that the component will call the binding only once, so app
   class CoffeeFilter {
     @Inject CoffeeFilter() {}
   }
-
