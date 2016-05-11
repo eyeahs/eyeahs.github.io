@@ -8,11 +8,11 @@ title: Untitled
 
 반대로, 어떤 어플리케이션에서 최악의 클래스들은 전혀 하는 일 없이 공간을 차지하는 것들이다 : _BarcodeDecodeFactory_, _CameraServiceLoader_, _MutableContextWrapper_. 이 클래스들은 관심의 대상들을 함께 묶어주는 투박한 덕트 테입이다.
 
-Dagger는 boilerplate 작성 부담없이 [의존성 주입](https://en.wikipedia.org/wiki/Dependency_injection) 디자인 패턴을 구현하는 저 _FactoryFactory_ 클래스들의 대체품이다. 이것은 당신이 관심 대상이 되는 클래스들에 초점을 맞출 수 있게 해준다. 의존 관계들을 선언하고, 그들을 어떻게 만족할지 명시하고, 당신의 어플리케이션을 출시하라.
+Dagger는 boilerplate 작성 부담없이 [의존성 주입](https://en.wikipedia.org/wiki/Dependency_injection) 디자인 패턴을 구현하는 저 _FactoryFactory_ 클래스들의 대체품이다. Dagger는 흥미있는 클래스들에 초점을 맞출 수 있게 해준다. 의존 관계들을 선언하고, 그들을 어떻게 만족할지 명시한 뒤, 어플리케이션을 출하하라.
 
-[javax.inject](http://docs.oracle.com/javaee/7/api/javax/inject/package-summary.html) 어노테이션들([JSR 330](https://jcp.org/en/jsr/detail?id=330))을 기반으로 하여, 각 **클래스는 테스트하기 쉽다**. 단지 _RpcCreditCardService을_ _FakeCreditCardService으로_ 교환하기 위한 한 뭉치의 boilerplate는 필요하지 않는다.
+[javax.inject](http://docs.oracle.com/javaee/7/api/javax/inject/package-summary.html) 어노테이션들([JSR 330](https://jcp.org/en/jsr/detail?id=330))을 기반으로 하여, 각 **클래스는 테스트하기 쉽다**. 단지 _RpcCreditCardService을_ _FakeCreditCardService으로_ 교환하기 위한 boilerplate들은 필요하지 않는다.
 
-의존성 주입은 테스트만을 위한 것이 아니다. 이는 **재사용 가능하고, 교체 가능한** 모듈을 만드는 것을 쉽게 해준다. 당신은 동일한 AuthenticationModule을 당신의 앱 전체에 공유할 수 있다. 그리고 당신은 각 상황에 옳은 행동을 얻기 위해서 개발중에는 _DevLoggingModule_을 실행하고 운영에서는 _ProdLoggingModule_을 실행할 수 있다.
+의존성 주입은 테스트만을 위한 것이 아니다. 이는 **재사용 가능하고, 교체 가능한** 모듈을 만드는 것을 쉽게 해준다. 당신은 동일한 AuthenticationModule을 당신의 앱 전체에 공유할 수 있다. 그리고 당신은 각 상황에 적절한 행동을 얻기 위해서 개발중에는 _DevLoggingModule_을 실행하고 운영에서는 _ProdLoggingModule_을 실행할 수 있다.
 
 # 왜 Dagger 2는 다른가?
 
