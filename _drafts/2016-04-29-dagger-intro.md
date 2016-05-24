@@ -56,9 +56,9 @@ Dagger는 필드에 직접 주입할 수 있다. 이 예제에서 Dagger는 heat
 
 ## 의존들을 만족시키기
 
-By default, Dagger satisfies each dependency by constructing an instance of the requested type as described above. When you request a CoffeeMaker, it’ll obtain one by calling new CoffeeMaker() and setting its injectable fields.
+기본적으로, Dagger는 위에서 설명한 것 처럼 요청된 타입의 인스턴스를 생성하여 각각의 의존을 반족시킨다. 당신이 CoffeMaker를 요청하면, new CoffeeMaker() 호출을 통해 한 인스턴스를 얻고 주입 가능한 필드들에 놓는다.
 
-But @Inject doesn’t work everywhere:
+하지만 @Inject는 어디서나 동작하는 것은 아니다 :
 
 * Interfaces can’t be constructed.
 * Third-party classes can’t be annotated.
