@@ -48,11 +48,11 @@ Dagger는 필드에 직접 주입할 수 있다. 이 예제에서 Dagger는 heat
       ...
     }
   
-만약 당신의 클래스가 @Inject 어노테이션된 필드를 가지고 있고 @Inject 어노테이션된 생성자가 없다면 Dagger는 요청을 받았을 때 이 필드들을 주입해줄 것이지만 새로운 인스턴스를 생성해주지는 않을 것이다. Add a no-argument constructor with the @Inject annotation to indicate that Dagger may create instances as well.
+만약 당신의 클래스가 @Inject 어노테이션된 필드를 가지고 있고 @Inject 어노테이션된 생성자가 없다면 Dagger는 요청을 받았을 때 이 필드들을 주입해줄 것이지만 새로운 인스턴스를 생성해주지는 않을 것이다. Dagger가 인스턴스도 생성해야 하는 것을 알려주기 위해 @Inject 어노테이션이 된 인수가 없는 생성자를 추가하라.
 
-Dagger also supports method injection, though constructor or field injection are typically preferred.
+생성자나 필드 주입이 보통 더 선호되지만 Dagger는 method 주입도 지원한다.
 
-Classes that lack @Inject annotations cannot be constructed by Dagger.
+@Inject 어노테이션이 누락된 클래스는 Dagger에 의해 생성될 수 없다.
 
 ## 의존들을 만족시키기
 
