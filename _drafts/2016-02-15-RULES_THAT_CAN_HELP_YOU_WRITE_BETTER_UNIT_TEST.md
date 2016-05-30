@@ -5,13 +5,13 @@ published: false
 title: Untitled
 ---
 
-@RULES THAT CAN HELP YOU WRITE BETTER UNIT TESTS
+[원본 : @RULES THAT CAN HELP YOU WRITE BETTER UNIT TESTS](http://www.schibsted.pl/blog/rules-that-can-help-you-write-better-unit-tests/)
 
-
-Have you ever wanted to know what was the result of your unit test and act differently depending on the test result? In this short article I present a JUnit feature called Rules.
-
+### Have you ever wanted to know what was the result of your unit test and act differently depending on the test result? In this short article I present a JUnit feature called Rules.
 
 # INTRODUCTION
+
+Probably most of us are familiar with the JUnit framework and use it every day. We write tests and execute them. When there are problems we can see them in the IDE Runner panel (as red items) or in the output produced by the CLI tool. JUnit provides a useful set of annotations @Before, @BeforeClass, @After and @AfterClass. Methods marked with these annotations set up and clean the test environment, for example: open and close the database connection, release external resources etc.
 
 아마 우리 대부분은 JUnit framework에 친숙하며 이를 매일 사용하고 있다. 우리는 테스트를 작성하고 그것들을 실행한다. 문제가 발생했을 때는 IDE Runner panel에서 (붉은색 항목으로서) 또는 CLI tool에서 생성되는 출력에서 이를 볼 수 있다. JUnit은 유용한 어노테이션들인 @Before, @BeforeClass, @After 그리고 @AfterClass를 제공한다. 이들 어노테이션으로 마크된 메소드들은 테스트 환경을 설정하고 청소한다. 예를 들어: Database 연결을 열고 닫기, 외부 리소스를 해지하기 등등.
 
@@ -41,164 +41,93 @@ SOURCE CODE FINALLY…
 
 Please feel free to copy that code to your IDE and run it.
 
+    package test;
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-package test;
- 
-import static org.junit.Assert.assertEquals;
- 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
- 
- 
-class UnderTestClass {
- 
-public String doSth() {
-return "done";
-}
-}
- 
-public class UnderTestClassTest {
- 
-private UnderTestClass subject;
- 
-@Before
-public void setup() {
-System.out.println("Setup...");
-subject = new UnderTestClass();
-}
- 
-@After
-public void clean() {
-System.out.println("Cleaning after test...");
-}
- 
-@Rule
-public TestRule rule = new TestWatcher() {
- 
-@Override
-protected void failed(Throwable e, Description description) {
-System.out.println("Failed " + description);
-}
- 
-@Override
-protected void finished(Description description) {
-System.out.println("Finished " + description + "\n");
-}
- 
-@Override
-protected void starting(Description description) {
-System.out.println("Starting " + description);
-}
- 
-@Override
-protected void succeeded(Description description) {
-System.out.println("Passed " + description);
-}
-};
- 
-@Test
-public void testDoSth() {
-System.out.println("In test...");
-assertEquals("done", subject.doSth());
-}
- 
-@Test
-public void testNothingAndFail() {
-System.out.println("In test...");
-assertEquals("done", "no");
-}
-}
+    import static org.junit.Assert.assertEquals;
+
+    import org.junit.After;
+    import org.junit.Before;
+    import org.junit.Rule;
+    import org.junit.Test;
+    import org.junit.rules.TestRule;
+    import org.junit.rules.TestWatcher;
+    import org.junit.runner.Description;
+
+
+    class UnderTestClass {
+
+    public String doSth() {
+    return "done";
+    }
+    }
+
+    public class UnderTestClassTest {
+
+    private UnderTestClass subject;
+
+    @Before
+    public void setup() {
+    System.out.println("Setup...");
+    subject = new UnderTestClass();
+    }
+
+    @After
+    public void clean() {
+    System.out.println("Cleaning after test...");
+    }
+
+    @Rule
+    public TestRule rule = new TestWatcher() {
+
+    @Override
+    protected void failed(Throwable e, Description description) {
+    System.out.println("Failed " + description);
+    }
+
+    @Override
+    protected void finished(Description description) {
+    System.out.println("Finished " + description + "\n");
+    }
+
+    @Override
+    protected void starting(Description description) {
+    System.out.println("Starting " + description);
+    }
+
+    @Override
+    protected void succeeded(Description description) {
+    System.out.println("Passed " + description);
+    }
+    };
+
+    @Test
+    public void testDoSth() {
+    System.out.println("In test...");
+    assertEquals("done", subject.doSth());
+    }
+
+    @Test
+    public void testNothingAndFail() {
+    System.out.println("In test...");
+    assertEquals("done", "no");
+    }
+    }
+
 You should be able to see that output in the console. Please notice highlighted lines. You can clearly see that the appropriate callbacks were called depending on the test result.
 
-Starting testDoSth(pl.snd.test.UnderTestClassTest)
-Setup…
-In test…
-Cleaning after test…
-Passed testDoSth(pl.snd.test.UnderTestClassTest)
-Finished testDoSth(pl.snd.test.UnderTestClassTest)
+    Starting testDoSth(pl.snd.test.UnderTestClassTest)
+    Setup…
+    In test…
+    Cleaning after test…
+    Passed testDoSth(pl.snd.test.UnderTestClassTest)
+    Finished testDoSth(pl.snd.test.UnderTestClassTest)
 
-Starting testNothingAndFail(pl.snd.test.UnderTestClassTest)
-Setup…
-In test…
-Cleaning after test…
-Failed testNothingAndFail(pl.snd.test.UnderTestClassTest)
-Finished testNothingAndFail(pl.snd.test.UnderTestClassTest)
+    Starting testNothingAndFail(pl.snd.test.UnderTestClassTest)
+    Setup…
+    In test…
+    Cleaning after test…
+    Failed testNothingAndFail(pl.snd.test.UnderTestClassTest)
+    Finished testNothingAndFail(pl.snd.test.UnderTestClassTest)
 
 CONCLUSION
 
