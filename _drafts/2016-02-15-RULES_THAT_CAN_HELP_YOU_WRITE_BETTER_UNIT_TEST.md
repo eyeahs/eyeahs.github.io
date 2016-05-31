@@ -7,15 +7,11 @@ title: Untitled
 
 [원본 : @RULES THAT CAN HELP YOU WRITE BETTER UNIT TESTS](http://www.schibsted.pl/blog/rules-that-can-help-you-write-better-unit-tests/)
 
-### Have you ever wanted to know what was the result of your unit test and act differently depending on the test result? In this short article I present a JUnit feature called Rules.
+### 당신의 unit test의 결과가 무엇인지 알고 테스트 결과에 따라 다른 행동을 하고 싶었던 적이 있었는가? 이 짧은 글에서 나는 Rules라고 불리는 JUnit 기능을 소개한다.
 
 # INTRODUCTION
 
-Probably most of us are familiar with the JUnit framework and use it every day. We write tests and execute them. When there are problems we can see them in the IDE Runner panel (as red items) or in the output produced by the CLI tool. JUnit provides a useful set of annotations @Before, @BeforeClass, @After and @AfterClass. Methods marked with these annotations set up and clean the test environment, for example: open and close the database connection, release external resources etc.
-
-아마 우리 대부분은 JUnit framework에 친숙하며 이를 매일 사용하고 있다. 우리는 테스트를 작성하고 그것들을 실행한다. 문제가 발생했을 때는 IDE Runner panel에서 (붉은색 항목으로서) 또는 CLI tool에서 생성되는 출력에서 이를 볼 수 있다. JUnit은 유용한 어노테이션들인 @Before, @BeforeClass, @After 그리고 @AfterClass를 제공한다. 이들 어노테이션으로 마크된 메소드들은 테스트 환경을 설정하고 청소한다. 예를 들어: Database 연결을 열고 닫기, 외부 리소스를 해지하기 등등.
-
-But what if we want to know whether a particular test succeeded or failed during test execution? Is there a way to intercept such event and react on it?
+아마 우리 대부분은 JUnit framework에 친숙하고 매일 사용하고 있을 것이다. 우리는 테스트를 작성하고 실행한다. 문제가 있으면 (붉은색 항목으로) IDE의 실행 창에서 또는 CLI tool이 생성하는 출력에서 이를 볼 수 있다. JUnit은 유용한 어노테이션들 @Before, @BeforeClass, @After 그리고 @AfterClass를 제공한다. 이들 어노테이션으로 마크된 메소드들은 테스트 환경을 설정하고 청소한다. 예를 들어: Database 연결을 열고 닫기, 외부 리소스를 해지하기 등등.
 
 # PROBLEM
 
