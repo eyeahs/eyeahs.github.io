@@ -179,10 +179,12 @@ Components may have multiple scope annotations applied. This declares that they 
 
 ## Reusable scope
 
-Sometimes you want to limit the number of times an @Inject-constructed class is instantiated or a @Provides method is called, but you don’t need to guarantee that the exact same instance is used during the lifetime of any particular component or subcomponent. This can be useful in environments such as Android, where allocations can be expensive.
+종종 @Inject 생성자 클래스가 초기화되거나 @Provides 메소드가 호출되는 횟수를 제한하지만 어느 특정한 component나 subcomponent의 생애 동안 정확히 동일한 인스턴스가 사용되는 것을 보장할 필요는 없을 때가 있다. 이는 Android처럼 할당이 비싼 환경에서 유용하다.
 
-For these bindings, you can apply @Reusable scope. @Reusable-scoped bindings, unlike other scopes, are not associated with any single component; instead, each component that actually uses the binding will cache the returned or instantiated object.
+이런 binding들을 위해, @Reusable 스코프를 적용할 수 있다. @Reusable 스코프 binding들은, 다른 스코프와 달리, 어떤 단일 component와만 관계를 가지지 않는다; 대신, 실제로 binding을 사용하는 각 component는 반환을 캐시하거나 객체를 인스턴스화한다.
 
+이는 당신이 component에 @Reusable binding을 가진 module을 설치하면, 
+만약 조상을 공유하지 않는 두 subcomponent
 That means that if you install a module with a @Reusable binding in a component, but only a subcomponent actually uses the binding, then only that subcomponent will cache the binding’s object. If two subcomponents that do not share an ancestor each use the binding, each of them will cache its own object. If a component’s ancestor has already cached the object, the subcomponent will reuse it.
 
 There is no guarantee that the component will call the binding only once, so applying @Reusable to bindings that return mutable objects, or objects where it’s important to refer to the same instance, is dangerous. It’s safe to use @Reusable for immutable objects that you would leave unscoped if you didn’t care how many times they were allocated.
