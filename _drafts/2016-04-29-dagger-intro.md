@@ -4,15 +4,15 @@ category: blog
 published: false
 title: Untitled
 ---
-어떤 어플리케이션에서 최고의 클래스들은 자신의 할 일을 하는 것들이다 : _BarcodeDecoder_, _KoopaPhysicsEngine_, 그리고 _AudioStreamer_. 이들 클래스들은 의존을 가지고 있다; 아마 _BarcodeCameraFinder_, _DefaultPhysicsEngine_, 그리고 _HttpStreamer_.
+어떤 어플리케이션에서 최고의 클래스들은 자신의 할 일을 하는 것들이다 : BarcodeDecoder, KoopaPhysicsEngine, 그리고 AudioStreamer. 이들 클래스들은 의존을 가지고 있다; 아마 BarcodeCameraFinder, DefaultPhysicsEngine, 그리고 HttpStreamer.
 
-반대로, 어떤 어플리케이션에서 최악의 클래스들은 전혀 하는 일 없이 공간을 차지하는 것들이다 : _BarcodeDecodeFactory_, _CameraServiceLoader_, _MutableContextWrapper_. 이 클래스들은 관심의 대상들을 함께 묶어주는 투박한 덕트 테입이다.
+반대로, 어떤 어플리케이션에서 최악의 클래스들은 전혀 하는 일 없이 공간을 차지하는 것들이다 : BarcodeDecodeFactory, CameraServiceLoader, MutableContextWrapper. 이 클래스들은 관심의 대상들을 함께 묶어주는 투박한 덕트 테입이다.
 
-Dagger는 boilerplate 작성 부담없이 [의존성 주입](https://en.wikipedia.org/wiki/Dependency_injection) 디자인 패턴을 구현하는 저 _FactoryFactory_ 클래스들의 대체품이다. Dagger는 흥미있는 클래스들에 초점을 맞출 수 있게 해준다. 의존 관계들을 선언하고, 그들을 어떻게 만족할지 명시한 뒤, 어플리케이션을 출하하라.
+Dagger는 저 FactoryFactory 클래스들의 대체품으로 boilerplate를 작성하는 부담이 없이 [의존성 주입](https://en.wikipedia.org/wiki/Dependency_injection) 디자인 패턴을 구현한다. Dagger는 흥미있는 클래스들에 초점을 맞출 수 있게 해준다. 의존 관계들을 선언하고, 어떻게 만족되게 할 지를 명시한 뒤에 어플리케이션을 시작하면 된다.
 
-[javax.inject](http://docs.oracle.com/javaee/7/api/javax/inject/package-summary.html) 어노테이션들([JSR 330](https://jcp.org/en/jsr/detail?id=330))을 기반으로 하여, 각 **클래스는 테스트하기 쉽다**. 단지 _RpcCreditCardService을_ _FakeCreditCardService으로_ 교환하기 위한 boilerplate들은 필요하지 않는다.
+[javax.inject](http://docs.oracle.com/javaee/7/api/javax/inject/package-summary.html) 어노테이션들([JSR 330](https://jcp.org/en/jsr/detail?id=330))을 기반으로 하므로, 각 **클래스는 테스트하기 쉽다**. 단지 RpcCreditCardService을 FakeCreditCardService으로 교환하기 위한 boilerplate 코드는 필요하지 않는다.
 
-의존성 주입은 테스트만을 위한 것이 아니다. 이는 **재사용 가능하고, 교체 가능한** 모듈을 만드는 것을 쉽게 해준다. 당신은 동일한 AuthenticationModule을 당신의 앱 전체에 공유할 수 있다. 그리고 당신은 각 상황에 적절한 행동을 얻기 위해서 개발중에는 _DevLoggingModule_을 실행하고 운영에서는 _ProdLoggingModule_을 실행할 수 있다.
+의존성 주입은 테스트만을 위한 것이 아니다. 이는 **재사용 가능하고, 교체 가능한** 모듈을 쉽게 만들 수 있게 해준다. 당신은 동일한 AuthenticationModule을 앱 전체에 공유할 수 있다. 그리고 각 상황에 적절한 행동을 얻기 위해 개발에서는 DevLoggingModule을 실행하고 운영에서는 ProdLoggingModule을 실행할 수 있다.
 
 # 왜 Dagger 2는 다른가?
 
@@ -56,13 +56,13 @@ Dagger는 필드에 직접 주입할 수 있다. 이 예제에서 Dagger는 heat
 
 ## 의존들을 만족시키기
 
-기본적으로, Dagger는 위에서 설명한 것 처럼 요청된 타입의 인스턴스를 생성하여 각각의 의존을 반족시킨다. 당신이 CoffeMaker를 요청하면, new CoffeeMaker() 호출을 통해 한 인스턴스를 얻고 주입 가능한 필드들에 놓는다.
+기본적으로, Dagger는 위에서 설명한 것처럼 요청된 타입의 인스턴스를 생성하여 각각의 의존을 만족시킨다. 당신이 CoffeMaker를 요청하면, new CoffeeMaker() 호출을 통해 한 인스턴스를 얻고 주입 가능한 필드들에 놓는다.
 
 하지만 @Inject는 어디서나 동작하는 것은 아니다 :
 
-* Interfaces can’t be constructed.
-* Third-party classes can’t be annotated.
-* Configurable objects must be configured!
+* 인스턴스는 생성될 수 없다.
+* Third-party 클래스들은 어노테이션을 추가할 수 없다.
+* 설정할 수 잇는 객체들은 설정되어야 한다!
 * For these cases where @Inject is insufficient or awkward, use an [@Provides](http://google.github.io/dagger/api/latest/dagger/Provides.html)-annotated method to satisfy a * dependency. The method’s return type defines which dependency it satisfies.
 
 For example, provideHeater() is invoked whenever a Heater is required:
