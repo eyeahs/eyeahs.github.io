@@ -6,7 +6,7 @@ title: Untitled
 ---
 어떤 어플리케이션에서 최고의 클래스들은 자신의 할 일을 하는 것들이다 : BarcodeDecoder, KoopaPhysicsEngine, 그리고 AudioStreamer. 이들 클래스들은 의존을 가지고 있다; 아마 BarcodeCameraFinder, DefaultPhysicsEngine, 그리고 HttpStreamer.
 
-반대로, 어떤 어플리케이션에서 최악의 클래스들은 전혀 하는 일 없이 공간을 차지하는 것들이다 : BarcodeDecodeFactory, CameraServiceLoader, MutableContextWrapper. 이 클래스들은 관심의 대상들을 함께 묶어주는 투박한 덕트 테입이다.
+반대로, 어떤 어플리케이션에서 최악의 클래스들은 전혀 하는 일 없이 공간을 차지하는 것들이다 : BarcodeDecodeFactory, CameraServiceLoader, MutableContextWrapper. 이 클래스들은 관심의 대상들을 함께 묶어주는 투박한 박스 테이프이다.
 
 Dagger는 저 FactoryFactory 클래스들의 대체품으로 boilerplate를 작성하는 부담이 없이 [의존성 주입](https://en.wikipedia.org/wiki/Dependency_injection) 디자인 패턴을 구현한다. Dagger는 흥미있는 클래스들에 초점을 맞출 수 있게 해준다. 의존 관계들을 선언하고, 어떻게 만족되게 할 지를 명시한 뒤에 어플리케이션을 시작하면 된다.
 
@@ -189,24 +189,24 @@ That means that if you install a module with a @Reusable binding in a component,
 
 There is no guarantee that the component will call the binding only once, so applying @Reusable to bindings that return mutable objects, or objects where it’s important to refer to the same instance, is dangerous. It’s safe to use @Reusable for immutable objects that you would leave unscoped if you didn’t care how many times they were allocated.
 
-  @Reusable // It doesn't matter how many scoopers we use, but don't waste them.
-  class CoffeeScooper {
-    @Inject CoffeeScooper() {}
-  }
-
-  @Module
-  class CashRegisterModule {
-    @Provides
-    @Reusable // DON'T DO THIS! You do care which register you put your cash in.
-              // Use a specific scope instead.
-    static CashRegister badIdeaCashRegister() {
-      return new CashRegister();
+    @Reusable // 우리가 사용하는 스코프가 얼마나 It doesn't matter how many scoopers we use, 하지만 남용하지 말아야 한다.
+    class CoffeeScooper {
+      @Inject CoffeeScooper() {}
     }
-  }
+
+    @Module
+    class CashRegisterModule {
+      @Provides
+      @Reusable // DON'T DO THIS! You do care which register you put your cash in.
+                // Use a specific scope instead.
+      static CashRegister badIdeaCashRegister() {
+        return new CashRegister();
+      }
+    }
 
 
-  @Reusable // DON'T DO THIS! You really do want a new filter each time, so this
-            // should be unscoped.
-  class CoffeeFilter {
-    @Inject CoffeeFilter() {}
-  }
+    @Reusable // DON'T DO THIS! You really do want a new filter each time, so this
+              // should be unscoped.
+    class CoffeeFilter {
+      @Inject CoffeeFilter() {}
+    }
