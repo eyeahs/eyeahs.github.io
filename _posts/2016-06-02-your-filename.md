@@ -1,9 +1,14 @@
 ---
 layout: post
 category: blog
-published: false
-title: ''
+title: "7가지 Singleton"
+date: "2016-06-02 17:00:00 +0900"
+categories: designpatter
+published: true
+splash: ""
+tags: ""
 ---
+
 # 1. 기본적인 Singleton
     public class Singleton {
       private static Singleton instance;
