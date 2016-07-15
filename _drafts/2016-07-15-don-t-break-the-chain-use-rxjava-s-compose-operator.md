@@ -6,7 +6,7 @@ title: 'Don''t break the chain: use RxJava''s compose() operator'
 ---
 http://blog.danlew.net/2015/03/02/dont-break-the-chain/
 
-RxJava의 장점들 중 하나는 데이터가 일련의 operator들을 통해 어떻게 변경되는지를 볼 수 있다는 것이다.
+RxJava의 장점들 중 하나는 일련의 operator들을 통해 데이터가 어떻게 변경되는지를 볼 수 있다는 것이다.
 
 	Observable.from(someSource)  
 	    .map(data -> manipulate(data))
@@ -14,7 +14,7 @@ RxJava의 장점들 중 하나는 데이터가 일련의 operator들을 통해 �
 	    .observeOn(AndroidSchedulers.mainThread())
 	    .subscribe(data -> doSomething(data));
 
-많은 stream들을 위하여 재사용하고 싶은 operator들의 집합이 있다면 어떻게 될까? 예를 들어 나는 데이터를 작업 스레드에서 처리한 다음 메인 스레드에서 그것을 구독하고 싶기 때문에 subscribeOn()과 observeOn()을 자주 사용한다. 
+다양한 stream들에서 재사용하고 싶은 operator들의 집합이 있다면 어떻게 될까? 예를 들어 나는 데이터를 작업 스레드에서 처리한 다음 메인 스레드에서 그것을 구독하기 위해 subscribeOn()과 observeOn()을 자주 사용한다. 
 What if you have a set of operators that you want to reuse for multiple streams? For example, I frequently use subscribeOn() and observeOn() because I want to process data in a worker thread then subscribe to it on the main thread. It'd be great if I could apply this logic to all my streams in a consistent, reusable manner.
 
 # The Bad Way
