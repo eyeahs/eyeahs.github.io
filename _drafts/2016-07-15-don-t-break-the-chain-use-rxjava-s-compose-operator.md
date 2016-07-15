@@ -6,7 +6,7 @@ title: 'Don''t break the chain: use RxJava''s compose() operator'
 ---
 http://blog.danlew.net/2015/03/02/dont-break-the-chain/
 
-RxJava의 좋은 측면 중 하나는 데이터가 일련의 operator들을 통해 어떻게 변경되는지를 볼 수 있다는 것이다.
+RxJava의 장점들 중 하나는 데이터가 일련의 operator들을 통해 어떻게 변경되는지를 볼 수 있다는 것이다.
 
 	Observable.from(someSource)  
 	    .map(data -> manipulate(data))
