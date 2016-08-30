@@ -11,6 +11,9 @@ title: RxJava - Subjects의 문제
 Subject는 Observable와 Observer 둘 다이다. Observer이므로 아무때나 무엇이든 그것의 onNext()메소드를 호출하고 그것의 Subscriber에게 아이템들을 . 또한 당신은 하나 이상의 존재하는 Observable을 가지고 Subject가 그들을 구독하도록 할 수도 있다. 
 Subjects are both an Observable and an Observer. Because it is an Observer, anything at any time can call its onNext() method and push items up to its Subscribers. You can also take one or more existing Observables and have a Subject subscribe to them, and in turn pass their emissions up to the Subject's Subscribers. These features may seem convenient but can quickly encourage anti-patterns.
 
+내가 처음 reactive 프로그래밍을 배우기 시작했을 때, 나는 
+Subject과 BehaviorSubject, ReplaySubject, 그리고 PublishSubject같은 Subject의 다양한 특색들을 
+명령형 프로그래밍 기반을 가진 뉴비에게 이는 명령형과 반응형 작업간에 다리를 놓는 마법같은 장치처럼 보일 것이다. 나는 subject가 실용적인 방법으로 source Observable을 생성할 것이고 언제나 어떤 source에서든 반응성 작업들의 체인을 통해 항목을 밀어낼 수 있다고 생각하기 시작했다. 
 When I first started learning reactive programming, I was quickly introduced to the Subject and its various flavors like BehaviorSubject, ReplaySubject, and PublishSubject. To a newbie with an imperative programming background, these seemed like magical devices that bridged imperative and reactive operations together. I began to think subjects were a practical way to create source Observables, and I could push items from any source at any time through a chain of reactive operations. Makes sense right? Even some reactive tutorials encourage newbies to play with Subjects to get a feel for reactive programming, but I think this is wrong and creates a setback in a newbie's learning curve.
 
 If you find yourself using Subjects quite often, you might want to reflect on what you think a source Observable does. On a philosophical level, reactive programming is about defining behaviors from a well-defined source all the way to the Subscriber. It is important to think about how emissions should originate and take form. 
