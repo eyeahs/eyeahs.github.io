@@ -16,61 +16,63 @@ Subject과 BehaviorSubject, ReplaySubject, 그리고 PublishSubject같은 Subjec
 명령형 프로그래밍 기반을 가진 뉴비에게 이는 명령형과 반응형 작업간에 다리를 놓는 마법같은 장치처럼 보일 것이다. 나는 subject가 실용적인 방법으로 source Observable을 생성할 것이고 언제나 어떤 source에서든 반응성 작업들의 체인을 통해 항목을 밀어낼 수 있다고 생각하기 시작했다. 
 When I first started learning reactive programming, I was quickly introduced to the Subject and its various flavors like BehaviorSubject, ReplaySubject, and PublishSubject. To a newbie with an imperative programming background, these seemed like magical devices that bridged imperative and reactive operations together. I began to think subjects were a practical way to create source Observables, and I could push items from any source at any time through a chain of reactive operations. Makes sense right? Even some reactive tutorials encourage newbies to play with Subjects to get a feel for reactive programming, but I think this is wrong and creates a setback in a newbie's learning curve.
 
+만약 당신이 Subject를 매우 자주 사용하는 자신의 모습을 보게된다면, 
 If you find yourself using Subjects quite often, you might want to reflect on what you think a source Observable does. On a philosophical level, reactive programming is about defining behaviors from a well-defined source all the way to the Subscriber. It is important to think about how emissions should originate and take form. 
 
 But first let's discuss ideally how a reactive chain of Observables should work, and then later it will make sense why Subjects can undermine the integrity of a reactive application.
 
-A Typical Observable Setup
+## A Typical Observable Setup
 From a practical standpoint, an Observable chain of operations is broken into three parts:
+현실적 관점에서 operation들의 Observable 체인은 세 파트로 나뉘어 진다.
 
 1) The Source Observable where emissions originate
 2) Operators to transform the emissions
 3) A Subscriber to consume the emissions
 
-Of course, we can make #2 more complicated by using operators that work with other Observables, like merge() and flatMap(). But every Observable by itself should follow this structure. The simplest example would be emitting a fixed set of String values, mapping their lengths, and then printing them. 
+Of course, we can make 2) more complicated by using operators that work with other Observables, like merge() and flatMap(). But every Observable by itself should follow this structure. The simplest example would be emitting a fixed set of String values, mapping their lengths, and then printing them. 
 
-//Source
-Observable<String> values = Observable.just("Alpha", "Beta", "Gamma");
+    //Source
+    Observable<String> values = Observable.just("Alpha", "Beta", "Gamma");
 
-//Operators
-Observable<Integer> lengths = values.map(String::length);
+    //Operators
+    Observable<Integer> lengths = values.map(String::length);
 
-//Subscriber 
-Subscription printSubscription = lengths.subscribe(System.out::println);
+    //Subscriber 
+    Subscription printSubscription = lengths.subscribe(System.out::println);
 
 The three components, the source, the operators, and subscriber are very distinctly identified above. We can alternatively express this in one statement without intermediary variables. 
 
-//Source, Operators, Subscriber
-Observable.just("Alpha", "Beta", "Gamma")
-    .map(String::length)
-    .subscribe(System.out::println);
+    //Source, Operators, Subscriber
+    Observable.just("Alpha", "Beta", "Gamma")
+        .map(String::length)
+        .subscribe(System.out::println);
 
 This entire Observable operation is also agnostic to which thread it is scheduled on, which is good for flexible concurrency and works easily with observeOn() and subscribeOn() as we will read about in Reason 3. But first let's just look at source Observables themselves and analyze their nature.
 
-Reason 1: Keep Source Observables Predictable
+## Reason 1: Keep Source Observables Predictable
 What needs to be highlighted with the example above is the source emitting "Alpha", "Beta", and "Gamma". The Observable.just() factory created a source Observable emitting these three Strings. The benefit is the source is tightly controlled and predictable, and we know it will only emit those three Strings. We can trust nothing alien is ever going to enter that source and and be emitted up the chain.
 
 For instance, we should never expect the word "Puppy" to be emitted by the source. We only expect "Alpha", "Beta", and "Gamma".
 
-Observable.just("Alpha", "Beta", "Gamma")
-    .map(String::length)
-    .subscribe(System.out::println);
+    Observable.just("Alpha", "Beta", "Gamma")
+        .map(String::length)
+        .subscribe(System.out::println);
 
 However if we use a Subject, this is not guaranteed, especially if it is exposed publicly and anything can call its onNext() method. (Not to mention, this is just downright messy compared to the code above).
 
-PublishSubject<String> subject = PublishSubject.create();
+    PublishSubject<String> subject = PublishSubject.create();
 
-subject.map(String::length)
-    .subscribe(System.out::println);
+    subject.map(String::length)
+        .subscribe(System.out::println);
 
-subject.onNext("Alpha");
-subject.onNext("Beta");
-subject.onNext("Gamma");
+    subject.onNext("Alpha");
+    subject.onNext("Beta");
+    subject.onNext("Gamma");
 
-//something accidentally pushes "Puppy" as an emission
-subject.onNext("Puppy");
+    //something accidentally pushes "Puppy" as an emission
+    subject.onNext("Puppy");
 
-subject.onCompleted();
+    subject.onCompleted();
 
 The Subject undermines having a well-thought, strictly-defined source Observable where the emissions come from a predictable source. You also lose some flexibility as the Subject is hot, and you can no longer create a cold Observable as we will read in #2.
 
