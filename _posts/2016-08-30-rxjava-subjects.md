@@ -78,47 +78,49 @@ The Subject undermines having a well-thought, strictly-defined source Observable
 
 This is a simplistic example of course, and more complex applications are not going to emit three emissions like "Alpha", "Beta", and "Gamma". Realistically, you might use RxJava-JDBC to create a source Observable which emits items from a database query. 
 
-Database db = ...
+    Database db = ...
 
-Observable<String> values = db
-        .select("SELECT MY_FIELD FROM MY_TABLE")
-        .getAs(String.class);
+    Observable<String> values = db
+            .select("SELECT MY_FIELD FROM MY_TABLE")
+            .getAs(String.class);
 
-values.subscribe(System.out::println);
+    values.subscribe(System.out::println);
 
 While the results of the query can change each time it is subscribed to (because the table can be updated), we have strictly defined the source Observable and where its emissions come from. It will only emit items from this query and nowhere else. 
 
 You can even avoid Subjects for hot sources too. A JavaFX Button being pressed, for example, can emit those action events in a hot Observable. We can use Observable.create() instead of a Subject to turn those events into an Observable. 
 
-Button button = new Button("Press Me");
+    Button button = new Button("Press Me");
 
-Observable<ActionEvent> actionEvents =  Observable.create(new Observable.OnSubscribe<ActionEvent>() {
-    @Override
-    public void call(final Subscriber<? super ActionEvent> subscriber) {
-        final EventHandler<ActionEvent> handler = subscriber::onNext;
+    Observable<ActionEvent> actionEvents = Observable.create(
+        new Observable.OnSubscribe<ActionEvent>() {
+            @Override
+            public void call(final Subscriber<? super ActionEvent> subscriber) {
+                final EventHandler<ActionEvent> handler = subscriber::onNext;
 
-        button.addEventHandler(ActionEvent.ACTION, handler);
+                button.addEventHandler(ActionEvent.ACTION, handler);
 
-        subscriber.add(JavaFxSubscriptions.unsubscribeInEventDispatchThread(() -> 
-            button.removeEventHandler(ActionEvent.ACTION, handler)));
-    }
-});
-
-actionEvents.subscribe(ae -> System.out.println("Pressed!"));
+                subscriber.add(JavaFxSubscriptions.unsubscribeInEventDispatchThread(() -> 
+                    button.removeEventHandler(ActionEvent.ACTION, handler)));
+            }
+    });
+		
+	actionEvents.subscribe(ae -> System.out.println("Pressed!"));
 
 Even better, we can use RxJavaFX and call a factory that does this for us.
 
-Button button = new Button("Press Me");
+    Button button = new Button("Press Me");
 
-Observable<ActionEvent> actionEvents = JavaFxObservable.fromActionEvents(button);
+    Observable<ActionEvent> actionEvents = JavaFxObservable.fromActionEvents(button);
 
-actionEvents.subscribe(ae -> System.out.println("Pressed!"));
+    actionEvents.subscribe(ae -> System.out.println("Pressed!"));
 
 This way we can be sure that emissions for this source Observable will only come from this Button being pressed.
 
 To summarize all the examples above, we should tightly control how a source Observable works and strictly define where its emissions come from. Having a Subject haphazardly allow emissions to come from any source can create a chaotic, unmaintainable application.
+위 예들을 요약해서, 우리는 source Observable이 어떻게 동작하는지를 단호하게 통제해야 하며, 이것의 배출이 어디서 오는지를 엄격하게 정의해야 한다. Subject가 무턱대고 다른 source에서 
 
-Reason 2: Mind Your Hots and Colds
+## Reason 2: Mind Your Hots and Colds
 The best definition I have heard of a Cold Observable versus a Hot Observable is by Nickolay Tsvetinov, author of Learning Reactive Programming with Java 8:
 We can say that cold Observables generate notifications for each subscriber and hot
 Observables are always running, broadcasting notifications to all of their subscribers.
