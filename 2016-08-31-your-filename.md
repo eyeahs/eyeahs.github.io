@@ -14,7 +14,7 @@ Observable.create()를 사용하는 예를 좀 더 보여주면서 _Subject를 �
        }
     }).subscribe(System.out::println);
 
-unsubscription과 backpressure는 어찌되는가? 아무리 많은 operator들도 이 source를 고칠 수 없다. 하지만 당신은 언제든지 Subject에 onBackpressureXXX 전략을 적용할 수 있다.
+unsubscription과 backpressure는 어떻게 할것인가? 아무리 많은 operator들도 이 source를 위해 고칠 수가 없다. 하지만 당신은 언제든지 Subject에 onBackpressureXXX 전략을 적용할 수 있다.
 
 
 Subjects are by no means bad or broken, but as with other components of the reactive paradigm, one must learn when and how to use them. For those who are lecturing about them, they should reconsider when and how they introduce Subjects to their audience. I suggest introducing them after introducing regular fluent operators but before talking about create().
