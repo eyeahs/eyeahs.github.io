@@ -118,9 +118,10 @@ Subscription subscription = o.subscribe(
 
 **Note:** If you’re using RxJava while developing for Android please have a look at the Frodo and Fernando Ceja’s post explaining about the motivation for and usage of Frodo. With Frodo you can use annotations to debug your **Observables** and **Subscribers**.
 
-The shown way of using **doOnNext()** and **doOnError()** does not change much of the system state – apart from bloating your log and slowing everything down. 🙂
 
-But there are other uses for these operators. And in those cases you use those methods to actually change the state of your system. Let’s have a look at them.
+The shown way of using **doOnNext()**와 **doOnError()**를 사용한 이 방식은 시스템의 상태를 많이 바꾸지는 않는다 – apart from bloating your log and slowing everything down. 🙂
+
+하지만 이 operator들을 위한 다른 방식들이 있다. 그리고 이 케이스들에서 당신은 실제로 시스템의 상태를 변경하기 위해 이 메소드들을 사용한다. 이것들을 살펴보도록 하자.
 
 ### **flatMap()**의 에러 처리를 위해 **doOnError()**를 사용하라
 
