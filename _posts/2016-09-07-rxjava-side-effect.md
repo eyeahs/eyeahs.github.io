@@ -42,9 +42,9 @@ someObservable
 | ----------------- | ------------------------ | ---------------------------------------- |
 | doOnSubscribe()   | Action0                  | Subscriber가 Observable을 구독.              |
 | doOnUnsubscribe() | Action0                  | Subscriber가 subscription를 구독해지.          |
-| doOnNext()        | Action1<T>               | 다음 아이템이 방출됨.                             |
+| doOnNext()        | Action1<<T>>               | 다음 아이템이 방출됨.                             |
 | doOnCompleted()   | Action0                  | Observable이 더 이상 아이템을 방출하지 않음.           |
-| doOnError()       | Action1<T>               | 에러가 발생됨.                                 |
+| doOnError()       | Action1<<T>>               | 에러가 발생됨.                                 |
 | doOnTerminate()   | Action0                  | 에러가 발생하거나 Observable이 더 이상 방출할 아이템이 없을 때 - 종료 메소드 이전에 호출된다. |
 | finallyDo()       | Action0                  | 에러가 발생하거나 Observable이 더 이상 방출할 아이템이 없을 때 - 종료 메소드 이후에 호출된다. |
 | doOnEach()        | Action1<Notification<T>> | 아이템이 방출되거나, Observable가 종료되거나 오류가 발생하였을 때. 알림 객체는 이벤트 종류에 대한 정보를 포함한다. |
