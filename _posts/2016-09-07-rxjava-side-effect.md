@@ -32,6 +32,7 @@ someObservable
   })
   //…
 ```
+
 가장 중요한 부분은 call() 메소드이다. 이 메소드의 코드는 Subscriber의 onError()메소드가 호출되기 전에 실행 될 것이다.
 
 예외외에도 RxJava는 당신이 반응할 수 있는 더 많은 이벤트들을 제공한다.
@@ -140,6 +141,7 @@ flatMap(id -> service.getPost()
    .onErrorResumeNext(Observable.empty())
 )
 ```
+
 이 방법은 잠재적으로 되풀이해서 일어나는 UI 이벤트의 결과로 리모드 리소스를 쿼리할 때 특히 유용하다.
 
 ### 네트워크 결과를 저장하고 캐쉬하기 위해 **doOnNext()**를 활용하라
@@ -156,6 +158,7 @@ flatMap(id -> service.getPost()
          .flatMap(id -> getOrderById(id)
                               .doOnNext(order -> cacheOrder(order))
          // 다음 처리를 계속 진행한다.
+         
 이 패턴을 더 자세히 적용하려면 다수의 소스에 접근하는 것에 대한 Daniel lew의  훌륭한 [블로그 포스트](http://blog.danlew.net/2015/06/22/loading-data-from-multiple-sources-with-rxjava/)를 보라.
 
 ## 마무리
