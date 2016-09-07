@@ -1,8 +1,13 @@
 ---
 layout: post
 category: blog
-published: false
 title: RxJava의 Side effect 메소드
+date: "2016-09-07 17:15:00 +0900"
+categories: RxJava
+tags: 
+  - "rxjava"
+published: true
+splash: ""
 ---
 [원본](http://www.grokkingandroid.com/rxjavas-side-effect-methods/)
 
