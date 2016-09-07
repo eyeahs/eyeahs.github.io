@@ -36,8 +36,6 @@ someObservable
 
 예외외에도 RxJava는 당신이 반응할 수 있는 더 많은 이벤트들을 제공한다.
 
-<T>
-
 ### 이벤트들과 그에 대응하는 side effect 작업들
 
 | Method            | Functional Interface     | Event                                    |
