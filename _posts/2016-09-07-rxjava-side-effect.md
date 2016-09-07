@@ -53,7 +53,7 @@ someObservable
 | doOnEach()        | Action1<Notification<T>> | 아이템이 방출되거나, Observable가 종료되거나 오류가 발생하였을 때. 알림 객체는 이벤트 종류에 대한 정보를 포함한다. |
 | doOnRequest()     | Action1<Long>            | 다운스트림 operator가 아이템 방출을 요청               |
 
-<T>는 방출된 항목의 타입 또는 **onError()**  메소드의 경우에는 던져진 Throwable의 타입을 나타낸다.
+T는 방출된 항목의 타입 또는 **onError()**  메소드의 경우에는 던져진 Throwable의 타입을 나타낸다.
 
 함수형 인터페이스들은 모두 [Action0](http://reactivex.io/RxJava/javadoc/rx/functions/Action0.html) 또는 [Action1](http://reactivex.io/RxJava/javadoc/rx/functions/Action1.html) 타입이다. 이는 이 인터페이스들의 단일 메소드가 어떤 것도 반환하지 않으며, 특정 이벤트에 따라 0개 또는 1개의 인수를 가지고 감을 의미한다.
 
