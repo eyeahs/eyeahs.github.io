@@ -97,6 +97,7 @@ Subscription subscription = o.subscribe(
 ```
 
 그리고 그 코드의  결과가 여기 있다:
+
     2
     3
     3
@@ -109,6 +110,7 @@ Subscription subscription = o.subscribe(
     4
     Contains 4 elements
     Completed!
+
 이 방법으로 당신은 당신의 Observable이 기대한대로 동작하지 않을 때 무슨 일이 일어나고 있는지에 대한 값진 정보를 얻을 수 있다.
 
 **doOnError()** 와 **doOnCompleted()** 메소드들은 당신의 파이프라인의 상태를 디버깅할 때도 유용할 수 있다.
@@ -116,7 +118,7 @@ Subscription subscription = o.subscribe(
 **Note:** If you’re using RxJava while developing for Android please have a look at the Frodo and Fernando Ceja’s post explaining about the motivation for and usage of Frodo. With Frodo you can use annotations to debug your **Observables** and **Subscribers**.
 
 
-The shown way of using **doOnNext()**와 **doOnError()**를 사용한 이 방식은 시스템의 상태를 많이 바꾸지는 않는다 – apart from bloating your log and slowing everything down. 🙂
+**doOnNext()**와 **doOnError()**를 사용한 이 방식은 시스템의 상태를 많이 바꾸지는 않는다 – apart from bloating your log and slowing everything down. 🙂
 
 하지만 이 operator들을 위한 다른 방식들이 있다. 그리고 이 케이스들에서 당신은 실제로 시스템의 상태를 변경하기 위해 이 메소드들을 사용한다. 이것들을 살펴보도록 하자.
 
