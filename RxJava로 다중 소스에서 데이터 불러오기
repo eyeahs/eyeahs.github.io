@@ -17,17 +17,15 @@
 
 Let's see it in action:
 
-```
-// 우리의 소스들 (독자들을 위해 연습 문제로 남겨둔다.)
-Observable<Data> memory = ...;  
-Observable<Data> disk = ...;  
-Observable<Data> network = ...;
+    // 우리의 소스들 (독자들을 위해 연습 문제로 남겨둔다.)
+    Observable<Data> memory = ...;  
+    Observable<Data> disk = ...;  
+    Observable<Data> network = ...;
 
-// 첫번째 소스의 데이터를 가지고 온다.
-Observable<Data> source = Observable  
-  .concat(memory, disk, network)
-  .first();
-```
+    // 첫번째 소스의 데이터를 가지고 온다.
+    Observable<Data> source = Observable  
+      .concat(memory, disk, network)
+      .first();
 
 **The key to this pattern is that concat() only subscribes to each child Observable when it needs to.** 만약 데이터가 캐쉬되어 있다면 더 느린 소스들을 검새할 필요가 없다. 그렇기 때문에 `first()`는 연쇄를 중단할 것이다. 다시 말해, 만약 `memory`가 결과를 반환하면, `disk`나 `network`를 괴롭히지 않을 것이다. 거꾸러 말하면 `memory`나 `disk` 둘 다 데이터를 가지고 있지 않다면, 이는 새로운 네트워크 요청을 만들 것이다.
 
@@ -39,16 +37,14 @@ Observable<Data> source = Observable
 
 나의 해결책은 각 소스가 그들이 방출하는 데이터를 저장하게 하는 것이다:
 
-```
-Observable<Data> networkWithSave = network.doOnNext(data -> {  
-  saveToDisk(data);
-  cacheInMemory(data);
-});
+    Observable<Data> networkWithSave = network.doOnNext(data -> {  
+      saveToDisk(data);
+      cacheInMemory(data);
+    });
 
-Observable<Data> diskWithCache = disk.doOnNext(data -> {  
-  cacheInMemory(data);
-});
-```
+    Observable<Data> diskWithCache = disk.doOnNext(data -> {  
+      cacheInMemory(data);
+    });
 
 이제, 당신이 `networkWithSave`와 `diskWithCache`를 사용하면 데이터는 자동으로 당신이 조회한 대로 저장될 것이다.
 
@@ -60,11 +56,9 @@ Observable<Data> diskWithCache = disk.doOnNext(data -> {
 
 해결책은 `first()`에 있다. 이것 역시 거르기(filter)를 할 수 있다. 당장 자격이 없는 데이터는 거부하도록 설정하자:
 
-```
-Observable<Data> source = Observable  
-  .concat(memory, diskWithCache, networkWithSave)
-  .first(data -> data.isUpToDate());
-```
+    Observable<Data> source = Observable  
+      .concat(memory, diskWithCache, networkWithSave)
+      .first(data -> data.isUpToDate());
 
 이제는 최신임이 검증된 첫번째 항목만을 발행할 것이다. 그러므로 만약 우리의 소스들 중 하나가 한물한 `데이터`를 가지고 있다면 새로운 `데이터`를 찾기 위해 다음 소스에서 계속 하게 될 것이다.
 
