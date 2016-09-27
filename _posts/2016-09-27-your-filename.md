@@ -1,9 +1,14 @@
 ---
 layout: post
 category: blog
-published: false
 title: RxJava - takeUntil 실전 예제
+date: '2016-09-27 18:28:00 +0900'
+categories: RxJava
+tags:
+  - rxjava
+published: true
 ---
+
 [원본](https://medium.com/@vanniktech/rxjava-practial-takeuntil-example-bc9766918cad#.bat6wchsk)
 
 지난 주 나는 다음 문제를 만났다:
