@@ -1,9 +1,14 @@
 ---
 layout: post
 category: blog
-published: false
-title: RxJava Completion Semantics
+title: 더 큰 이익을 위해 RxJava Observable의 Completion Semantics를 사용하기
+date: '2016-09-28 12:00:00 +0900'
+categories: RxJava
+tags:
+  - rxjava
+published: true
 ---
+
 [원본](http://adelnizamutdinov.github.io/blog/2015/01/23/using-rxjavas-observable-semantics-for-greater-good/)
 
 내가 처음 RxJava를 시작할 때, 나에게 RxJava는 단지 간편하고, 파라미터적인 동시성을 위한 것이였다. 이후 나는 함수적 구성과 진정한 코드 재활용의 힘을 발견하였다. 놀라는 것에서 멈추지 않고, `Observable`의 completion semantics와 `Subscriber.add(Subscription)` 메소드에서 이야기하고자 한다.
