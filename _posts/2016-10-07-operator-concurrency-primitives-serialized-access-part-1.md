@@ -1,8 +1,12 @@
 ---
 layout: post
 category: blog
-published: false
 title: 'Operator concurrency primitives: serialized access (part 1)'
+date: '2016-10-07 20:50:00 +0900'
+categories: RxJava
+tags:
+  - rxjava
+published: true
 ---
 [원본](http://akarnokd.blogspot.kr/2015/05/operator-concurrency-primitives.html)
 
@@ -38,31 +42,29 @@ Note: I'll be using Java 8 syntax in the remainder of the post to save on some b
 
 이 구성은 synchronized 블록에서 접근할 수 있는 **boolean** 인스턴스 필드 emitting을 사용한다.
 
-```java
-class EmitterLoopSerializer {
-    boolean emitting;
-    boolean missed;
-    public void emit() {
-        synchronized (this) {           // (1)
-            if (emitting) {
-                missed = true;          // (2)
-                return;
-            }
-            emitting = true;            // (3)
-        }
-        for (;;) {
-            // do the emission work     // (4) 
-            synchronized (this) {       // (5)
-                if (!missed) {          // (6)
-                    emitting = false;
+    class EmitterLoopSerializer {
+        boolean emitting;
+        boolean missed;
+        public void emit() {
+            synchronized (this) {           // (1)
+                if (emitting) {
+                    missed = true;          // (2)
                     return;
                 }
-                missed = false;         // (7)
+                emitting = true;            // (3)
+            }
+            for (;;) {
+                // do the emission work     // (4) 
+                synchronized (this) {       // (5)
+                    if (!missed) {          // (6)
+                        emitting = false;
+                        return;
+                    }
+                    missed = false;         // (7)
+                }
             }
         }
     }
-}
-```
 
 이제 이 예제에서 **emit()** 메소드가 어떻게 동작하는 지를 보자.
 
@@ -80,37 +82,35 @@ class EmitterLoopSerializer {
 
 이를 보여주기 위해, **T** 값들의 발행을 직렬화하는 간단한 예제가 여기 있다.
 
-```java
-class ValueEmitterLoop<T> {
-    Queue<T> queue = new MpscLinkedQueue<>();    // (1)
-    boolean emitting;
-    Consumer<? super T> consumer;                // (2)
- 
-    public void emit(T value) {
-        Objects.requireNonNull(value);
-        queue.offer(value);                      // (3)
-        synchronized (this) {
-            if (emitting) {
-                return;                          // (4)
+    class ValueEmitterLoop<T> {
+        Queue<T> queue = new MpscLinkedQueue<>();    // (1)
+        boolean emitting;
+        Consumer<? super T> consumer;                // (2)
+
+        public void emit(T value) {
+            Objects.requireNonNull(value);
+            queue.offer(value);                      // (3)
+            synchronized (this) {
+                if (emitting) {
+                    return;                          // (4)
+                }
+                emitting = true;
             }
-            emitting = true;
-        }
-        for (;;) {
-            T v = queue.poll();                  // (5)
-            if (v != null) {
-                consumer.accept(v);              // (6)
-            } else {
-                synchronized (this) {
-                    if (queue.isEmpty()) {       // (7)
-                        emitting = false;
-                        return;
+            for (;;) {
+                T v = queue.poll();                  // (5)
+                if (v != null) {
+                    consumer.accept(v);              // (6)
+                } else {
+                    synchronized (this) {
+                        if (queue.isEmpty()) {       // (7)
+                            emitting = false;
+                            return;
+                        }
                     }
                 }
             }
         }
     }
-}
-```
 
 *ValueEmitterLoop* 예제에서, 약간 다른 계속되는 발행 로직을 가진다:
 
@@ -126,41 +126,39 @@ class ValueEmitterLoop<T> {
 
 이 예제는 RxJava의 *SerializedObserver* 클래스에서 벌어지는 일이다. 이전 예제를 고쳐서 보여주겠다:
 
-```java
-class ValueListEmitterLoop<T> {
-    List<T> queue;                           // (1)
-    boolean emitting;
-    Consumer<? super T> consumer;
- 
-    public void emit(T value) {
-        synchronized (this) {
-            if (emitting) {
-                List<T> q = queue;
-                if (q == null) {
-                    q = new ArrayList<>();   // (2)
-                    queue = q;
+    class ValueListEmitterLoop<T> {
+        List<T> queue;                           // (1)
+        boolean emitting;
+        Consumer<? super T> consumer;
+
+        public void emit(T value) {
+            synchronized (this) {
+                if (emitting) {
+                    List<T> q = queue;
+                    if (q == null) {
+                        q = new ArrayList<>();   // (2)
+                        queue = q;
+                    }
+                    q.add(value);
+                    return;
                 }
-                q.add(value);
-                return;
+                emitting = true;
             }
-            emitting = true;
-        }
-        consumer.accept(value);              // (3)
-        for (;;) {
-             List<T> q;
-             synchronized (this) {           // (4)
-                 q = queue;
-                 if (q == null) {            // (5)
-                     emitting = false;
-                     return;
+            consumer.accept(value);              // (3)
+            for (;;) {
+                 List<T> q;
+                 synchronized (this) {           // (4)
+                     q = queue;
+                     if (q == null) {            // (5)
+                         emitting = false;
+                         return;
+                     }
+                     queue = null;               // (6)
                  }
-                 queue = null;               // (6)
-             }
-             q.forEach(consumer);            // (7)
-        }        
+                 q.forEach(consumer);            // (7)
+            }        
+        }
     }
-}
-```
 
 *ValueListEmitterLoop*는 그것의 synchronized 블록들에서 훨씬 복잡한 로직을 가지고 있다. 하지만 동작이 그리 복잡하지는 않다:
 
@@ -176,39 +174,37 @@ class ValueListEmitterLoop<T> {
 
 이 상황을 피하기 위해, 각 호출을 **try-catch**로 감쌀 수 있다. 하지만 보통 **emit()**의 호출자는 이 문제를 통지받을 필요가 있다. 하지만 우리는 단순하게 예외가  자연스럽게 전파되도록 할 수 있다. 하지만 나가는 길에, 발행 플래그를 false로 다시 둔다.
 
-```java
-// same as above
-// ...
-public void emit(T value) {
-    synchronized (this) {
-        // same as above
-        // ...
-    }
-    boolean skipFinal = false;             // (1)
-    try {
-        consumer.accept(value);            // (5)
-        for (;;) {
-            List<T> q;
-            synchronized (this) {           
-                q = queue;
-                if (q == null) {            
-                    emitting = false;
-                    skipFinal = true;      // (2)
-                    return;
+    // same as above
+    // ...
+    public void emit(T value) {
+        synchronized (this) {
+            // same as above
+            // ...
+        }
+        boolean skipFinal = false;             // (1)
+        try {
+            consumer.accept(value);            // (5)
+            for (;;) {
+                List<T> q;
+                synchronized (this) {           
+                    q = queue;
+                    if (q == null) {            
+                        emitting = false;
+                        skipFinal = true;      // (2)
+                        return;
+                    }
+                    queue = null;
                 }
-                queue = null;
+                q.forEach(consumer);           // (6)
             }
-            q.forEach(consumer);           // (6)
-        }
-    } finally {
-        if (!skipFinal) {                  // (3)
-            synchronized (this) {
-                emitting = false;          // (4)
+        } finally {
+            if (!skipFinal) {                  // (3)
+                synchronized (this) {
+                    emitting = false;          // (4)
+                }
             }
         }
     }
-}
-```
 
 자바 6는 *Throwable* 예외(RxJava의 기본 catch 타입)를 catch 블록에서 다시 던지는 것이 허용되지 않으므로, 예외 던지기 처리를 강탈하기 위해 finally블록을 사용할 필요가 있다.
 
