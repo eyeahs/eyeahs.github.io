@@ -215,7 +215,7 @@ Note: I'll be using Java 8 syntax in the remainder of the post to save on some b
 
 동시성 코드에 **synchronized**을 사용하는 것은 성능을 해칠 수 있다고 들었을 것이다. 그런데 왜 RxJava에서 이를 이렇게 많이 사용하는 것일까?
 
-일반적으로, 경험에 근거한 첫번째 원칙은 당신 코드의 성능에 대해 추정하기 전에 먼저 측정을 하라는 것이다. 우리는 RxJava에서 그렇게 했고 놀라운 발견이 나왔다: **synchronized**는 더 높은 처리량을 제공한다 -in some benchmarks I might add.
+일반적으로, 경험에 근거한 첫번째 원칙은 당신 코드의 성능에 대해 추정하기 전에 먼저 측정을 하라는 것이다. 우리는 RxJava에서 그렇게 했고 놀라운 발견이 나왔다: **synchronized**는 더 높은 처리량을 제공한다 -in some benchmarks I might add.
 
 RxJava는 threading/scheduling에 대해 고집이 없으므로, 동기 시나리오와 비동기 시나리오에서 동작을 해야 한다. RxJava를 사용하는 많은 어플리케이션은 대부분 동기 방식으로 자신들의 스트림들을 처리한다.
 
