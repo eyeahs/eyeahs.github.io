@@ -1,8 +1,12 @@
 ---
 layout: post
 category: blog
-published: false
-title: RxJava Wiki - Backpressure
+title: 'RxJava Wiki - Backpressure'
+date: '2016-10-1 19:00:00 +0900'
+categories: RxJava
+tags:
+  - rxjava
+published: true
 ---
 # Introduction
 
