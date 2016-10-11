@@ -2,7 +2,7 @@
 layout: post
 category: blog
 title: 'RxJava Wiki - Backpressure'
-date: '2016-10-1 19:00:00 +0900'
+date: '2016-10-11 19:00:00 +0900'
 categories: RxJava
 tags:
   - rxjava
