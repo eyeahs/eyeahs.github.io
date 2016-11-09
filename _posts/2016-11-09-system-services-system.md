@@ -1,10 +1,15 @@
 ---
 layout: post
 category: blog
-published: false
-title: System Services는 System만의 것이 아니다.
+title: 'System Services는 System만의 것이 아니다.'
+date: '2016-11-09 22:00:00 +0900'
+categories: Android
+tags:
+  - Android, Dagger2
+published: true
 ---
 [원본](https://medium.com/@theMikhail/system-services-are-not-just-for-the-system-ce33aab4594a#.281es4t7w)
+
 Dagger와 Custom View를 사용하면서 흥미로운 동작을 마주쳤다. 대부분의 경우, 나의 앱은 2개의 Component를 가진다. 싱글톤을 위한 최상위 레벨 AppComponent와 “Activity당 하나”이여야 하는 다른 것들을 위한 Activity Component가 있다. 나의 Activity들 안에는 일반적인 Dagger의 boilerplate가 존재한다:
 
 	activityComponent = application.getAppComponent()
