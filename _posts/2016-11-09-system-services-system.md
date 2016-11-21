@@ -1,7 +1,7 @@
 ---
 layout: post
 category: blog
-title: 'System Services는 System만의 것이 아니다.'
+title: '[번역]System Services는 System만의 것이 아니다.'
 date: '2016-11-09 22:00:00 +0900'
 categories: Android
 tags:
