@@ -17,6 +17,7 @@ tags: ''
 당신의 Activity는 어떤 공유 객체나 최근 데이터를 가지고 있는 어떤 주입된 의존에 의지한다고 상상해보라. 대부분의 경우 데이터가 null일 것을 예상하지 않았으므로 애플리케이션은 NullPointerException 크래쉬가 발생할 것이다.
 
 ## 백그라운드에 있는 애플리케이션의 중단&복구 테스트를 어떻게 해야 할까?
+
 1. 당신의 애플리케이션을 시작하고, 어떤 새로운 Activity를 열고, 어떤 작업을 하라.
 2. 홈 버튼을 눌른다(애플리케이션은 정지stop 상태로 백그라운드 상태에 있게 될 것이다).
 3. 애플리케이션을 죽인다 — 가장 간단한 방법은 Android Studio에 있는 빨간색 “stop” 버튼을 클릭하는 것이다.
@@ -26,24 +27,29 @@ tags: ''
 ![백그라운드에서 애플리케이션을 "종료kill”하는 가장 쉬운 방법](https://cdn-images-1.medium.com/max/1600/1*-muHYaKZh6uyylOOz5nLuQ.png)
 
 **이 시나리오에서 디버그 설정에서 “Don’t Keep Activities” 옵션으로 당신의 앱을 테스트하는 것은 확실히 충분하지 않다.** 이 설정은 단지 당신의 Activity들이 자신의 상태를 복구할 수 있는지를 테스트하는 것이다. 하지만 이 방식으로는 process는 절대로 중단되지 않는다. 크래쉬는 당신이 애플리케이션을 배포할 때 발생하기 시작한다. 사용자는 당신의 앱을 열어두고, 백그라운드에 하루 쯤 두었다가 다시 돌아온다.
+
 **개발자 옵션에서 “No background processes”를 설정하는 것도 가능하다.** 애플리케이션을 백그라운드에 두고, 다른 애플리케이션을 실행한 다음 다시 복귀한다 — 애플리케이션 프로세스는 재시작될 것이다 (이는 메모리 부족이나 베터리 절약으로 인한 중단과 동일하다)
 
 ![백그라운드 프로세스 제한을 0으로 설정하라](https://cdn-images-1.medium.com/max/1600/1*0Ue0iQx3LxRcZ4gWf4HJdg.png)
 
 ## 당신 앱의 트러블 메이커
+
 * Singleton
 * 변경할 수 있는 데이터mutable data를 유지하는 모든 공유 인스턴스 (당신이 어떤 상태를 보관하는 주입된 의존들 같은 것)
 * Application 클래스에 저장된 데이터와 상태
 * 가변 정정 필드 mutable static field
 * Retained Fragment (상태는 복구되고, 데이터는 잃어버린다)
 * 기본적으로 `onSaveInstanceState` 에 저장되지 않은 모든 것과 거기에 의존하는 당신
+
 여기에는 단독 해결책은 없으며 당신의 애플리케이션의 유형에 달려있다. 일반적으로 당신은 이 목록에 언급된 모든 항목에서 벗어나려고 노력해야 하지만, 이는 항상 쉽거나 가능하지가 않는다.
+
 당신은 상태를 “재초기화reinitialise”할 수 있어야 한다 — Database나 SharedPreferences 둘 중 하나에서 데이터를 불러오거나 또는 필요한 모든 것을 다시 조회하라.
-You may also have a login screen and timeout in your application — in that case it’s an acceptable approach to just detect the process kill scenario and forward the user back to the login screen.
+
 당신의 애플리케이션이 로그인 화면과 타임아웃을 가지고 있을 수 있다 — 이 경우 프로세스 중단kill 시나리오가 감지될 경우 로그인 화면으로 사용자를 돌려보내는 것도 허용 가능한 방식이다.
 
 ## Android 플랫폼의 규칙을 알아라
 모든 아키텍처, 프레임워크 또는 라이브러리는 Android 플랫폼의 규칙에 따라 동작해야 한다. 그러므로 새로운 라이브러리나 접근 방식을 볼 때마다 - 상태 복원을 처리하는지와 그 방법에 대해 생각해보라.
+
 그리고 언제나처럼 — 이 경우에 대해 당신의 애플리케이션을 테스트하라. 이 특정 문제는 간단한 테스트 중과 개발 중에는 절대로 볼 수 없을 것이므로 유해하다. 하지만 최종 사용자는 주기적으로 이 상황을 겪을 것이다.
 
 Follow me and read about possible solutions to this problem in the next article.
