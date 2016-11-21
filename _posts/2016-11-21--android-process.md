@@ -39,7 +39,7 @@ published: true
 * Singleton
 * 변경할 수 있는 데이터mutable data를 유지하는 모든 공유 인스턴스 (당신이 어떤 상태를 보관하는 주입된 의존들 같은 것)
 * Application 클래스에 저장된 데이터와 상태
-* 가변 정정 필드 mutable static field
+* 가변 정적 필드 mutable static field
 * Retained Fragment (상태는 복구되고, 데이터는 잃어버린다)
 * 기본적으로 `onSaveInstanceState` 에 저장되지 않은 모든 것과 거기에 의존하는 당신
 
