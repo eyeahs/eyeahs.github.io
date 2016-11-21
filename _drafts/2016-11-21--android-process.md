@@ -3,15 +3,20 @@ layout: post
 category: blog
 published: false
 title: '[번역]Android process 중단이 당신의 앱에 미치는 영향'
+splash: ''
+tags: ''
 ---
-원본:https://medium.com/inloop/android-process-kill-and-the-big-implications-for-your-app-1ecbed4921cb#.3h94ew3cz
+원본: https://medium.com/inloop/android-process-kill-and-the-big-implications-for-your-app-1ecbed4921cb#.3h94ew3cz
 
-Android에서 많은 개발자들이 Dependency Injection (예: Dagger)를 사용하고 MVP나 MVVM같은 패턴들을 적용하면서, 이 주제는 그 어느 때보다 더 필요해졌다. 최큰에는 내가 “숨겨진 singleton”이라고 부르는 것의 사용이 급증하였고, 동일한 안티-패턴이 별도로 딸려나왔다.
-**당신의 Android 애플리케이션(프로세스)는 일시 pause 상태가 되거나 stop 상태가 되면 언제든지 종료될 수 있다.** Activity들이나 Fragment들, View들의 상태는 저장될 것이다 — 시스템은 프로세스를 다시 시작하고, 최상단 activity를 다시 생성하고 (백스택의 Activity들은 당신이 뒤로 돌아갈 때 필요에 의해 다시 생성될 것이다) 저장된 상태를 가진 Bundle을 받을 것이다.
-그리고 여기 어떤 개발자들은 완전히 알아차리지 못한 문제가 있다 — 전체 프로세스는 중단되었다. **따라서 모든 Singleton (또는 “application scope” 객체들), 임시 데이터, 당신의 “retained Fragments”에 저장된 모든 데이터 — 모든 것들은 당신이 애플리케이션을 막 실행시킨 것과 같은 상태에 있을 것이다. 단 하나의 차이점은 — 상태가 복구되면, 사용자는 그가 앱을 떠났던 시점에 있다.**
+많은 개발자들이 Android에서 Dependency Injection (예: Dagger)를 사용하고 MVP나 MVVM같은 패턴들을 적용하면서, 이 주제는 그 어느 때보다 더 필요해졌다. 최근에는 내가 “숨겨진 singleton”이라고 부르는 것의 사용이 급증하였고, 동일한 안티-패턴이 별도로 딸려나왔다.
+
+**당신의 Android 애플리케이션(프로세스)가 pause 상태 또는 stop 상태로 들어가면 언제든지 종료될 수 있다.** Activity나 Fragment, View의 상태는 저장될 것이다 — 시스템은 프로세스를 다시 시작하고, 최상단의 activity를 재생성하고 (백스택의 Activity들은 뒤로 복귀할 때 언제든지 재생성될 것이다) 저장된 상태를 가진 Bundle을 받을 것이다.
+
+그리고 여기에 어떤 개발자들은 완전 알아차리지 못한 문제가 있다 — 전체 프로세스는 중단되었다. **따라서 모든 Singleton (또는 “application scope” 객체들), 임시 데이터, 당신의 “retained Fragments”에 저장된 모든 데이터 — 모든 것들은 당신이 애플리케이션을 막 실행시킨 것과 같은 상태에 있을 것이다. 단 하나의 차이점은 — 상태가 복구되면, 사용자는 그가 앱을 떠났던 시점에 있다.**
+
 당신의 Activity는 어떤 공유 객체나 최근 데이터를 가지고 있는 어떤 주입된 의존에 의지한다고 상상해보라. 대부분의 경우 데이터가 null일 것을 예상하지 않았으므로 애플리케이션은 NullPointerException 크래쉬가 발생할 것이다.
 
-## 백그라운드에 있는 애플리케이션을 죽이고 복원을 어떻게 테스트할 까?
+## 백그라운드에 있는 애플리케이션의 중단&복구 테스트를 어떻게 해야 할까?
 1. 당신의 애플리케이션을 시작하고, 어떤 새로운 Activity를 열고, 어떤 작업을 하라.
 2. 홈 버튼을 눌른다(애플리케이션은 정지stop 상태로 백그라운드 상태에 있게 될 것이다).
 3. 애플리케이션을 죽인다 — 가장 간단한 방법은 Android Studio에 있는 빨간색 “stop” 버튼을 클릭하는 것이다.
