@@ -1,8 +1,12 @@
 ---
 layout: post
 category: blog
-published: false
 title: '[번역]Android process 중단이 당신의 앱에 미치는 영향'
+date: '2016-11-21 19:00:00 +0900'
+categories: Android
+tags:
+  - Android
+published: true
 ---
 원본: https://medium.com/inloop/android-process-kill-and-the-big-implications-for-your-app-1ecbed4921cb#.3h94ew3cz
 
