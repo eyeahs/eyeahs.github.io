@@ -1,7 +1,7 @@
 ---
 layout: post
 category: blog
-title: 'RxJava Wiki - Backpressure'
+title: '[번역]RxJava Wiki - Backpressure'
 date: '2016-10-11 19:00:00 +0900'
 categories: RxJava
 tags:
