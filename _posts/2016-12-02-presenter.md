@@ -8,6 +8,8 @@ tags:
   - Android
 published: true
 ---
+원본: [Your presenters don’t need all those lifecycle events](https://medium.com/@anupcowkur/your-presenters-dont-need-all-those-lifecycle-events-721f500eeef4#.dlemjbp3z)
+
 MVP는 Android 개발의 새로운 유행이며 대략 10억개의 방법이 있다. 흔히 반복되는 실수 중 하나는 개발자가 presenter에 너무 많은 Activity/Fragment 생명주기 이벤트를 포함시켜 View와 Presenter 계층간의 분리를 파괴하는 것이다. MVP가 우리에게 주는 이점, 즉 테스트 가능하고 민첩하며, 관심사의 분리는 UI와 Presenter계층이 서로 분리 된 상태를 유지해야한 달성할 수 있다. 나의 개발자 동무, 당신은 안드로이드에 구속되지 않는 Presenter를 지키기 위해 최선을 다해야 합니다.
 
 ## 나의 제안이 여기 있다
