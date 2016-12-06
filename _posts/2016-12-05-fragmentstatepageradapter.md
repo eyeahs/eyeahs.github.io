@@ -1,7 +1,7 @@
 ---
 layout: post
 category: blog
-title: [번역]FragmentStatePagerAdapter와의 모험
+title: '[번역]FragmentStatePagerAdapter와의 모험'
 date: '2016-12-06 18:30:00 +0900'
 tags:
   - anroid
