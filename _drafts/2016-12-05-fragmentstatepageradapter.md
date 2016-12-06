@@ -4,6 +4,8 @@ category: blog
 published: false
 title: FragmentStatePagerAdapter와 모험을
 ---
+[원본 : Adventures with FragmentStatePagerAdapter](https://medium.com/inloop/adventures-with-fragmentstatepageradapter-4f56a643f8e0#.mm7leuau9)
+
 많은 안드로이드 개발자들은 [FragmentPagerAdapter](https://developer.android.com/reference/android/support/v4/app/FragmentPagerAdapter.html)와 [FramgentStatePagerAdapter](https://developer.android.com/reference/android/support/v4/app/FragmentStatePagerAdapter.html)를 헛갈리거나 심지어 둘 사이의 차이를 모른다. 또한 종종 `notifyDatasetChanged()`를 동작시키면 실망하기도 한다. 이 adapter들을 사용하면 메모리 누수가 쉽게 일어날 수 있다. 나는 기초부터 시작해서 구현 세부 사항을 자세히 설명하고 잘 알려지지 않은 점들을 지적할 것이다 (FragmentPagerAdapter의 Fragment들은 Activity가 finish할 때만 메모리에서 해제된다는 것을 알고 있는가? Read on :-)).
 
 ## 기본적인 차이점
@@ -48,4 +50,17 @@ notifyDataSetChanged()는 데이트 세트가 변경되는 상황을 위한 것�
 이 메소드는 FragmentManager안에 detach된 Fragment 인스턴스가 존재하는지를 찾기 위해 `instantiateItem()`의 내부에서 사용된다. 이 메소드를 오버라이드하지 않고 `notifyDataSetChanged()`를 호출하면 현재 인덱스에 존재하는 Fragment의 인스턴스가 반환될 뿐이다. 당신은 그 Fragment를 위해 고유 식별자를 반환해야 할 필요가 있다.
 
 ## FragmentStatePagerAdapter - 상태 bundle "버그"
+FragmentStatePagerAdapter에서 데이터 세트의 변경을 지원하도록 하기 위해서는 `getItemPosition()`을 오버라이드 해야 한다(여기에는 `getItemId()`메소드가 없다). 여기에는 FragmentPagerAdapter를 위해 언급했던 것과 동일한 것이 적용된다(항상 POSITION_NONE을 반환하지 마라).
 
+잘 알려지지 않은 점이 하나 있는데 -그리고 이건 꽤 불쾌한 문제이다.. 이 이슈는 [이 블로그](http://speakman.net.nz/blog/2014/02/20/a-bug-in-and-a-fix-for-the-way-fragmentstatepageradapter-handles-fragment-restoration/)에 자세히 설명되어 있다. 문제는 FragementStatePagerAdapter가 상태 bundle들의 ArrayList를 유지한다는 것이다. **instantiateItem()메소드는 Fragment의 인스턴스가 존재하지 않는다면 새로운 인스턴스를 생성할 것이다 -하지만 그 다음에는 ArrayList를 조사하고 항목의 인덱스에 기반하여 Bundle를 선택한다!** 이는 그 인덱스에 이전에 존재하였던 (다른) Fragment 인스턴스에 속한 Bundle일 수 있다. 데이터 세트를 변경하고 adpater를 갱신한다면 이 문제에 봉착할 수 있다. 가능한 해결 방법은 링크된 블로그를 참조하라.
+
+## Fragment{}는 현재 FragmentManager에 존재하지 않는다.
+[이 이슈](https://code.google.com/p/android/issues/detail?id=37990)는 4년 전에 공개되었고 아직 고쳐지지 않았다! 이것은 [이 블로그](http://billynyh.github.io/blog/2014/03/02/fragment-state-pager-adapter/)에 자세히 설명되어 있다. 이는 정말 실망스러우며, 이 시점 이후에 당신만의 "수정된" 버전의 FragmentStatePagerAdapter를 가질 생각을 할 수 있을 것이다.
+
+Adam Powell가 G+에 [댓글](https://plus.google.com/u/0/+BillyNgYuHang/posts/a1xwgEEehCs)을 남겼다.
+> FragmentStatePagerAdapter는 PagerAdapters의 데이터 세트 변경 기능보다 먼저 실행됩니다. 데이터 세트 변경을 처리해야 하는 PagerAdapter가 있는 경우 FragmentStatePagerAdapter에서 시작하는 것보다 PagerAdapter에서 직접 계약을 구현하는 것이 더 쉽습니다.
+
+글쎄 ... 좋았지만, 이것에 대해 크게 경고했었어야 한다. 간단한 해결책은 getItemPosition()에서 항상 POSITION_NONE을 반환하는 것이다. 그러나 이것은 성능에 영향을 미친다.
+
+## PagerAdapter도 존재한다...
+그리고 처음부터 이 사실을 언급했어야 할지도 모른다 -당신의 애플리케이션이 ViewPager를 가진 경우에도 항상 Fragment를 이용할 필요가 있는 것은 아니다. 어떠한 혼성 View 레이아웃들과 단순한 PagerAdapter를 사용하는 것이 더 훌륭하고 덜 복잡하다. 이는 당신이 모든 생명 주기 콜백이 필요한지 아닌지에 달려있다.
