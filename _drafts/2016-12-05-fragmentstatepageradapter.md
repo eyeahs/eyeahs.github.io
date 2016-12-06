@@ -34,4 +34,8 @@ notifyDataSetChanged()는 데이트 세트가 변경되는 상황을 위한 것�
 ## FragmentPagerAdapter & notifyDatasetChanged()
 데이터 세트 변경을 지원하기 위해서 당신의 FragmentPAgerAdapter에 두 메소드를 오버라이드해야 한다.
 ### int getItemPosition(Object object)
-> 호스트 뷰가 항목의 위치가 변경되었는지를 판단하기 위해 호출 된다. 주어진 항목의 위치가 변경되지 않은 경우 POSITION_UNCHANGED를 반환하고 항목이 더 이상 존재하지 않는다면 POSITION_NONE을 반환한다.
+> 호스트 뷰가 항목의 위치가 변경되었는지를 판단하기 위해 호출 된다. 주어진 항목의 위치가 변경되지 않은 경우 [POSITION_UNCHANGED](https://developer.android.com/reference/android/support/v4/view/PagerAdapter.html#POSITION_UNCHANGED)를 반환하고 항목이 더 이상 존재하지 않는다면 [POSITION_NONE](https://developer.android.com/reference/android/support/v4/view/PagerAdapter.html#POSITION_NONE)을 반환한다.
+
+이 메소드는 FragmentManager안에 detach된 Fragment 인스턴스가 존재하는지를 찾기 위해 `instantiateItem()`의 내부에서 사용된다. 이 메소드를 오버라이드하지 않고 `notifyDataSetChanged()`를 호출하면 현재 인덱스에 존재하는 Fragment의 인스턴스가 반환될 뿐이다. 당신은 그 Fragment를 위해 고유 식별자를 반환해야 할 필요가 있다.
+
+## FragmentStatePagerAdapter - 상태 bundle "버그"
