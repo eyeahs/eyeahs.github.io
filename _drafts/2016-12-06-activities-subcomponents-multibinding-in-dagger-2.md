@@ -60,3 +60,8 @@ Dagger 2.7부터 Subcomponent의 부모를 선언하는 새로운 방법이 생�
     
 `ActivityBindingModule`은 `AppComponent`에 설치된다. 이는 `MainActivityComponent`와 `SecondActivityComponent` 둘 다 `AppComponent`의 Subcomponent임을 의미한다.
 이런 방식으로 선언된 Subcomponent들은 (이 포스트의 첫 코드 목록처럼)`AppComponet`에 명시적으로 선언될 필요가 없다.
+
+## Activities Multibinding
+이제 `Modules.subcomponents`를 사용하여 어떻게 Activity Multibinding을 만들고 Activity에 AppComponent 객체를 전달하는 것을 제거하는지를 보자(이는 이 [프리젠테이션](https://www.youtube.com/watch?v=iwjXqRlEevg&feature=youtu.be&t=1693)도 역시 설명하고 있다). 코드에서 가장 중요한 부분만을 살펴 볼 것이다. 전체 구현은 Github: [Dagger2Recipes-ActivitiesMultibing](https://github.com/frogermcs/Dagger2Recipes-ActivitiesMultibinding)에서 볼 수 있다.
+
+우리의 앱은 두 개의 간단한 화면을 포함한다.
