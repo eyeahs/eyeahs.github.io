@@ -64,4 +64,112 @@ Dagger 2.7부터 Subcomponent의 부모를 선언하는 새로운 방법이 생�
 ## Activities Multibinding
 이제 `Modules.subcomponents`를 사용하여 어떻게 Activity Multibinding을 만들고 Activity에 AppComponent 객체를 전달하는 것을 제거하는지를 보자(이는 이 [프리젠테이션](https://www.youtube.com/watch?v=iwjXqRlEevg&feature=youtu.be&t=1693)도 역시 설명하고 있다). 코드에서 가장 중요한 부분만을 살펴 볼 것이다. 전체 구현은 Github: [Dagger2Recipes-ActivitiesMultibing](https://github.com/frogermcs/Dagger2Recipes-ActivitiesMultibinding)에서 볼 수 있다.
 
-우리의 앱은 두 개의 간단한 화면을 포함한다.
+우리의 앱은 두 개의 간단한 화면을 포함한다 : `MainActivity`와 `SecondActivity`. 우리는 `AppComponent`객체를 전달하지 않고 둘 모두에게 Subcomponent들을 제공할 수 있기를 원한다.
+
+이제 모든 ActivityComponent 빌더를 위한 base interface를 만들어보자:
+
+	ActivityComponentBuilder.java
+    
+	public interface ActivityComponentBuilder<M extends ActivityModule, C extends ActivityComponent> {
+        ActivityComponentBuilder<M, C> activityModule(M activityModule);
+        C build();
+    }
+    
+Subcomponent 예제: `MainActivityCOmponent`는 다음과 같을 것이다:
+
+	MainActivityComponent.java
+    
+    @ActivityScope
+    @Subcomponent(
+            modules = MainActivityComponent.MainActivityModule.class
+    )
+    public interface MainActivityComponent extends ActivityComponent<MainActivity> {
+
+        @Subcomponent.Builder
+        interface Builder extends ActivityComponentBuilder<MainActivityModule, MainActivityComponent> {
+        }
+
+        @Module
+        class MainActivityModule extends ActivityModule<MainActivity> {
+            MainActivityModule(MainActivity activity) {
+                super(activity);
+            }
+        }
+    }
+    
+이제 각 Activity 클래스들을 위해 만들어진 builder를 얻을 수 있도록 Subcomponent 빌더들의 맵을 가지고 싶다. 이를 위해 Multibinding 기능을 사용하도록 하자.
+
+	ActivityBindingModule.java
+    
+    @Module(
+            subcomponents = {
+                    MainActivityComponent.class,
+                    SecondActivityComponent.class
+            })
+    public abstract class ActivityBindingModule {
+
+        @Binds
+        @IntoMap
+        @ActivityKey(MainActivity.class)
+        public abstract ActivityComponentBuilder mainActivityComponentBuilder(MainActivityComponent.Builder impl);
+
+        @Binds
+        @IntoMap
+        @ActivityKey(SecondActivity.class)
+        public abstract ActivityComponentBuilder secondActivityComponentBuilder(SecondActivityComponent.Builder impl);
+    }
+    
+`ActivityBindingModule`은 `AppComponent`에 설치된다. 설명처럼, `MainActivityComponent`와 `SecondActivityComponent`는 `AppComponent`의 Subcomponent가 될 것이다.
+
+이제 우리는 `Subcomponents` 빌더의 맵을 주입할 수 있다.(예를 들어 `MyAppliation` 클래스에):
+
+	MyApplication.java
+    
+	public class MyApplication extends Application implements HasActivitySubcomponentBuilders {
+
+      @Inject
+      Map<Class<? extends Activity>, ActivityComponentBuilder> activityComponentBuilders;
+
+      private AppComponent appComponent;
+
+      public static HasActivitySubcomponentBuilders get(Context context) {
+          return ((HasActivitySubcomponentBuilders) context.getApplicationContext());
+      }
+
+      @Override
+      public void onCreate() {
+          super.onCreate();
+          appComponent = DaggerAppComponent.create();
+          appComponent.inject(this);
+      }
+
+      @Override
+      public ActivityComponentBuilder getActivityComponentBuilder(Class<? extends Activity> activityClass) {
+          return activityComponentBuilders.get(activityClass);
+      }
+	}
+    
+추가적인 추상을 가지기 위해 `HasActivitySubcomponentBuilders` 인터페이스를 만든다 (빌더들의 `Map`은 `Application`클래스에 주입될 수 없기 때문이다):
+
+    public interface HasActivitySubcomponentBuilders {
+        ActivityComponentBuilder getActivityComponentBuilder(Class<? extends Activity> activityClass);
+    }
+    
+그리고 Activity 클래스에 주입하는 마지막 구현은:
+
+	MainActivity.java
+	
+    public class MainActivity extends BaseActivity {
+
+        //...
+
+        @Override
+        protected void injectMembers(HasActivitySubcomponentBuilders hasActivitySubcomponentBuilders) {
+            ((MainActivityComponent.Builder) hasActivitySubcomponentBuilders.getActivityComponentBuilder(MainActivity.class))
+                    .activityModule(new MainActivityComponent.MainActivityModule(this))
+                    .build().injectMembers(this);
+        }
+    }
+    
+이는 우리의 제일 첫번째 구현과 매우 유사하지만, 앞서 언급했듯, 가장 중요한 점은 `ActivityComponent`객체를 더 이상 Activity에 전달하지 않는다는 것이다.
+
