@@ -173,3 +173,86 @@ Subcomponent 예제: `MainActivityCOmponent`는 다음과 같을 것이다:
     
 이는 우리의 제일 첫번째 구현과 매우 유사하지만, 앞서 언급했듯, 가장 중요한 점은 `ActivityComponent`객체를 더 이상 Activity에 전달하지 않는다는 것이다.
 
+## 사용 사례 - instrumentation tests mocking
+Loose coupling과 고정된 순환 의존성fixed circular dependency(Activity <-> Application)은 특히 작은 프로젝트나 팀에서는 항상 큰 문제이지는 않으나, 우리의 구현이 도움이 될 수 있는 실제 사용 사례를 고려해보도록 하자 -instrumentation test의 dependency mocking.
+
+현재 Android Instrumentation Test에서 dependency mocking를 하는 가장 잘 알려진 방법 중 하나는 [DaggerMock](https://medium.com/@fabioCollini/android-testing-using-dagger-2-mockito-and-a-custom-junit-rule-c8487ed01b56#.pr1gg69ar)([Github project link](https://github.com/fabioCollini/DaggerMock))를 사용하는 것이다. DaggerMock이 강력한 도구이긴 하지만, 이것이 내부적으로 어떻게 동작하는지 이해하는 것은 꽤 어렵다. 다른 것들 중에서는 추적하기 쉽지않는 리플랙션 코드가 존재하기도 한다.
+
+Subcomponent를 AppComponent 클래스에 접근하지 않고 Activity에서 직접 생성하면 우리 앱의 나머지 부분과 분리된 모든 단일 Activity를 테스트 할 방법이 생긴다.
+멋진 것 같으니, 이제 코드를 살펴보도록 하자.
+
+Instrumentation 테스트에서 사용되는 Application 클래스:
+	
+	ApplicationMock.java
+        
+	public class ApplicationMock extends MyApplication {
+
+        public void putActivityComponentBuilder(ActivityComponentBuilder builder, Class<? extends Activity> cls) {
+            Map<Class<? extends Activity>, ActivityComponentBuilder> activityComponentBuilders = new HashMap<>(this.activityComponentBuilders);
+            activityComponentBuilders.put(cls, builder);
+            this.activityComponentBuilders = activityComponentBuilders;
+        }
+    }
+
+`putActivityComponentBuilder()` 메소드는 주어진 Activity Class의 ActivityComponentBuilder의 구현을 교체할 수 있는 방법을 제공한다.
+
+이제 Espresso Instrumentation Test의 예를 보자:
+
+	rawMainActivityUITest.java 
+    
+    @RunWith(AndroidJUnit4.class)
+    public class MainActivityUITest {
+
+        @Rule
+        public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+        @Rule
+        public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class, true, false);
+
+        @Mock
+        MainActivityComponent.Builder builder;
+        @Mock
+        Utils utilsMock;
+
+        private MainActivityComponent mainActivityComponent = new MainActivityComponent() {
+            @Override
+            public void injectMembers(MainActivity instance) {
+                instance.mainActivityPresenter = new MainActivityPresenter(instance, utilsMock);
+            }
+        };
+
+        @Before
+        public void setUp() {
+            when(builder.build()).thenReturn(mainActivityComponent);
+            when(builder.activityModule(any(MainActivityComponent.MainActivityModule.class))).thenReturn(builder);
+
+            ApplicationMock app = (ApplicationMock) InstrumentationRegistry.getTargetContext().getApplicationContext();
+            app.putActivityComponentBuilder(builder, MainActivity.class);
+        }
+
+        @Test
+        public void checkTextView() {
+            String expectedText = "lorem ipsum";
+            when(utilsMock.getHardcodedText()).thenReturn(expectedText);
+
+            activityRule.launchActivity(new Intent());
+
+            onView(withId(R.id.textView)).check(matches(withText(expectedText)));
+        }
+
+    }
+    
+단계별로:
+
+* `MainActivityComponent.Builder`와 Mocking되어야 하는 모든 의존(이 경우 `Utils`만)들의 Mock을 제공한다. 우리의 Mock된 `Builder`는 `MainActivityPresenter`에 Mocking된 Utils 객체를 주입하는 `MainActivityComponent`의 커스텀 구현을 반환한다.
+* 그다음 우리의 `MainActivityComponent.Builder`는 `MyApplication`(line 28)에 주입된 Builder의 원본을 교체한다 : `app.putActivityComponentBuilder(builder, MainActivity.class);`
+* 마지막 테스트 - 우리는 `Utils.getHardcodedText()` 메소드를 mocking한다. Activity가 생성될 때 주입이 수행된다:`activityRule.launchActivity(new Intent());`. 그 다음에는 우리는 Espresso로 결과를 체크한다.
+
+이것이 전부이다. 거의 모든 것이 `MainActivityUITest`클래스에서 일어나며 코드는 매우 간단하고 이해하기 쉽다.
+
+### Source code
+
+직접 구현을 테스트하고 싶다면 Instrumentation Test에서 Activity Multibinding 및 Mock Dependencies를 생성하는 방법을 보여주는 예제가 있는 소스 코드를 Github: [Dagger2Recipes-ActivitiesMultibinding](https://github.com/frogermcs/Dagger2Recipes-ActivitiesMultibinding)에서 볼 수 있다.
+
+
+Thanks for reading!
