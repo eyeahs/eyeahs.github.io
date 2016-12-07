@@ -1,9 +1,13 @@
 ---
 layout: post
 category: blog
-published: false
-title: Activities Subcomponents Multibinding in Dagger 2
+title: '[번역]Activities Subcomponents Multibinding in Dagger 2'
+date: '2016-12-07 15:35:00 +0900'
+tags:
+  - anroid, dagger, di
+published: true
 ---
+
 [원본:Activities Subcomponents Multibinding in Dagger 2](http://frogermcs.github.io/activities-multibinding-in-dagger-2/)
 
 몇 달 전 MCE³ 컨퍼런스에서 그레고리 킥(Gregory Kick)은 프레젠테이션에서 Subcomponent(e.g. to Activities)들을 제공하는 새로운 컨셉을 보여 주었다. 새로운 접근 방식은 (Activity들의 Subcomponent들의 팩토리를 사용하던) AppComponent 객체 참조가 없어도 ActivitySubcomponent를 만드는 방법을 제공한다. 이것을 현실로 만들기 위해 Dagger의 새로운 버전인 2.7 버전을 기다려야 했다.
