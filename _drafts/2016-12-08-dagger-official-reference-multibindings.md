@@ -110,3 +110,147 @@ Multibinding map에 항목entry를 제공하려면 @IntoMap 어노테이션과 �
       assertThat(myComponent.stringsByClass().get(Thing.class))
           .isEqualTo("value for Thing");
     }
+    
+Enum 또는 구체적으로 매개변수화된parameterized 클래스가 키key인 map의 경우 타입이 Map의 키key 타입인 멤버를 가진 어노테이션을 작성하고, [@MapKey](https://google.github.io/dagger/api/latest/dagger/MapKey.html) 어노테이션을 추가하라:
+
+    enum MyEnum {
+      ABC, DEF;
+    }
+
+    @MapKey
+    @interface MyEnumKey {
+      MyEnum value();
+    }
+
+    @MapKey
+    @interface MyNumberClassKey {
+      Class<? extends Number> value();
+    }
+
+    @Module
+    class MyModule {
+      @Provides @IntoMap
+      @MyEnumKey(MyEnum.ABC)
+      static String provideABCValue() {
+        return "value for ABC";
+      }
+
+      @Provides @IntoMap
+      @MyNumberClassKey(BigDecimal.class)
+      static String provideBigDecimalValue() {
+        return "value for BigDecimal";
+      }
+    }
+
+    @Component(modules = MyModule.class)
+    interface MyComponent {
+      Map<MyEnum, String> myEnumStringMap();
+      Map<Class<? extends Number>, String> stringsByNumberClass();
+    }
+
+    @Test void testMyComponent() {
+      MyComponent myComponent = DaggerMyComponent.create();
+      assertThat(myComponent.myEnumStringMap().get(MyEnum.ABC)).isEqualTo("value for ABC");
+      assertThat(myComponent.stringsByNumberClass.get(BigDecimal.class))
+          .isEqualTo("value for BigDecimal");
+    }
+    
+당신의 어노테이션의 단일 멤버는 배열을 제외하면 모두 유요한 어노테이션 멤버가 될 수 있으며, 임의의 이름을 가질 수 있다.
+
+## 복잡한 Map keys
+
+Map의 키가 단일 어노테이션 멤버만으로 표현될 수 없다면, @MapKey의 unwrapValue를 false로 설정함으로서 전체 어노테이션을 map의 키key로 사용할 수 있다. 이 경우, 어노테이션은 배열 구성원들도 가질 수 있다.
+
+    @MapKey(unwrapValue = false)
+    @interface MyKey {
+      String name();
+      Class<?> implementingClass();
+      int[] thresholds();
+    }
+
+    @Module
+    class MyModule {
+      @Provides @IntoMap
+      @MyKey(name = "abc", implementingClass = Abc.class, thresholds = {1, 5, 10})
+      static String provideAbc1510Value() {
+        return "foo";
+      }
+    }
+
+    @Component(modules = MyModule.class)
+    interface MyComponent {
+      Map<MyKey, String> myKeyStringMap();
+    }
+
+### 어노테이션 인스턴드를 생성하기 위해 @AutoAnnotation을 사용하기.
+
+Map에서 복잡한 키key를 사용하는 경우 런타임에 @MapKey 어노테이션의 인스턴스를 만들어 map의 `get(Object)` 메소드에 전달할 필요가 있을 수 있다. 이를 위한 가장 간단한 방법은 @AutoAnnotation 어노테이션을 사용하여 당신의 어노테이션을 인스턴스화하는 static 메소드를 만드는 것이다. 자세한 내용은 [@AutoAnnotation](https://github.com/google/auto/blob/master/value/src/main/java/com/google/auto/value/AutoAnnotation.java)의 문서를 참조하라.
+
+    class MyComponentTest {
+      @Test void testMyComponent() {
+        MyComponent myComponent = DaggerMyComponent.create();
+        assertThat(myComponent.myKeyStringMap()
+            .get(createMyKey("abc", Abc.class, new int[] {1, 5, 10}))
+            .isEqualTo("foo");
+      }
+
+      @AutoAnnotation
+      static MyKey createMyKey(String name, Class<?> implementingClass, int[] thresholds) {
+        return new AutoAnnotation_MyComponentTest_createMyKey(name, implementingClass, thresholds);
+      }
+    }
+    
+## 컴파일타임에 키Key를 알지 못하는 Map
+
+multibinding은 Map의 키가 컴파일 타임에 알 수 있고 어노테이션으로 표횐될 수 있는 경우에만 동작한다. 만약 Map의 키key가 이런 제약 조건에 맞지 않는 경우, multibound 맵을 만들수는 없을 것이지만, multibound 맵이 아니도록 변환할 수 있는 객체의 Set을 바인딩하기 위해 set multibinding을 사용하여 이 문제를 해결할 수 있다.
+
+    @Module
+    class MyModule {
+      @Provides @IntoSet
+      static Map.Entry<Foo, Bar> entryOne(…) {
+        Foo key = …;
+        Bar value = …;
+        return new SimpleImmutableEntry(key, value);
+      }
+
+      @Provides @IntoSet
+      static Map.Entry<Foo, Bar> entryTwo(…) {
+        Foo key = …;
+        Bar value = …;
+        return new SimpleImmutableEntry(key, value);
+      }
+    }
+
+    @Module
+    class MyMapModule {
+      @Provides
+      static Map<Foo, Bar> fooBarMap(Set<Map.Entry<Foo, Bar>> entries) {
+        Map<Foo, Bar> fooBarMap = new LinkedHashMap<>(entries.size());
+        for (Map.Entry<Foo, Bar> entry : entries) {
+          fooBarMap.put(entry.getKey(), entry.getValue());
+        }
+        return fooBarMap;
+      }
+    }
+
+이 방법은 Map<Foo, Provider<Bar>> 같은 자동화된 바인딩을 제공해주지 않는다. 만약 Provider의 map을 원한다면, multibound set안의 `Map.Entry` 객체가 provider를 포함해야 한다. 그러면 multibound map은 `Provider` 값을 가질 수 있다.
+
+    @Module
+    class MyModule {
+      @Provides @IntoSet
+      static Map.Entry<Foo, Provider<Bar>> entry(
+          Provider<BarSubclass> barSubclassProvider) {
+        Foo key = …;
+        return new SimpleImmutableEntry(key, barSubclassProvider);
+      }
+    }
+
+    @Module
+    class MyProviderMapModule {
+      @Provides
+      static Map<Foo, Provider<Bar>> fooBarProviderMap(
+          Set<Map.Entry<Foo, Provider<Bar>>> entries) {
+        return …;
+      }
+    }
+
