@@ -1,7 +1,7 @@
 ---
 layout: post
 category: blog
-title: Dagger & Android (Dagger Offical Guide)
+title: '[Dagger Official Reference] Dagger & Android'
 date: '2016-12-08 10:30:00 +0900'
 tags:
   - android, dagger, di
