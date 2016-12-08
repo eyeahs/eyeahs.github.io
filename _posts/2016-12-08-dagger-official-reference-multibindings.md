@@ -1,9 +1,13 @@
 ---
 layout: post
 category: blog
-published: false
-title: Dagger Official Reference - Multibindings
+title: '[Dagger Official Reference] Multibindings'
+date: '2016-12-08 12:05:00 +0900'
+tags:
+  - android, dagger, di
+published: true
 ---
+
 Dagger는 multibindings을 사용하여 여러 객체들을 심지어 다른 모듈에 바인딩된 경우에도 컬렉션 안에 바인딩할 수 있다. Dagger는 컬렉션을 모아서 애플리케이션 코드가 개별 바인딩에 직접 의존하지 않고도 주입될 수 있도록 한다.
 
 예를 들어, Multibindings을 사용하여 여러 모듈이 개별 플러그인 인터페이스 구현을 제공하여 중앙의 클래스가 전체 플러그인 세트를 사용할 수 있는 플러그인 아키텍처를 구현할 수 있다. 또는 여러 모듈들을 개별 서비스 제공자provider에게 Key가 name인 Map으로 제공할 수도 있다.
