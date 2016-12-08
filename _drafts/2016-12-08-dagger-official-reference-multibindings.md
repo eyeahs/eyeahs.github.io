@@ -75,9 +75,9 @@ Qualified multibound set을 제공하기 위해서는, 각 `@Provides` 메소드
 
 컴파일 타임에 map의 key를 알 수 있다면 multibindings를 사용하여 주입가능한 map에 entry를 제공할 수 있다.
 
-Multibinding map에 entry를 제공하려면 [@IntoMap](https://google.github.io/dagger/api/latest/dagger/multibindings/IntoMap.html) 어노테이션과 entry을 위한 map의 key값을 지정하는 커스텀 어노테이션을 가지고 값을 반환하는 메소드를 모듈에 추가하라. 각 Qualified multibound map에 entry을 제공하기 위해서는 `@IntoMap` 메소드에 Qualifier 어노테이션을 추가하라.
+Multibinding map에 entry를 제공하려면 [@IntoMap](https://google.github.io/dagger/api/latest/dagger/multibindings/IntoMap.html) 어노테이션과 entry을 위한 map의 key를 지정하는 커스텀 어노테이션을 가지고 그 value을 반환하는 메소드를 모듈에 추가하라. 각 Qualified multibound map에 entry을 제공하기 위해서는 `@IntoMap` 메소드에 Qualifier 어노테이션을 추가하라.
 
-그 다음에는 map 자체(`Map<K,V>`) 또는 값 제공자value provider를 포함한 map(`Map<K, Provider<V>`)를 주입할 수 있다. 후자는 한 번에 하나의 값만을 추출하고자 하거나, 어쩌면 Map을 쿼리할 때 마다 각 값의 새로운 인스턴스를 가져오고자 할 때, 모든 값들이 인스턴스화 되는 것을 원하지 않으려는 경우에 유용한다.
+그 다음에는 map 자체(`Map<K,V>`) 또는 value provider를 포함한 map(`Map<K, Provider<V>`)를 주입할 수 있다. 후자는 한 번에 하나의 value만을 추출하고자 하거나, 어쩌면 Map을 쿼리할 때 마다 각 value의 새로운 인스턴스를 가져오고자 할 때, 모든 value들이 인스턴스화 되는 것을 원하지 않으려는 경우에 유용한다.
 
 ## 간단한 Map keys
 
@@ -233,7 +233,7 @@ multibinding은 Map의 key가 컴파일 타임에 알 수 있고 어노테이션
       }
     }
 
-이 방법은 `Map<Foo, Provider<Bar>>` 같은 자동화된 바인딩을 제공해주지 않는다. 만약 Provider의 map을 원한다면, multibound set안의 `Map.Entry` 객체가 provider를 포함해야 한다. 그러면 multibound map은 `Provider` 값을 가질 수 있다.
+이 방법은 `Map<Foo, Provider<Bar>>` 같은 자동화된 바인딩을 제공해주지 않는다. 만약 Provider의 map을 원한다면, multibound set안의 `Map.Entry` 객체가 provider를 포함해야 한다. 그러면 multibound map은 `Provider` value를 가질 수 있다.
 
     @Module
     class MyModule {
@@ -272,7 +272,7 @@ multibinding은 Map의 key가 컴파일 타임에 알 수 있고 어노테이션
 
 ## 대안 : 빈 set를 반환하는 @ElementsIntoSet
 
-빈 set의 경우에만, 대안으로, 빈 set을 반환하는 @ElementsInfoSet 메소드를 추가할 수 있다.
+빈 set의 경우에만, 대안으로, 빈 set을 반환하는 [@ElementsIntoSet](https://google.github.io/dagger/api/latest/dagger/multibindings/ElementsIntoSet.html) 메소드를 추가할 수 있다.
 
     @Module
     class MyEmptySetModule {
@@ -284,3 +284,82 @@ multibinding은 Map의 key가 컴파일 타임에 알 수 있고 어노테이션
 
 ## 상속된 subcomponent multibindings
 
+Subcomponent의 바인딩은 자신의 부모의 다른 바인딩에 의존할 수 있는 것처럼 부모의 multibound set이나 map에도 의존할 수 있다. 그러나 subcomponent는 자신의 module안에 적절한 @Provides 메소드를 포함함으로서 부모에 바인딩된 multibound set이나 map에 항목을 추가할 수 있다.
+
+그런 일이 발생하면, set이나 map은 주입 위치에 따라 달라진다. subcomponent에 정의된 바인딩에 주입되면, 부모 component의 multibinding에 정의된 것과 subcomponent의 multibinding에 정의된 것의 value나 entry를 가진다. 부모 component에 정의된 바인딩에 주입되면 그곳에 정의된 value나 entry만을 가지게 된다.
+
+    @Component(modules = ParentModule.class)
+    interface ParentComponent {
+      Set<String> strings();
+      Map<String, String> stringMap();
+      ChildComponent childComponent();
+    }
+
+    @Module
+    class ParentModule {
+      @Provides @IntoSet
+      static String string1() {
+        "parent string 1";
+      }
+
+      @Provides @IntoSet
+      static String string2() {
+        "parent string 2";
+      }
+
+      @Provides @IntoMap
+      @StringKey("a")
+      static String stringA() {
+        "parent string A";
+      }
+
+      @Provides @IntoMap
+      @StringKey("b")
+      static String stringB() {
+        "parent string B";
+      }
+    }
+
+    @Subcomponent(modules = ChildModule.class)
+    interface ChildComponent {
+      Set<String> strings();
+      Map<String, String> stringMap();
+    }
+
+    @Module
+    class ChildModule {
+      @Provides @IntoSet
+      static String string3() {
+        "child string 3";
+      }
+
+      @Provides @IntoSet
+      static String string4() {
+        "child string 4";
+      }
+
+      @Provides @IntoMap
+      @StringKey("c")
+      static String stringC() {
+        "child string C";
+      }
+
+      @Provides @IntoMap
+      @StringKey("d")
+      static String stringD() {
+        "child string D";
+      }
+    }
+
+    @Test void testMultibindings() {
+      ParentComponent parentComponent = DaggerParentComponent.create();
+      assertThat(parentComponent.strings()).containsExactly(
+          "parent string 1", "parent string 2");
+      assertThat(parentComponent.stringMap().keySet()).containsExactly("a", "b");
+
+      ChildComponent childComponent = parentComponent.childComponent();
+      assertThat(childComponent.strings()).containsExactly(
+          "parent string 1", "parent string 2", "child string 3", "child string 4");
+      assertThat(childComponent.stringMap().keySet()).containsExactly(
+          "a", "b", "c", "d");
+    }
