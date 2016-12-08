@@ -1,9 +1,13 @@
 ---
 layout: post
 category: blog
-published: false
 title: '[Dagger Official Reference] Subcomponents'
+date: '2016-12-08 16:40:00 +0900'
+tags:
+  - android, dagger, di
+published: true
 ---
+
 Subcomponent는 부모 component의 객체 그래프를 상속하고 확장하는 component이다. 애플리케이션의 서로 다른 부분을 캡슐화하거나 component내에서 하나 이상의 scope를 사용하기 위해 subcomponent를 사용해 애플리케이션의 객체 그래프를 서브 그래프로 분리할 수 있다.
 
 Subcomponent에 바인딩된 객체는 그것 자체의 모듈에 바인드된 객체뿐만 아니라 그것의 부모나 조상의 component에 바인딩된 객체에도 의존할 수 있다. 반면, 부모 component에 바인딩된 객체는 subcomponent에 바인딩된 객체에 의존할 수 없으며 한 subcomponent에 바인딩된 객체는 형제 subcomponet의 바인딩된 객체에 의존할 수 없다.
