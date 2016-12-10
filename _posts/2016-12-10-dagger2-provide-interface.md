@@ -1,8 +1,11 @@
 ---
 layout: post
 category: blog
-published: false
-title: Dagger2. provide 메소드 없이 interface 주입하기
+title: 'Dagger2. provide 메소드 없이 interface 주입하기'
+date: '2016-12-10 22:00:00 +0900'
+tags:
+  - android, dagger, di
+published: true
 ---
 MVP 디자인 패턴으로 Android 앱을 개발 중이고 Presenter를 의한 인터페이스 HomePresenter를 만들었다고 가정해보자. 그 직후 HomePresenterImp라는 인터페이스의 구현을 만들었다.
 
