@@ -1,8 +1,11 @@
 ---
 layout: post
 category: blog
-published: false
-title: RxJava를 이용한  Dagger 2 비동기 주입
+title: 'RxJava를 이용한  Dagger 2 비동기 주입'
+date: '2016-12-08 12:05:00 +0900'
+tags:
+  - android, dagger, di
+published: true
 ---
 [원본](https://medium.com/@froger_mcs/async-injection-in-dagger-2-with-rxjava-e7df503343c0#.uaoor0y54)  - *First version of this post was originally written on my dev-blog:*[*http://frogermcs.github.io/*
 
