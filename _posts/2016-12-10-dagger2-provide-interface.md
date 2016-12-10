@@ -2,7 +2,7 @@
 layout: post
 category: blog
 title: 'Dagger2. provide 메소드 없이 interface 주입하기'
-date: '2016-12-10 22:00:00 +0900'
+date: '2016-12-10 22:30:00 +0900'
 tags:
   - android, dagger, di
 published: true
