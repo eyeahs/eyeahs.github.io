@@ -1,7 +1,7 @@
 ---
 layout: post
 category: blog
-title: 'RxJava를 이용한  Dagger 2 비동기 주입'
+title: '[번역]RxJava를 이용한  Dagger 2 비동기 주입'
 date: '2016-12-10 22:00:00 +0900'
 tags:
   - android, dagger, di
