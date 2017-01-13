@@ -6,6 +6,7 @@ date: '2016-12-08 12:05:00 +0900'
 tags:
   - android, dagger, di
 published: true
+comments: true
 ---
 
 Dagger는 multibindings을 사용하여 여러 객체들을 심지어 다른 모듈에 바인딩된 경우에도 컬렉션 안에 바인딩할 수 있다. Dagger는 컬렉션을 모아서 애플리케이션 코드가 개별 바인딩에 직접 의존하지 않고도 주입될 수 있도록 한다.
