@@ -6,6 +6,7 @@ date: '2016-12-10 22:00:00 +0900'
 tags:
   - android, dagger, di
 published: true
+comments: true
 ---
 [원본](https://medium.com/@froger_mcs/async-injection-in-dagger-2-with-rxjava-e7df503343c0#.uaoor0y54)  - *First version of this post was originally written on my dev-blog:*[*http://frogermcs.github.io/*
 
@@ -71,7 +72,7 @@ public class SplashActivity {
 	Observable<HeavyExternalLibrary> heavyExternalLibraryObservable;
 
 	//This will be injected asynchronously
-	HeavyExternalLibrary heavyExternalLibrary; 
+	HeavyExternalLibrary heavyExternalLibrary;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
