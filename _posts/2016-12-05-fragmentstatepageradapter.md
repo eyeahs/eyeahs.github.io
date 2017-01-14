@@ -6,6 +6,7 @@ date: '2016-12-06 18:30:00 +0900'
 tags:
   - anroid
 published: true
+comments: true
 ---
 [원본 : Adventures with FragmentStatePagerAdapter](https://medium.com/inloop/adventures-with-fragmentstatepageradapter-4f56a643f8e0#.mm7leuau9)
 
