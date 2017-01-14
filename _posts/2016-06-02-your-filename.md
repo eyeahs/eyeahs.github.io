@@ -6,7 +6,8 @@ date: "2016-06-02 17:00:00 +0900"
 categories: designpatter
 published: true
 splash: ""
-tags: ""
+tags: "designpattern"
+comments: true
 ---
 
 # 1. 기본적인 Singleton
