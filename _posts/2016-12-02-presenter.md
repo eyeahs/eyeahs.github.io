@@ -7,6 +7,7 @@ categories: Android
 tags:
   - Android
 published: true
+comments: true
 ---
 원본: [Your presenters don’t need all those lifecycle events](https://medium.com/@anupcowkur/your-presenters-dont-need-all-those-lifecycle-events-721f500eeef4#.dlemjbp3z)
 
