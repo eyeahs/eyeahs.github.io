@@ -6,6 +6,7 @@ date: '2016-12-08 16:40:00 +0900'
 tags:
   - android, dagger, di
 published: true
+comments: true
 ---
 
 Subcomponent는 부모 component의 객체 그래프를 상속하고 확장하는 component이다. 애플리케이션의 서로 다른 부분을 캡슐화하거나 component내에서 하나 이상의 scope를 사용하기 위해 subcomponent를 사용해 애플리케이션의 객체 그래프를 서브 그래프로 분리할 수 있다.
