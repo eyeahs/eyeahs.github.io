@@ -7,6 +7,7 @@ categories: RxJava
 tags:
   - rxjava
 published: true
+comments: true
 ---
 
 [원본](https://medium.com/@vanniktech/rxjava-practial-takeuntil-example-bc9766918cad#.bat6wchsk)
