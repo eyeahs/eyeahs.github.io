@@ -6,6 +6,7 @@ date: '2016-12-07 15:35:00 +0900'
 tags:
   - anroid, dagger, di
 published: true
+comments: true
 ---
 
 [원본:Activities Subcomponents Multibinding in Dagger 2](http://frogermcs.github.io/activities-multibinding-in-dagger-2/)
