@@ -7,6 +7,7 @@ categories: RxJava
 tags:
   - rxjava
 published: true
+comments: true
 ---
 [원본](http://akarnokd.blogspot.kr/2015/05/operator-concurrency-primitives.html)
 
