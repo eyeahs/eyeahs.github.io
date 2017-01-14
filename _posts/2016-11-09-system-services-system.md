@@ -7,6 +7,7 @@ categories: Android
 tags:
   - Android, Dagger2
 published: true
+comments: true
 ---
 [원본](https://medium.com/@theMikhail/system-services-are-not-just-for-the-system-ce33aab4594a#.281es4t7w)
 
