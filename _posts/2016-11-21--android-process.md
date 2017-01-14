@@ -7,6 +7,7 @@ categories: Android
 tags:
   - Android
 published: true
+comments: true
 ---
 원본: https://medium.com/inloop/android-process-kill-and-the-big-implications-for-your-app-1ecbed4921cb#.3h94ew3cz
 
