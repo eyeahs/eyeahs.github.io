@@ -1,9 +1,12 @@
 ---
 layout: post
 category: blog
-published: false
+date: "2017-1-16 19:00:00 +0900"
+published: true
 title: Clean tests
+comments: true
 ---
+
 # Clean tests
 
 # Part 1: Naming
