@@ -3,7 +3,7 @@ layout: post
 category: blog
 date: "2017-1-16 19:00:00 +0900"
 published: true
-title: Clean tests
+title: "[번역]Clean tests"
 comments: true
 ---
 
