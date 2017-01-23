@@ -1,9 +1,12 @@
 ---
 layout: post
 category: blog
-published: false
+date: "2017-1-23 15:15:00 +0900"
+published: true
 title: '[번역] Reactive Programming with RxJava'
+comments: true
 ---
+
 # Foreword
 
 2005년 10월 28일 새로이 임명된 Microsoft의 chief architect인 Ray Ozzie는 "The Internet Services Disruption"이라는 주제의 지금은 악명이 자자한 메모를 직원들에게 이메일로 보냈다. 이 메모에서 Ray Ozzie는 기본적으로 Microsoft, Google, Facebook, Amazon 및 Netflix와 같은 웹을 자사 서비스 전달의 주요 채널로 이용하는 기업들이 존재하는 세상이 어떻게 보이는지에 대해 개략적으로 설명한다.
@@ -115,7 +118,7 @@ RxJava에서 중심이 되는 것은 데이터 또는 이벤트의 흐름을 나
 
 RxJava는 푸시를 지원하기 위해 반응적이 된다. 그래서 **Observable** 그리고 관련된 **Observer**의 타입 시그너처는 여기에 푸시되는 이벤트를 지원한다. 이것은 보통 결과적으로 비동기를 수반하며 이는 다음 섹션에서 다룰 것이다. **Observable** 타입은 비동기 시스템에서 흐름 제어_flow control_나 배압_backpressure_에 대한 접근 방식으로서 비동기 피드백 채널(종종 비동기-풀_async-pull_ 또는 반응적-풀_reactive-pull_로도 언급된다)도 역시 지원한다. 이 쳅터의 후반 섹션에서 흐름 제어를 다르고 이 메커니즘이 어떻게 들어맞는지를 다룰 것이다.
 
-푸시를 통한 이벤트 수신을 지원하기 위해 **Observable**과 **Observer**의 쌍은 구독_subscription_을 통해 연결된다. **Observable**은 데이터의 스트림을 상징하며 **Observer**에 의해 구독될 수 있다([“Observer＜T＞를 사용하여 모든 알림을 포착하기”](https://github.com/eyeahs/RPWR/wiki/Chapter2---Reactive-Extensions#observert%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-%EB%AA%A8%EB%93%A0-%EC%95%8C%EB%A6%BC%EC%9D%84-%ED%8F%AC%EC%B0%A9%ED%95%98%EA%B8%B0)에서 더 많이 배울 것이다). 
+푸시를 통한 이벤트 수신을 지원하기 위해 **Observable**과 **Observer**의 쌍은 구독_subscription_을 통해 연결된다. **Observable**은 데이터의 스트림을 상징하며 **Observer**에 의해 구독될 수 있다([“Observer＜T＞를 사용하여 모든 알림을 포착하기”](https://github.com/eyeahs/RPWR/wiki/Chapter2---Reactive-Extensions#observert%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-%EB%AA%A8%EB%93%A0-%EC%95%8C%EB%A6%BC%EC%9D%84-%ED%8F%AC%EC%B0%A9%ED%95%98%EA%B8%B0)에서 더 많이 배울 것이다).
 
 ````java
 interface Observable<T> {
