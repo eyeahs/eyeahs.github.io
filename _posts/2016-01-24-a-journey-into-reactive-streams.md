@@ -41,17 +41,17 @@ Reactive Streams는 라이브러리 개발자를 위한 명세(specification)이
 
 Reactive Streams은 2013년 Netflix, Pivotal 그리고 Typesafe의 엔지니어들의 발의로 2013년 후반에 시작되었다. 가장 초기 토론의 일부는 2013년 Typesafe의 Play 팀과 Akka 팀 사이에서 시작되었다. 이 시점에 스트리밍은 구현하기가 어려웠다. -Play는 "iteratees"를 가지고 있었지만 이는 오직 스칼라만을 위한 것이였고 많은 개발자가 이해하기 어려웠다; Akka는 Akka IO를 가지고 있었지만 이 역시 비즈니스 수준 프로그래밍에서는 너무 복잡했다. 토론은 계속되었고 결국 Roland Kuhn과 Erik Meijer간의 대화로 이어졌다. 이 대화는 비동기 경계를 넘는 데이터 전달을 위한 Rx 기반 접근의 씨앗이 되었다. Viktor Klang은 개발자 커뮤니티의 다른 구성원들에게 손을 내밀었으며 더 큰 발의가 시작되었다. 이 명세(specification)는 곧 GitHub 프로젝트가 되었고 그 후 2015년 5월에 1.0에 도달하였다. Reactive Streams의 역사와 어떻게 함께 오게 되었는지에 대해 더 알고 싶다면 Viktor Klang이 Netflix의 Ben christensen, Pivotal의 Stephane Maldini 그리고 Typesafe의 Dr. Roland Kuhn와 함께한 명세에 대한 그들의 작업에 대한 [인터뷰](https://medium.com/@viktorklang/reactive-streams-1-0-0-interview-faaca2c00bec#.2mw6jtmn9)가 있다.
 
-Reactive Streams의 목표는 추상화 수준을 한 단계 높이는 것이다 -비즈니스 개발자가 스트림 처리를 위한 저수준 배관을 걱정하는 대신 이 명세 스스로가 이 문제들을 정의한다. 그 뒤에 우리를 위해 이 문제들의 대부분을 처리하는 것은 라이브러리 개발자들의 일이다. 
+Reactive Streams의 목표는 추상화 수준을 한 단계 높이는 것이다 -비즈니스 개발자가 스트림을 취급하는 저수준 배관 작업을 걱정하는 대신 이 명세 스스로가 이 문제들을 정의한다. 그 뒤에 우리를 위해 이 문제들의 대부분을 처리하는 것은 라이브러리 개발자들의 일이다. 
 
-> 우리는 어떤 스레드도 블록하지 않고도 데이터 수령자(recipients)가 압도되지 않도록 하는 로컬 프로토컬을 정의하려고 시작했지만 결국 적용한 범위가 훨씬 더 커졌다;  HTTP 페이로드를 서버에서 또는 서버로 스트리밍할 때 TCP의  자연스러운 배압(back-pressure) 전파는 네트워크를 통해 전송하기 전후에 데이터에 수행된 스트림 변환과 매끄럽게 통합되어야 한다. — Dr. Roland Kuhn, Typesafe
+> 우리는 어떤 스레드도 블록하지 않고도 데이터 수령자(recipients)가 압도되지 않도록 하는 로컬 프로토컬을 정의하려고 시작했지만 결국 적용 범위가 훨씬 더 커졌다;  HTTP 페이로드를 서버에서 또는 서버로 스트리밍할 때 TCP의  자연스러운 배압(back-pressure) 전파는 네트워크를 통해 전송하기 전후에 데이터에 수행된 스트림 변환과 매끄럽게 통합되어야 한다. — Dr. Roland Kuhn, Typesafe
 
 만약 당신이 Reactive Streams에 순응하는 라이브러리의 개발자가 아니라 할지라도 Reactive Streams을 이해하는 것은 매우 유용한다. 이것은 스트림 프로세싱 영역의 가장 도전적인 문제들을 정의하고 해결하는 것을 목표로 한다.
 
-> 위의 내용을 추가하면, 우리는 두 가지 핵심 사항 모두에  관심이 있다고 생각한다. 먼저 스트림 구현이 무제한 버퍼링 없이 존재할 수 있고  반응형(reactive)과 대화형(interactive) 모델간에 소비율에 기반한 자동적인 전환을 할 수 있게 하기. 둘째로 라이브러리들, 시스템들, 네트워크들 그리고 프로세서들간에 상호 운영(interoperability)을 허용하는 해결법을 원했다.  — Ben Christensen, Netflix
+> 위의 내용을 추가하면 우리는 두 가지 핵심 사항 모두 관심을 가진다고 생각한다. 먼저 스트림 구현이 무제한 버퍼링없이 존재할 수 있게 하고 반응형(reactive)과 대화형(interactive) 모델간에 소비율에 기반한 자동적 전환이 가능하게 하기. 둘째로 라이브러리들, 시스템들, 네트워크들 그리고 프로세서들간에 상호 운영(interoperability)을 허용하는 해결법을 원했다.  — Ben Christensen, Netflix
 
 Reactive Streams가 해결하고자 하는 핵심 개념들과 과제들을 살펴 보도록 하자.
 
-> 두 개의 프로세스를 고려해보자. 하나가 다른 것에게 무엇인가를 묻고 그 답을 돌려 받기를 동기적으로 기대한다. 만약 두 번째 프로세스가 대답을 제공하지 않으면 첫번째 프로세스는 중단된다 — “Asynchronous Boundary”의 설명, Roland Kuhn
+> 두 개의 프로세스를 고려해보자. 하나가 다른 것에게 무엇인가를 묻고 그 답을 돌려 받기를 동기적으로 기대한다. 만약 두 번째 프로세스가 대답을 제공하지 않으면 첫번째 프로세스는 중단된다 — “비동기 경계(Asynchronous Boundary)”의 설명, Roland Kuhn
 
 비동기 경계(asynchronous boundary)의 개념이 이 명세의 핵심이다. 본질적으로 비동기 경계는 당신의 시스템의 구성 요소를 분리(decouple)한다.
 
