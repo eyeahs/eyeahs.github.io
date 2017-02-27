@@ -33,26 +33,29 @@ Dagger는 Android 사용자가 ProGuard를 사용한다고 가정한다.
 
 Dagger를 사용하여 Android 애플리케이션을 작성하는 것에서 가장 큰 어려움 중 하나는 Dagger는 주입된 객체 모두를 생성할 수 있을 때 가장 잘 동작하는 반면 Activity나 Fragment같은 많은 Android 프레임워크 클래스들이 OS 자체에 의해 인스턴스화되는 것이다. 때문에 생명 주기 메소드에 멤버 주입을 수행해야 한다. 이는 많은 클래스가 다음과 같이 되는 것을 의미한다:
 
-  public class FrombulationActivity extends Activity {
-    @Inject Frombulator frombulator;
+    public class FrombulationActivity extends Activity {
+      @Inject Frombulator frombulator;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      // DO THIS FIRST. Otherwise frombulator might be null!
-      ((SomeApplicationBaseType) getContext().getApplicationContext())
-          .getApplicationComponent()
-          .newActivityComponentBuilder()
-          .activity(this)
-          .build()
-          .inject(this);
-      // ... now you can write the exciting code
+      @Override
+      public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // DO THIS FIRST. Otherwise frombulator might be null!
+        ((SomeApplicationBaseType) getContext().getApplicationContext())
+            .getApplicationComponent()
+            .newActivityComponentBuilder()
+            .activity(this)
+            .build()
+            .inject(this);
+        // ... now you can write the exciting code
+      }
     }
-  }
 
 여기에는 몇가지 문제점이 존재한다:
+
 	1. Copy-pasting 코드는 이후에 리팩토링 하기 어렵게 만든다. 많은 개발자들이 코드 블록을 copy-paste 할 수록 이것이 하는 일을 정확히 아는 사람은 더 적어진다.
     2. 더 근본적으로는 여기에는 타입 요청 주입_type requesting injection_(`FrombultaionActivity`)이 자신의 주입자_injector_를 알고 있기를 요구한다. 구성 타입 대신 인터페이스를 통해 수행될지라도 이는 의존성 주입의 핵심 원칙을 위반한다: 클래스는 자신이 어떻게 주입되는지에 대해 하는 것이 없어야 한다.
     
 [dagger.Android](https://google.github.io/dagger/api/latest/dagger/android/package-summary.html)는 이 패턴을 단순화하는 접근법을 제공한다.
 
+1. 베이스 타입을 위한 모든 바인딩 필수 요소들을 이용할 수 있도록 [AndroidInjectionModule](https://google.github.io/dagger/api/latest/dagger/android/AndroidInjectionModule.html)을 application component에 설치하라.
+2. 
