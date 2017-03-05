@@ -1,16 +1,27 @@
 ---
 layout: post
 category: blog
-title: "7가지 Singleton"
-date: "2016-06-02 17:00:00 +0900"
+title: 7가지 Singleton
+date: '2016-06-02 17:00:00 +0900'
 categories: designpatter
 published: true
-splash: ""
-tags: "designpattern"
+tags:
+  - designpattern
 comments: true
 ---
 
-# 1. 기본적인 Singleton
+# 1. Eager initialization
+    public class Singleton {
+      private static Singleton instance = new Singleton();
+      private Singleton() {} 
+      public static Singleton getInstance() {
+        return instance;
+      }
+    }
+
+클래스가 처음 로드될 때 (애플리케이션 시작 시점이 아니라 클래스의 static 메소드가 호출되는 시점에 클래스가 로드된다) 인스턴스 초기화를 한다. 클래스로더가 클래스를 초기화하는 방식에 의해 이는 본질적으로 늦은 초기화가 된다.
+
+# 2. 기본적인 Singleton
     public class Singleton {
       private static Singleton instance;
       private Singleton() {}
@@ -22,9 +33,9 @@ comments: true
       }
     }
 
-위 코드는 싱글톤의 가장 기본적인 형태이다. 위 코드의 문제는 두 개 이상의 쓰레드가 동시에 접근하는 경우 정상적인 동작(유일한 instance를 반환함)을 보장 할 수 없다는 점이다.
+위 코드는 늦은 초기화를 하는 싱글톤의 가장 기본적인 형태이다. 위 코드의 문제는 두 개 이상의 쓰레드가 동시에 접근하는 경우 정상적인 동작(유일한 instance를 반환함)을 보장 할 수 없다는 점이다.
 
-# 2. Synchronized Singleton
+# 3. Synchronized Singleton
     public class Singleton {
       private static Singleton instance;
       private Singleton() {}
@@ -38,18 +49,6 @@ comments: true
     
 위 코드는 동시성 문제를 해결하기 위해 getInstance() 메소드에 synchronized를 선언하였다.
 하지만 위 코드에 여러 쓰레드가 동시에 접근할 경우 한 번에 한 쓰레드만 getInstance()메소드를 사용할 수 있으므로 (다른 쓰레드들은 먼저 접근한 쓰레드가 작업을 끝낼 때 까지 기다려야 한다.) 오버헤드가 증가한다.
-
-# 3. Eager initialization
-    public class Singleton {
-      private static Singleton instance = new Singleton();
-      private Singleton() {} 
-      public static Singleton getInstance() {
-        return instance;
-      }
-    }
-
-인스턴스가 필요할 때 초기화 (Lazy initialization)하지 않고 프로그램이 처음 구동될 때 인스턴스 초기화까지 끝내 버릴 수도 있다. 초기화 비용이 비싸지 않는다면 그냥 이 방법을 사용하면 된다. 
-가장 흔한 방법이며 구현도 편하고 보는 사람도 편하다.
 
 # 4. Enum
     public enum Singleton {
